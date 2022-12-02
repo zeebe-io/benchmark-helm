@@ -1,4 +1,25 @@
 
+global:
+  image:
+    repository: "gcr.io/zeebe-io"
+    tag: SNAPSHOT
+    pullPolicy: Always
+
+worker:
+  replicas: 3 
+  capacity: 60
+
+starter:
+  replicas: 1
+  rate: 75
+
+publisher:
+  replicas: 0
+  rate: 25
+
+timer:
+  replicas: 0
+  rate: 25
 
 camunda:
   enabled: true
