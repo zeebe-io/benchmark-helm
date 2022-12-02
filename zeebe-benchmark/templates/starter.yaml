@@ -23,7 +23,7 @@ spec:
             - name: JAVA_OPTIONS
               value: >-
                 -Dconfig.override_with_env_vars=true
-                -Dapp.brokerUrl=default-zeebe-gateway:26500
+                -Dapp.brokerUrl={{ .Release.Name }}-zeebe-gateway:26500
                 -Dapp.starter.rate={{ .Values.starter.rate }}
                 -Dapp.starter.durationLimit=0
                 -Dzeebe.client.requestTimeout=62000
