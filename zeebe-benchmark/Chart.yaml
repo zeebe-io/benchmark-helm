@@ -10,7 +10,7 @@ sources:
   - https://github.com/zeebe-io/benchmark-helm
   - https://github.com/camunda/zeebe
 dependencies:
-  - name: camunda
+  - name: camunda-platform
     repository: "https://helm.camunda.io"
     version: 8.1.2
     condition: "camunda.enabled"
