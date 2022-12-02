@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: publisher
-          image: {{ include "benchmark.image" . | quote }}
+          image: {{ .Values.global.image.repository | quote }}/worker:{{ .Values.global.image.tag }}
           imagePullPolicy: {{ .Values.global.image.pullPolicy }}
           env:
             - name: JAVA_OPTIONS

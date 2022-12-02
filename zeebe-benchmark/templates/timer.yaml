@@ -16,8 +16,8 @@ spec:
     spec:
       containers:
         - name: timer
-          image: gcr.io/zeebe-io/starter:SNAPSHOT
-          imagePullPolicy: Always
+          image: {{ .Values.global.image.repository | quote }}/starter:{{ .Values.global.image.tag }}
+          imagePullPolicy: {{ .Values.global.image.pullPolicy }}
           env:
             - name: JAVA_OPTIONS
               value: >-
