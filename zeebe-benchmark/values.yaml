@@ -1,6 +1,7 @@
 
 
 camunda:
+  enabled: true
   global:
     image:
       tag: SNAPSHOT
