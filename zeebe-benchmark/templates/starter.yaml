@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: starter
-          image: {{ .Values.global.image.repository | quote }}/starter:{{ .Values.global.image.tag }}
+          image: "{{ .Values.global.image.repository }}/starter:{{ .Values.global.image.tag }}"
           imagePullPolicy: {{ .Values.global.image.pullPolicy }}
           env:
             - name: JAVA_OPTIONS
