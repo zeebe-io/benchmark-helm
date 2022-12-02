@@ -41,26 +41,3 @@ spec:
             requests:
               cpu: 250m
               memory: 256Mi
----
-apiVersion: v1
-kind: Service
-metadata:
-  labels:
-    app: zeebe
-    app.kubernetes.io/instance: default
-    app.kubernetes.io/name: zeebe-cluster
-  name: publisher
-spec:
-  clusterIP: None
-  ports:
-    - name: http
-      port: 9600
-      protocol: TCP
-      targetPort: 9600
-  publishNotReadyAddresses: true
-  selector:
-    app: publisher
-  sessionAffinity: None
-  type: ClusterIP
-status:
-  loadBalancer: { }
