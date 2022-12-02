@@ -8,7 +8,7 @@ spec:
   selector:
     matchLabels:
       app: timer
-  replicas: 1
+  replicas: {{ .Values.timer.replicas }} 
   template:
     metadata:
       labels:
@@ -23,7 +23,7 @@ spec:
               value: >-
                 -Dconfig.override_with_env_vars=true
                 -Dapp.brokerUrl=default-zeebe-gateway:26500
-                -Dapp.starter.rate=100
+                -Dapp.starter.rate={{ .Values.timer.rate }}
                 -Dzeebe.client.requestTimeout=62000
                 -XX:+HeapDumpOnOutOfMemoryError
                 -Dapp.starter.bpmnXmlPath=bpmn/timerProcess.bpmn

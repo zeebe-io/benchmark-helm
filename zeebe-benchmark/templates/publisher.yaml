@@ -8,7 +8,7 @@ spec:
   selector:
     matchLabels:
       app: publisher
-  replicas: 1
+  replicas: {{ .Values.publisher.replicas }}
   template:
     metadata:
       labels:
@@ -16,14 +16,14 @@ spec:
     spec:
       containers:
         - name: publisher
-          image: gcr.io/zeebe-io/starter:SNAPSHOT
-          imagePullPolicy: Always
+          image: {{ include "benchmark.image" . | quote }}
+          imagePullPolicy: {{ .Values.global.image.pullPolicy }}
           env:
             - name: JAVA_OPTIONS
               value: >-
                 -Dconfig.override_with_env_vars=true
                 -Dapp.brokerUrl=default-zeebe-gateway:26500
-                -Dapp.starter.rate=100
+                -Dapp.starter.rate={{ .Values.publisher.rate }}
                 -Dzeebe.client.requestTimeout=62000
                 -XX:+HeapDumpOnOutOfMemoryError
                 -Dapp.starter.bpmnXmlPath=bpmn/msg_one_task.bpmn
