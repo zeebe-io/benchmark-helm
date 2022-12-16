@@ -57,6 +57,7 @@ camunda-platform:
       -XX:HeapDumpPath=/usr/local/zeebe/data
       -XX:ErrorFile=/usr/local/zeebe/data/zeebe_error%p.log
       -Xlog:gc*:file=/usr/local/zeebe/data/gc.log:time:filecount=7,filesize=8M
+      -javaagent:/pyroscope/pyroscope.jar
 
     # Environment variables
     env:
@@ -83,6 +84,22 @@ camunda-platform:
         value: "true"
       - name: ZEEBE_BROKER_EXPERIMENTAL_CONSISTENCYCHECKS_ENABLEFOREIGNKEYCHECKS
         value: "true"
+      - name: PYROSCOPE_SERVER_ADDRESS
+        value: "http://pyroscope.pyroscope.svc.cluster.local:4040"
+      - name: PYROSCOPE_APPLICATION_NAME
+        value: "io.camunda.zeebe"
+      - name: PYROSCOPE_LOG_LEVEL
+        value: "debug"
+      - name: PYROSCOPE_FORMAT
+        value: "jfr"
+      - name: PYROSCOPE_PROFILER_EVENT
+        value: "cpu"
+      - name: PYROSCOPE_PROFILER_ALLOC
+        value: "0"
+      - name: PYROSCOPE_PROFILER_LOCK
+        value: "0"
+      - name: PYROSCOPE_LABELS
+        value: "namespace=$(K8S_NAMESPACE), pod=$(K8S_NAME)"
 
     # Enable metrics collections
     podLabels:
@@ -96,6 +113,19 @@ camunda-platform:
       requests:
         cpu: 800m
         memory: 2Gi
+    extraVolumes:
+      - name: pyroscope
+        emptyDir: {}
+    extraVolumeMounts:
+      - name: pyroscope
+        mountPath: /pyroscope
+    extraInitContainers:
+      - name: pyroscope
+        image: busybox
+        command: ['wget', 'https://github.com/pyroscope-io/pyroscope-java/releases/latest/download/pyroscope.jar', '-O', '/pyroscope/pyroscope.jar']
+        volumeMounts:
+        - name: pyroscope
+          mountPath: /pyroscope
 
     # PvcAccessModes can be used to configure the persistent volume claim access mode https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes
     pvcAccessMode: ["ReadWriteOnce"]
