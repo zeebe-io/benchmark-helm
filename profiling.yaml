@@ -1,0 +1,23 @@
+camunda-platform:
+  zeebe:
+    javaOpts: >-
+      -XX:MaxRAMPercentage=25.0
+      -XX:+ExitOnOutOfMemoryError
+      -XX:+HeapDumpOnOutOfMemoryError
+      -XX:HeapDumpPath=/usr/local/zeebe/data
+      -XX:ErrorFile=/usr/local/zeebe/data/zeebe_error%p.log
+      -Xlog:gc*:file=/usr/local/zeebe/data/gc.log:time:filecount=7,filesize=8M
+      -javaagent:/pyroscope/pyroscope.jar
+    extraVolumes:
+      - name: pyroscope
+        emptyDir: {}
+    extraVolumeMounts:
+      - name: pyroscope
+        mountPath: /pyroscope
+    extraInitContainers:
+      - name: pyroscope
+        image: busybox
+        command: ['wget', 'https://github.com/pyroscope-io/pyroscope-java/releases/latest/download/pyroscope.jar', '-O', '/pyroscope/pyroscope.jar']
+        volumeMounts:
+        - name: pyroscope
+          mountPath: /pyroscope
