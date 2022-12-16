@@ -87,7 +87,7 @@ camunda-platform:
       - name: PYROSCOPE_SERVER_ADDRESS
         value: "http://pyroscope.pyroscope.svc.cluster.local:4040"
       - name: PYROSCOPE_APPLICATION_NAME
-        value: "io.camunda.zeebe"
+        value: "io.camunda.zeebe.broker"
       - name: PYROSCOPE_LOG_LEVEL
         value: "debug"
       - name: PYROSCOPE_FORMAT
