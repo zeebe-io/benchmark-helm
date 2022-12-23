@@ -116,7 +116,7 @@ camunda-platform:
     # PvcAccessModes can be used to configure the persistent volume claim access mode https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes
     pvcAccessMode: ["ReadWriteOnce"]
     # PvcSize defines the persistent volume claim size, which is used by each broker pod https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims
-    pvcSize: 128Gi
+    pvcSize: 32Gi
     # PvcStorageClassName can be used to set the storage class name which should be used by the persistent volume claim. It is recommended to use a storage class, which is backed with a SSD.
     pvcStorageClassName: ssd
 
@@ -205,7 +205,7 @@ camunda-platform:
       storageClassName: "ssd"
       resources:
         requests:
-          storage: 64Gi
+          storage: 16Gi
 
     esJavaOpts: "-Xmx3g -Xms3g"
 
