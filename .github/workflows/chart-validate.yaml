@@ -42,4 +42,4 @@ jobs:
         run: |
           echo "check-version-increment: false" >> .github/config/chart-testing.yaml
       - name: Run chart testing and lint
-        run: ct lint --config .github/config/chart-testing.yaml
+        run: ct lint --config .github/config/chart-testing.yaml --lint-conf .github/config/chart-linting.yaml
