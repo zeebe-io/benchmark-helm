@@ -107,11 +107,14 @@ camunda-platform:
     # Resources configuration to set request and limit configuration for the container https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#requests-and-limitsS
     resources:
       limits:
-        cpu: 960m
+        cpu: 1350m
         memory: 4Gi
       requests:
-        cpu: 800m
+        cpu: 1350m
         memory: 2Gi
+
+    nodeSelector:
+      cloud.google.com/gke-nodepool: n2-standard-2
 
     # PvcAccessModes can be used to configure the persistent volume claim access mode https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes
     pvcAccessMode: [ "ReadWriteOnce" ]
