@@ -136,7 +136,7 @@ helm.template: helm.dependency-update
 .PHONY: release.bump-chart-version-and-commit
 release.bump-chart-version-and-commit: .release.bump-chart-version
 	git add $(chartPath);\
-	git commit -m "chore: bump camunda-platform chart version to $(chartVersion)"
+	git commit -m "chore: bump benchmark chart version to $(chartVersion)"
 
 .PHONY: .release.generate-notes
 .release.generate-notes:
@@ -146,13 +146,13 @@ release.bump-chart-version-and-commit: .release.bump-chart-version
 .PHONY: release.generate-notes-and-commit
 release.generate-notes-and-commit: .release.generate-notes
 	git add $(chartPath);\
-	git commit -m "chore: add release notes for camunda-platform $(chartVersion)"
+	git commit -m "chore: add release notes for benchmark $(chartVersion)"
 
 .PHONY: release.generate-pr-url
 release.generate-pr-url:
 	@echo "\n\n###################################\n"
 	@echo "Open the release PR using this URL:"
-	@echo "https://github.com/zeebe-io/benchmark-helm/compare/release?expand=1&template=release_template.md&title=Release%20Camunda%20Platform%20Helm%20Chart%20v$(chartVersion)"
+	@echo "https://github.com/zeebe-io/benchmark-helm/compare/release?expand=1&template=release_template.md&title=Release%20Zeebe%20Benchmark%20Helm%20Chart%20v$(chartVersion)"
 	@echo "\n###################################\n\n"
 
 .PHONY: release.chores
