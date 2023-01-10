@@ -16,3 +16,5 @@
 
 *.lock
 *.tgz
+
+.idea/
