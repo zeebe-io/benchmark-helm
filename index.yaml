@@ -1,3 +1,33 @@
 apiVersion: v1
-entries: {}
-generated: "2023-01-10T10:44:22.941141376+01:00"
+entries:
+  zeebe-benchmark:
+  - annotations:
+      artifacthub.io/changes: ""
+      artifacthub.io/containsSecurityUpdates: "false"
+      artifacthub.io/links: |
+        - name: Zeebe Repo
+          url: https://github.com/camunda/zeebe
+        - name: Zeebe Docs
+          url: https://docs.camunda.io/docs/components/zeebe/zeebe-overview/
+    apiVersion: v2
+    appVersion: 8.1.2
+    created: "2023-01-10T09:47:58.597763343Z"
+    dependencies:
+    - condition: camunda.enabled
+      name: camunda-platform
+      repository: https://helm.camunda.io
+      version: 8.1.2
+    description: A Helm chart for Zeebe benchmarks
+    digest: 33267d1ebb9e27c4916e3568b6b47c57f0234e8d759fa60e0d4f7b16b3b6e250
+    maintainers:
+    - email: christopher.zell@camunda.com
+      name: Zelldon
+    name: zeebe-benchmark
+    sources:
+    - https://github.com/zeebe-io/benchmark-helm
+    - https://github.com/camunda/zeebe
+    type: application
+    urls:
+    - https://github.com/zeebe-io/benchmark-helm/releases/download/zeebe-benchmark-0.1.2/zeebe-benchmark-0.1.2.tgz
+    version: 0.1.2
+generated: "2023-01-10T09:47:58.597777343Z"
