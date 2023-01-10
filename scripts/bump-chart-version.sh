@@ -22,7 +22,7 @@ fi
 
 # Chart name is hard-coded since we only have 1 main chart,
 # but it could be customized in case we have more in the future.
-chart_name="camunda-platform"
+chart_name="zeebe-benchmark"
 
 # When changing the minor version, export "is_minor_version=1",
 # that will increment the minor version and set the patch version to zero.
@@ -49,9 +49,6 @@ fi
 
 # Update parent chart version
 sed -i "s/version: ${chart_version_old}/version: ${chart_version_new}/g" charts/${chart_name}/Chart.yaml
-
-# Update subcharts version.
-sed -i "s/^version: ${chart_version_old}/version: ${chart_version_new}/g" charts/${chart_name}/charts/*/Chart.yaml
 
 # Print the changes.
 echo "The chart '${chart_name}' version has been bumped from '${chart_version_old}' to '${chart_version_new}'."
