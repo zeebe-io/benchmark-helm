@@ -22,6 +22,4 @@ annotations:
     - name: Zeebe Docs
       url: https://docs.camunda.io/docs/components/zeebe/zeebe-overview/
   artifacthub.io/containsSecurityUpdates: "false"
-  artifacthub.io/changes: |
-    - kind: changed
-      description: "make it a real helm repo"
+  artifacthub.io/changes: ""
