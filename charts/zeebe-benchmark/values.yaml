@@ -5,7 +5,7 @@ global:
     pullPolicy: Always
 
 worker:
-  replicas: 3 
+  replicas: 3
   capacity: 60
 
 starter:
@@ -47,7 +47,7 @@ camunda-platform:
     # ContainerSecurityContext defines the security options the Zeebe broker container should be run with
     containerSecurityContext:
       capabilities:
-        add: ["NET_ADMIN"]
+        add: [ "NET_ADMIN" ]
 
     # JavaOpts can be used to set java options for the zeebe brokers
     javaOpts: >-
@@ -114,7 +114,7 @@ camunda-platform:
         memory: 2Gi
 
     # PvcAccessModes can be used to configure the persistent volume claim access mode https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes
-    pvcAccessMode: ["ReadWriteOnce"]
+    pvcAccessMode: [ "ReadWriteOnce" ]
     # PvcSize defines the persistent volume claim size, which is used by each broker pod https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims
     pvcSize: 32Gi
     # PvcStorageClassName can be used to set the storage class name which should be used by the persistent volume claim. It is recommended to use a storage class, which is backed with a SSD.
