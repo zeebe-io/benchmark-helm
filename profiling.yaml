@@ -16,7 +16,7 @@ camunda-platform:
         mountPath: /pyroscope
     extraInitContainers:
       - name: pyroscope
-        image: busybox
+        image: alpine
         command: ['wget', 'https://github.com/pyroscope-io/pyroscope-java/releases/latest/download/pyroscope.jar', '-O', '/pyroscope/pyroscope.jar']
         volumeMounts:
         - name: pyroscope
