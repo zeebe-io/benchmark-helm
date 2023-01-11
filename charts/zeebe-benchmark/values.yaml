@@ -20,6 +20,10 @@ timer:
   replicas: 0
   rate: 25
 
+leaderBalancing:
+  enabled: true
+  schedule: "*/15 * * * *"
+
 camunda-platform:
   enabled: true
   global:
