@@ -10,7 +10,7 @@ worker:
 
 starter:
   replicas: 1
-  rate: 75
+  rate: 150
 
 publisher:
   replicas: 0
