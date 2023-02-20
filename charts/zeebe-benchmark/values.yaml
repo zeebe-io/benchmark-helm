@@ -24,6 +24,9 @@ leaderBalancing:
   enabled: true
   schedule: "*/15 * * * *"
 
+zeebe:
+  config: {}
+
 camunda-platform:
   enabled: true
   global:
@@ -61,6 +64,18 @@ camunda-platform:
       -XX:HeapDumpPath=/usr/local/zeebe/data
       -XX:ErrorFile=/usr/local/zeebe/data/zeebe_error%p.log
       -Xlog:gc*:file=/usr/local/zeebe/data/gc.log:time:filecount=7,filesize=8M
+
+    # Zeebe config
+    extraVolumes:
+      - name: zeebe-config
+        configMap:
+          name: zeebe-config
+          defaultMode: 0754
+
+    extraVolumeMounts:
+      - name: zeebe-config
+        mountPath: /usr/local/zeebe/config/application.yaml
+        subPath: application.yml
 
     # Environment variables
     env:
