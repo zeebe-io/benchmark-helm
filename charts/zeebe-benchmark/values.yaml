@@ -26,6 +26,8 @@ leaderBalancing:
 
 zeebe:
   config: {}
+  profiling:
+    enabled: false
 
 camunda-platform:
   enabled: true
@@ -71,11 +73,23 @@ camunda-platform:
         configMap:
           name: zeebe-config
           defaultMode: 0754
+      - name: pyroscope
+        emptyDir: {}
 
     extraVolumeMounts:
       - name: zeebe-config
         mountPath: /usr/local/zeebe/config/application.yaml
         subPath: application.yml
+      - name: pyroscope
+        mountPath: /pyroscope
+
+    extraInitContainers:
+      - name: pyroscope
+        image: alpine
+        command: ['wget', 'https://github.com/pyroscope-io/pyroscope-java/releases/latest/download/pyroscope.jar', '-O', '/pyroscope/pyroscope.jar']
+        volumeMounts:
+          - name: pyroscope
+            mountPath: /pyroscope
 
     # Environment variables
     env:
@@ -118,6 +132,12 @@ camunda-platform:
         value: "0"
       - name: PYROSCOPE_LABELS
         value: "namespace=$(K8S_NAMESPACE), pod=$(K8S_NAME)"
+      - name: JAVA_OPTS
+        valueFrom:
+          configMapKeyRef:
+            name: zeebe-config
+            key: java-opts
+
 
     # Enable metrics collections
     podLabels:
