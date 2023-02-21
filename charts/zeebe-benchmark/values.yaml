@@ -93,6 +93,14 @@ camunda-platform:
 
     # Environment variables
     env:
+      - name: K8S_NAMESPACE
+        valueFrom:
+          fieldRef:
+            fieldPath: metadata.namespace
+      - name: K8S_NAME
+        valueFrom:
+          fieldRef:
+            fieldPath: metadata.name
       # Enable JSON logging for google cloud stackdriver
       - name: ZEEBE_LOG_APPENDER
         value: Stackdriver
@@ -173,6 +181,22 @@ camunda-platform:
     # LogLevel defines the log level which is used by the gateway
     logLevel: debug
 
+    extraVolumes:
+      - name: pyroscope
+        emptyDir: {}
+
+    extraVolumeMounts:
+      - name: pyroscope
+        mountPath: /pyroscope
+
+    extraInitContainers:
+      - name: pyroscope
+        image: alpine
+        command: ['wget', 'https://github.com/pyroscope-io/pyroscope-java/releases/latest/download/pyroscope.jar', '-O', '/pyroscope/pyroscope.jar']
+        volumeMounts:
+          - name: pyroscope
+            mountPath: /pyroscope
+
     # Env can be used to set extra environment variables in each gateway container
     env:
       - name: ZEEBE_LOG_APPENDER
@@ -191,6 +215,28 @@ camunda-platform:
         value: "true"
       - name: ZEEBE_GATEWAY_THREADS_MANAGEMENTTHREADS
         value: "1"
+      - name: PYROSCOPE_SERVER_ADDRESS
+        value: "http://pyroscope.pyroscope.svc.cluster.local:4040"
+      - name: PYROSCOPE_APPLICATION_NAME
+        value: "io.camunda.zeebe.gateway"
+      - name: PYROSCOPE_LOG_LEVEL
+        value: "debug"
+      - name: PYROSCOPE_FORMAT
+        value: "jfr"
+      - name: PYROSCOPE_PROFILER_EVENT
+        value: "cpu"
+      - name: PYROSCOPE_PROFILER_ALLOC
+        value: "0"
+      - name: PYROSCOPE_PROFILER_LOCK
+        value: "0"
+      - name: PYROSCOPE_LABELS
+        value: "namespace=$(K8S_NAMESPACE), pod=$(K8S_NAME)"
+      - name: JAVA_OPTS
+        valueFrom:
+          configMapKeyRef:
+            name: zeebe-config
+            key: java-opts
+
 
     # Enable metrics collections
     podLabels:
