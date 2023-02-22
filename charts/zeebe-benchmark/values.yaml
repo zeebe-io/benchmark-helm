@@ -182,12 +182,19 @@ camunda-platform:
     logLevel: debug
 
     extraVolumes:
+      - name: zeebe-config
+        configMap:
+          name: zeebe-config
+          defaultMode: 0754
       - name: pyroscope
         emptyDir: {}
 
     extraVolumeMounts:
       - name: pyroscope
         mountPath: /pyroscope
+      - name: zeebe-config
+        mountPath: /usr/local/zeebe/config/application.yaml
+        subPath: application.yml
 
     extraInitContainers:
       - name: pyroscope
