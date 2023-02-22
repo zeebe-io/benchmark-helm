@@ -2,19 +2,14 @@ The changelog is automatically generated using [git-chglog](https://github.com/g
 and it follows [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) format.
 
 
-<a name="zeebe-benchmark-0.1.3"></a>
-## [zeebe-benchmark-0.1.3](https://github.com/camunda/camunda-platform-helm/compare/zeebe-benchmark-0.1.2...zeebe-benchmark-0.1.3) (2023-01-19)
+<a name="zeebe-benchmark-0.1.4"></a>
+## [zeebe-benchmark-0.1.4](https://github.com/camunda/camunda-platform-helm/compare/zeebe-benchmark-0.1.3...zeebe-benchmark-0.1.4) (2023-02-22)
 
 ### Feat
 
-* add values for leader balancing
-* add cron job for curl rebalance
-
-### Fix
-
-* rebalancer container name
+* set zeebe config via values
 
 ### Pull Requests
 
-* Merge pull request [#6](https://github.com/camunda/camunda-platform-helm/issues/6) from zeebe-io/release
+* Merge pull request [#10](https://github.com/camunda/camunda-platform-helm/issues/10) from zeebe-io/release
 
