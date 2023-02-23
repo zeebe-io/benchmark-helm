@@ -20,7 +20,7 @@ spec:
           image: "{{ .Values.global.image.repository }}/starter:{{ .Values.global.image.tag }}"
           imagePullPolicy: {{ .Values.global.image.pullPolicy }}
           env:
-            - name: JAVA_OPTIONS
+            - name: JDK_JAVA_OPTIONS
               value: >-
                 -Dconfig.override_with_env_vars=true
                 -Dapp.brokerUrl={{ .Release.Name }}-zeebe-gateway:26500
