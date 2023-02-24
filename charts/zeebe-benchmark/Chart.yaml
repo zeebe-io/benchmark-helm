@@ -2,7 +2,7 @@ apiVersion: v2
 name: zeebe-benchmark
 description: A Helm chart for Zeebe benchmarks
 type: application
-version: 0.1.4
+version: 0.1.5
 appVersion: "8.1.2"
 sources:
   - https://github.com/zeebe-io/benchmark-helm
@@ -22,4 +22,4 @@ annotations:
     - name: Zeebe Docs
       url: https://docs.camunda.io/docs/components/zeebe/zeebe-overview/
   artifacthub.io/containsSecurityUpdates: "false"
-  artifacthub.io/changes: "- kind: added\n  description: \"set zeebe config via values\"\n"
+  artifacthub.io/changes: "- kind: added\n  description: \"use `zeebe.config` for gateway too\"\n- kind: added\n  description: \"enable broker profiling via helm value\"\n- kind: fixed\n  description: \"use native env vars to set worker and starter properties\"\n- kind: fixed\n  description: \"make k8s namespace and name available\"\n"
