@@ -4,6 +4,43 @@ entries:
   - annotations:
       artifacthub.io/changes: |
         - kind: added
+          description: "use `zeebe.config` for gateway too"
+        - kind: added
+          description: "enable broker profiling via helm value"
+        - kind: fixed
+          description: "use native env vars to set worker and starter properties"
+        - kind: fixed
+          description: "make k8s namespace and name available"
+      artifacthub.io/containsSecurityUpdates: "false"
+      artifacthub.io/links: |
+        - name: Zeebe Repo
+          url: https://github.com/camunda/zeebe
+        - name: Zeebe Docs
+          url: https://docs.camunda.io/docs/components/zeebe/zeebe-overview/
+    apiVersion: v2
+    appVersion: 8.1.2
+    created: "2023-02-24T08:50:12.16790295Z"
+    dependencies:
+    - condition: camunda.enabled
+      name: camunda-platform
+      repository: https://helm.camunda.io
+      version: 8.1.2
+    description: A Helm chart for Zeebe benchmarks
+    digest: 83c8b5444e82d5d5108d67bbd0777e67b313e27d7284e3454c3f485f9f52c4a4
+    maintainers:
+    - email: christopher.zell@camunda.com
+      name: Zelldon
+    name: zeebe-benchmark
+    sources:
+    - https://github.com/zeebe-io/benchmark-helm
+    - https://github.com/camunda/zeebe
+    type: application
+    urls:
+    - https://github.com/zeebe-io/benchmark-helm/releases/download/zeebe-benchmark-0.1.5/zeebe-benchmark-0.1.5.tgz
+    version: 0.1.5
+  - annotations:
+      artifacthub.io/changes: |
+        - kind: added
           description: "set zeebe config via values"
       artifacthub.io/containsSecurityUpdates: "false"
       artifacthub.io/links: |
@@ -96,4 +133,4 @@ entries:
     urls:
     - https://github.com/zeebe-io/benchmark-helm/releases/download/zeebe-benchmark-0.1.2/zeebe-benchmark-0.1.2.tgz
     version: 0.1.2
-generated: "2023-02-22T14:19:49.684135559Z"
+generated: "2023-02-24T08:50:12.167930149Z"
