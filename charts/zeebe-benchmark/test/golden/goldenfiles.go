@@ -4,7 +4,7 @@
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
+//	http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,13 +14,13 @@
 package golden
 
 import (
-"flag"
-"io/ioutil"
-"regexp"
+	"flag"
+	"io/ioutil"
+	"regexp"
 
-"github.com/gruntwork-io/terratest/modules/helm"
-"github.com/gruntwork-io/terratest/modules/k8s"
-"github.com/stretchr/testify/suite"
+	"github.com/gruntwork-io/terratest/modules/helm"
+	"github.com/gruntwork-io/terratest/modules/k8s"
+	"github.com/stretchr/testify/suite"
 )
 
 var update = flag.Bool("update-golden", false, "update golden test output files")
