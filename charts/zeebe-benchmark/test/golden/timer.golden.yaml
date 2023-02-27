@@ -1,0 +1,45 @@
+---
+# Source: zeebe-benchmark/templates/timer.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: timer
+  labels:
+    app: timer
+spec:
+  selector:
+    matchLabels:
+      app: timer
+  replicas: 0 
+  template:
+    metadata:
+      labels:
+        app: timer
+    spec:
+      containers:
+        - name: timer
+          image: "gcr.io/zeebe-io/starter:SNAPSHOT"
+          imagePullPolicy: Always
+          env:
+            - name: JAVA_OPTIONS
+              value: >-
+                -Dconfig.override_with_env_vars=true
+                -Dapp.brokerUrl=benchmark-test-zeebe-gateway:26500
+                -Dapp.starter.rate=25
+                -Dzeebe.client.requestTimeout=62000
+                -XX:+HeapDumpOnOutOfMemoryError
+                -Dapp.starter.bpmnXmlPath=bpmn/timerProcess.bpmn
+                -Dapp.starter.processId=timerProcess
+            - name: LOG_LEVEL
+              value: "warn"
+          envFrom:
+            - configMapRef:
+                name: timer-config
+                optional: true
+          resources:
+            limits:
+              cpu: 250m
+              memory: 256Mi
+            requests:
+              cpu: 250m
+              memory: 256Mi
