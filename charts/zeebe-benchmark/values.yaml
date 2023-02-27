@@ -145,6 +145,7 @@ camunda-platform:
           configMapKeyRef:
             name: zeebe-config
             key: java-opts
+            optional: true
 
 
     # Enable metrics collections
@@ -243,6 +244,7 @@ camunda-platform:
           configMapKeyRef:
             name: zeebe-config
             key: java-opts
+            optional: true
 
 
     # Enable metrics collections
