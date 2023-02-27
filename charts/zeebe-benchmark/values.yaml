@@ -120,10 +120,6 @@ camunda-platform:
         value: "0.8"
       - name: ZEEBE_BROKER_DATA_DISKUSAGEREPLICATIONWATERMARK
         value: "0.9"
-      - name: ZEEBE_BROKER_EXPERIMENTAL_CONSISTENCYCHECKS_ENABLEPRECONDITIONS
-        value: "true"
-      - name: ZEEBE_BROKER_EXPERIMENTAL_CONSISTENCYCHECKS_ENABLEFOREIGNKEYCHECKS
-        value: "true"
       - name: PYROSCOPE_SERVER_ADDRESS
         value: "http://pyroscope.pyroscope.svc.cluster.local:4040"
       - name: PYROSCOPE_APPLICATION_NAME
