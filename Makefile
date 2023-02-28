@@ -4,7 +4,7 @@
 
 chartPath=charts/zeebe-benchmark
 chartVersion=$(shell grep -Po '(?<=^version: ).+' $(chartPath)/Chart.yaml)
-releaseName=camunda-platform-test
+releaseName=zeebe-benchmark-test
 gitChglog=quay.io/git-chglog/git-chglog:0.15.1
 
 #########################################################
