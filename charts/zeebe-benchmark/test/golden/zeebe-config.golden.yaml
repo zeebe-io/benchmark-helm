@@ -13,7 +13,7 @@ data:
   application.yml: | 
     zeebe.broker.data.diskUsageCommandWatermark: "0.8"
     zeebe.broker.data.diskUsageReplicationWatermark: "0.9"
-    zeebe.broker.execution.metrics.exporter.enabled: "true"
+    zeebe.broker.executionMetricsExporterEnabled: "true"
     zeebe.broker.experimental.consistencyChecks.enableForeignKeyChecks: "true"
     zeebe.broker.experimental.consistencyChecks.enablePreconditions: "true"
     zeebe.gateway.monitoring.enabled: "true"
