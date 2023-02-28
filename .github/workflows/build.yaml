@@ -34,10 +34,6 @@ jobs:
       uses: azure/setup-helm@v3
       with:
         version: "${{ env.HELM_VERSION }}"
-    - name: Add helm repos
-      run: make helm.repos-add
-    - name: Get/Update Helm Dependencies
-      run: make helm.dependency-update
     - name: Test
       run: make go.test
 
