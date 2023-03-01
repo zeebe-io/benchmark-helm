@@ -22,4 +22,4 @@ annotations:
     - name: Zeebe Docs
       url: https://docs.camunda.io/docs/components/zeebe/zeebe-overview/
   artifacthub.io/containsSecurityUpdates: "false"
-  artifacthub.io/changes: "- kind: added\n  description: \"enhance release notes\"\n- kind: fixed\n  description: \"remove consistency checks from env\"\n- kind: changed\n  description: \"migrate all settings to new config\"\n"
+  artifacthub.io/changes: "- kind: fixed\n  description: \"use correct JDK_JAVA_OPTIONS\"\n"
