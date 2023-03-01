@@ -169,7 +169,7 @@ Allows to configure the publisher which can be deployed along the Zeebe Cluster.
 | Section | Parameter | Description | Default |
 |-|-|-|-|
 | `publisher` | | Configuration for the to be deployed publisher application | |
-| | `replicas` | Defines how many replicas of the application should be deployed. | `1` |
+| | `replicas` | Defines how many replicas of the application should be deployed. | `0` |
 | | `rate` | Defines with which rate message should be published. | `25` |
 
 ### Timer
@@ -179,7 +179,7 @@ Allows to configure the timer which can be deployed along the Zeebe Cluster. The
 | Section | Parameter | Description | Default |
 |-|-|-|-|
 | `timer` | | Configuration for the to be deployed starter application | |
-| | `replicas` | Defines how many replicas of the application should be deployed. | `1` |
+| | `replicas` | Defines how many replicas of the application should be deployed. | `0` |
 | | `rate` | Defines with which rate process instances with timers should be created. | `25` |
 
 
