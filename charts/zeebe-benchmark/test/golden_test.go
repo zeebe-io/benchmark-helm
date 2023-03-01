@@ -12,7 +12,6 @@ import (
 )
 
 func TestGoldenCuratorDefaults(t *testing.T) {
-	t.Parallel()
 
 	chartPath, err := filepath.Abs("../")
 	require.NoError(t, err)
