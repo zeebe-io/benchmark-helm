@@ -153,6 +153,7 @@ release.generate-pr-url:
 	@echo "\n\n###################################\n"
 	@echo "Open the release PR using this URL:"
 	@echo "https://github.com/zeebe-io/benchmark-helm/compare/release?expand=1&template=release_template.md&title=Release%20Zeebe%20Benchmark%20Helm%20Chart%20v$(chartVersion)"
+	xdg-open "https://github.com/zeebe-io/benchmark-helm/compare/release?expand=1&template=release_template.md&title=Release%20Zeebe%20Benchmark%20Helm%20Chart%20v$(chartVersion)"
 	@echo "\n###################################\n\n"
 
 .PHONY: release.chores
