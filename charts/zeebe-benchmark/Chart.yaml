@@ -10,7 +10,7 @@ sources:
 dependencies:
   - name: camunda-platform
     repository: "https://helm.camunda.io"
-    version: 8.1.2
+    version: 8.1.6
     condition: "camunda.enabled"
 maintainers:
   - name: Zelldon
