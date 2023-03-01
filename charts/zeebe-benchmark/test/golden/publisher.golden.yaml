@@ -21,7 +21,7 @@ spec:
           image: "gcr.io/zeebe-io/starter:SNAPSHOT"
           imagePullPolicy: Always
           env:
-            - name: JAVA_OPTIONS
+            - name: JDK_JAVA_OPTIONS
               value: >-
                 -Dconfig.override_with_env_vars=true
                 -Dapp.brokerUrl=benchmark-test-zeebe-gateway:26500
