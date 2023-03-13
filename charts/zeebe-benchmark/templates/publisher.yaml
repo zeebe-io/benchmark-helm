@@ -41,3 +41,6 @@ spec:
             requests:
               cpu: 250m
               memory: 256Mi
+          ports:
+            - containerPort: 9600
+              name: "http"
