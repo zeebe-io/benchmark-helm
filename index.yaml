@@ -3,6 +3,39 @@ entries:
   zeebe-benchmark:
   - annotations:
       artifacthub.io/changes: |
+        - kind: added
+          description: "expose metrics port"
+        - kind: fixed
+          description: "remove trailing slash to rebalance leaders"
+      artifacthub.io/containsSecurityUpdates: "false"
+      artifacthub.io/links: |
+        - name: Zeebe Repo
+          url: https://github.com/camunda/zeebe
+        - name: Zeebe Docs
+          url: https://docs.camunda.io/docs/components/zeebe/zeebe-overview/
+    apiVersion: v2
+    appVersion: 8.1.2
+    created: "2023-04-03T11:54:09.283885744Z"
+    dependencies:
+    - condition: camunda.enabled
+      name: camunda-platform
+      repository: https://helm.camunda.io
+      version: 8.1.6
+    description: A Helm chart for Zeebe benchmarks
+    digest: 4d4130fba63c186362379879c2cd58aec84b20b8edd09cd6152c6090d14da473
+    maintainers:
+    - email: christopher.zell@camunda.com
+      name: Zelldon
+    name: zeebe-benchmark
+    sources:
+    - https://github.com/zeebe-io/benchmark-helm
+    - https://github.com/camunda/zeebe
+    type: application
+    urls:
+    - https://github.com/zeebe-io/benchmark-helm/releases/download/zeebe-benchmark-0.1.9/zeebe-benchmark-0.1.9.tgz
+    version: 0.1.9
+  - annotations:
+      artifacthub.io/changes: |
         - kind: fixed
           description: "use correct JDK_JAVA_OPTIONS"
       artifacthub.io/containsSecurityUpdates: "false"
@@ -230,4 +263,4 @@ entries:
     urls:
     - https://github.com/zeebe-io/benchmark-helm/releases/download/zeebe-benchmark-0.1.2/zeebe-benchmark-0.1.2.tgz
     version: 0.1.2
-generated: "2023-03-01T10:50:28.061857563Z"
+generated: "2023-04-03T11:54:09.283921344Z"
