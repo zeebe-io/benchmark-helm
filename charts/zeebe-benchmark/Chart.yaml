@@ -2,7 +2,7 @@ apiVersion: v2
 name: zeebe-benchmark
 description: A Helm chart for Zeebe benchmarks
 type: application
-version: 0.1.8
+version: 0.1.9
 appVersion: "8.1.2"
 sources:
   - https://github.com/zeebe-io/benchmark-helm
@@ -22,4 +22,4 @@ annotations:
     - name: Zeebe Docs
       url: https://docs.camunda.io/docs/components/zeebe/zeebe-overview/
   artifacthub.io/containsSecurityUpdates: "false"
-  artifacthub.io/changes: "- kind: fixed\n  description: \"use correct JDK_JAVA_OPTIONS\"\n"
+  artifacthub.io/changes: "- kind: added\n  description: \"expose metrics port\"\n- kind: fixed\n  description: \"remove trailing slash to rebalance leaders\"\n"
