@@ -13,6 +13,7 @@ spec:
     metadata:
       labels:
         app: publisher
+        zeebe.io/component: client
     spec:
       containers:
         - name: publisher

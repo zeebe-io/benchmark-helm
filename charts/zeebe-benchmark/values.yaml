@@ -196,11 +196,6 @@ camunda-platform:
             key: java-opts
             optional: true
 
-
-    # Enable metrics collections
-    podLabels:
-      metrics: gmp
-
     # Resources configuration to set request and limit configuration for the container https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#requests-and-limitsS
     resources:
       limits:
@@ -291,11 +286,6 @@ camunda-platform:
             key: java-opts
             optional: true
 
-
-    # Enable metrics collections
-    podLabels:
-      metrics: gmp
-
     # Resources configuration to set request and limit configuration for the container https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#requests-and-limits
     resources:
       limits:
@@ -359,6 +349,8 @@ camunda-platform:
         cpu: 2
         memory: 6Gi
 
-  # Disable the service monitor as we use Google Managed Prometheus
+  # Change these settings to configure a different way to collect metrics
   prometheusServiceMonitor:
-    enabled: false
+    enabled: true
+    labels:
+      release: monitoring

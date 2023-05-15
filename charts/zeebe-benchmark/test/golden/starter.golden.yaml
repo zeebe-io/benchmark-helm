@@ -15,7 +15,7 @@ spec:
     metadata:
       labels:
         app: starter
-        metrics: gmp
+        zeebe.io/component: client
     spec:
       containers:
         - name: starter

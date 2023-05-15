@@ -1,0 +1,31 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: clients
+  labels:
+    zeebe.io/component: client
+    {{- include "zeebe-benchmark.labels" . | nindent 4 }}
+spec:
+  selector:
+    zeebe.io/component: client
+  ports:
+  - name: http
+    port: 9600
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: clients
+  labels:
+    release: monitoring
+    {{- include "zeebe-benchmark.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      zeebe.io/component: client
+  endpoints:
+  - honorLabels: true
+    interval: 10s
+    path: /prometheus
+    port: http

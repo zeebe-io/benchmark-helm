@@ -13,7 +13,7 @@ spec:
     metadata:
       labels:
         app: worker
-        metrics: gmp
+        zeebe.io/component: client
     spec:
       containers:
         - name: worker
