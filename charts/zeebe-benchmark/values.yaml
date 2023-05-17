@@ -196,6 +196,11 @@ camunda-platform:
             key: java-opts
             optional: true
 
+    # TODO: remove once migrated to self managed Prometheus
+    # Enable metrics collections
+    podLabels:
+      metrics: gmp
+
     # Resources configuration to set request and limit configuration for the container https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#requests-and-limitsS
     resources:
       limits:
@@ -285,6 +290,11 @@ camunda-platform:
             name: zeebe-config
             key: java-opts
             optional: true
+
+    # TODO: remove once migrated to self managed Prometheus
+    # Enable metrics collections
+    podLabels:
+      metrics: gmp
 
     # Resources configuration to set request and limit configuration for the container https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#requests-and-limits
     resources:

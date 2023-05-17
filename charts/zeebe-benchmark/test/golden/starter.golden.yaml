@@ -15,6 +15,7 @@ spec:
     metadata:
       labels:
         app: starter
+        metrics: gmp
         app.kubernetes.io/component: zeebe-client
     spec:
       containers:
