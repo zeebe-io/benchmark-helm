@@ -4,11 +4,11 @@ kind: Service
 metadata:
   name: clients
   labels:
-    zeebe.io/component: client
+    app.kubernetes.io/component: zeebe-client
     {{- include "zeebe-benchmark.labels" . | nindent 4 }}
 spec:
   selector:
-    zeebe.io/component: client
+    app.kubernetes.io/component: zeebe-client
   ports:
   - name: http
     port: 9600
@@ -23,7 +23,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-      zeebe.io/component: client
+      app.kubernetes.io/component: zeebe-client
   endpoints:
   - honorLabels: true
     interval: 10s

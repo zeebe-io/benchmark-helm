@@ -15,7 +15,7 @@ spec:
     metadata:
       labels:
         app: publisher
-        zeebe.io/component: client
+        app.kubernetes.io/component: zeebe-client
     spec:
       containers:
         - name: publisher

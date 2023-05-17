@@ -15,7 +15,7 @@ spec:
     metadata:
       labels:
         app: worker
-        zeebe.io/component: client
+        app.kubernetes.io/component: zeebe-client
     spec:
       containers:
         - name: worker
