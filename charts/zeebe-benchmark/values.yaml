@@ -354,3 +354,4 @@ camunda-platform:
     enabled: true
     labels:
       release: monitoring
+    scrapeInterval: 30s

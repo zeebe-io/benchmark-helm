@@ -26,6 +26,7 @@ spec:
       app.kubernetes.io/component: zeebe-client
   endpoints:
   - honorLabels: true
-    interval: 10s
+    # since - is not supported directly, we have to use the index function and quote "camunda-platform"
+    interval: {{ index .Values "camunda-platform" "prometheusServiceMonitor" "scrapeInterval" }}
     path: /prometheus
     port: http
