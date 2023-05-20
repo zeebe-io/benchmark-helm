@@ -13,6 +13,7 @@ spec:
     metadata:
       labels:
         app: timer
+        app.kubernetes.io/component: zeebe-client
     spec:
       containers:
         - name: timer
@@ -44,4 +45,3 @@ spec:
           ports:
             - containerPort: 9600
               name: "http"
-

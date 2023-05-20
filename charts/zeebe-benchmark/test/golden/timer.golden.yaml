@@ -15,6 +15,7 @@ spec:
     metadata:
       labels:
         app: timer
+        app.kubernetes.io/component: zeebe-client
     spec:
       containers:
         - name: timer
