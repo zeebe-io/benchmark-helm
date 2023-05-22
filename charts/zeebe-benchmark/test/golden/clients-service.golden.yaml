@@ -8,7 +8,7 @@ metadata:
     app.kubernetes.io/component: zeebe-client
     app.kubernetes.io/name: zeebe-benchmark
     app.kubernetes.io/instance: benchmark-test
-    app.kubernetes.io/version: "8.1.2"
+    app.kubernetes.io/version: "8.2.3"
     app.kubernetes.io/managed-by: Helm
 spec:
   selector:
@@ -26,7 +26,7 @@ metadata:
     release: monitoring
     app.kubernetes.io/name: zeebe-benchmark
     app.kubernetes.io/instance: benchmark-test
-    app.kubernetes.io/version: "8.1.2"
+    app.kubernetes.io/version: "8.2.3"
     app.kubernetes.io/managed-by: Helm
 spec:
   selector:
