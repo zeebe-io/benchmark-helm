@@ -33,6 +33,10 @@ global:
     tag: SNAPSHOT
     # Image.pullPolicy defines the image pull policy which should be used https://kubernetes.io/docs/concepts/containers/images/#image-pull-policy
     pullPolicy: Always
+  # Disable Identity completely; both this flag and `camunda-platform.identity.enabled` are required.
+  identity:
+    auth:
+      enabled: false
 
 # Worker configuration for the to be deployed worker application
 worker:
