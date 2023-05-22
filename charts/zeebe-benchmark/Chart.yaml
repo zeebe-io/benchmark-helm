@@ -22,4 +22,4 @@ annotations:
     - name: Zeebe Docs
       url: https://docs.camunda.io/docs/components/zeebe/zeebe-overview/
   artifacthub.io/containsSecurityUpdates: "false"
-  artifacthub.io/changes: "- kind: added\n  description: \"expose metrics port\"\n- kind: fixed\n  description: \"remove trailing slash to rebalance leaders\"\n"
+  artifacthub.io/changes: "- kind: changed\n  description: \"bump app version\"\n- kind: changed\n  description: \"disable identity/gateway integration\"\n- kind: changed\n  description: \"temporarily add gmp metric label back until full migration\"\n- kind: changed\n  description: \"use app.kubernetes.io/component label for clients\"\n- kind: changed\n  description: \"migrate to standard Prometheus service monitor\"\n"
