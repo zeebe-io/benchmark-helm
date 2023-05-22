@@ -3,6 +3,45 @@ entries:
   zeebe-benchmark:
   - annotations:
       artifacthub.io/changes: |
+        - kind: changed
+          description: "bump app version"
+        - kind: changed
+          description: "disable identity/gateway integration"
+        - kind: changed
+          description: "temporarily add gmp metric label back until full migration"
+        - kind: changed
+          description: "use app.kubernetes.io/component label for clients"
+        - kind: changed
+          description: "migrate to standard Prometheus service monitor"
+      artifacthub.io/containsSecurityUpdates: "false"
+      artifacthub.io/links: |
+        - name: Zeebe Repo
+          url: https://github.com/camunda/zeebe
+        - name: Zeebe Docs
+          url: https://docs.camunda.io/docs/components/zeebe/zeebe-overview/
+    apiVersion: v2
+    appVersion: 8.2.3
+    created: "2023-05-22T14:07:52.067997853Z"
+    dependencies:
+    - condition: camunda.enabled
+      name: camunda-platform
+      repository: https://helm.camunda.io
+      version: 8.2.3
+    description: A Helm chart for Zeebe benchmarks
+    digest: 1fd8af8ef7d8ac78f9c2ab99d0b350c739dd9c18e73c132ed290ce7b29f9052c
+    maintainers:
+    - email: christopher.zell@camunda.com
+      name: Zelldon
+    name: zeebe-benchmark
+    sources:
+    - https://github.com/zeebe-io/benchmark-helm
+    - https://github.com/camunda/zeebe
+    type: application
+    urls:
+    - https://github.com/zeebe-io/benchmark-helm/releases/download/zeebe-benchmark-0.1.10/zeebe-benchmark-0.1.10.tgz
+    version: 0.1.10
+  - annotations:
+      artifacthub.io/changes: |
         - kind: added
           description: "expose metrics port"
         - kind: fixed
@@ -263,4 +302,4 @@ entries:
     urls:
     - https://github.com/zeebe-io/benchmark-helm/releases/download/zeebe-benchmark-0.1.2/zeebe-benchmark-0.1.2.tgz
     version: 0.1.2
-generated: "2023-04-03T11:54:09.283921344Z"
+generated: "2023-05-22T14:07:52.068030654Z"
