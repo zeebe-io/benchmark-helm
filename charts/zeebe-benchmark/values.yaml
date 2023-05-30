@@ -24,7 +24,9 @@
 
 # Global configuration for variables which can be accessed by all sub charts
 global:
-
+  # Disable global ingress
+  ingress:
+    enabled: false
   # Image configuration to be used in each sub chart
   image:
     # Image.repository defines the repository from which to fetch the docker images
