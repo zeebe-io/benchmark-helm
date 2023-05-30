@@ -2,7 +2,7 @@ apiVersion: v2
 name: zeebe-benchmark
 description: A Helm chart for Zeebe benchmarks
 type: application
-version: 0.1.10
+version: 0.1.11
 appVersion: "8.2.5"
 sources:
   - https://github.com/zeebe-io/benchmark-helm
@@ -22,4 +22,4 @@ annotations:
     - name: Zeebe Docs
       url: https://docs.camunda.io/docs/components/zeebe/zeebe-overview/
   artifacthub.io/containsSecurityUpdates: "false"
-  artifacthub.io/changes: "- kind: changed\n  description: \"bump app version\"\n- kind: changed\n  description: \"disable identity/gateway integration\"\n- kind: changed\n  description: \"temporarily add gmp metric label back until full migration\"\n- kind: changed\n  description: \"use app.kubernetes.io/component label for clients\"\n- kind: changed\n  description: \"migrate to standard Prometheus service monitor\"\n"
+  artifacthub.io/changes: "- kind: changed\n  description: \"disable GMP integration via labels\"\n"
