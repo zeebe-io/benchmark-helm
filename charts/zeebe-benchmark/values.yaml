@@ -328,6 +328,15 @@ camunda-platform:
   optimize:
     enabled: false
 
+  connectors:
+    enabled: false
+  
+  webModeler:
+    enabled: false
+  
+  postgresql:
+    enabled: false
+
   # ELASTIC
   elasticsearch:
     enabled: true
