@@ -3,6 +3,39 @@ entries:
   zeebe-benchmark:
   - annotations:
       artifacthub.io/changes: |
+        - kind: fixed
+          description: "disable global ingress"
+        - kind: fixed
+          description: "disable unnecessary components"
+      artifacthub.io/containsSecurityUpdates: "false"
+      artifacthub.io/links: |
+        - name: Zeebe Repo
+          url: https://github.com/camunda/zeebe
+        - name: Zeebe Docs
+          url: https://docs.camunda.io/docs/components/zeebe/zeebe-overview/
+    apiVersion: v2
+    appVersion: 8.2.5
+    created: "2023-06-07T08:09:27.329437191Z"
+    dependencies:
+    - condition: camunda.enabled
+      name: camunda-platform
+      repository: https://helm.camunda.io
+      version: 8.2.5
+    description: A Helm chart for Zeebe benchmarks
+    digest: 5df5203f804b4d58047f02959c56def4b08e3815e44c62189e6929b81eeb8557
+    maintainers:
+    - email: christopher.zell@camunda.com
+      name: Zelldon
+    name: zeebe-benchmark
+    sources:
+    - https://github.com/zeebe-io/benchmark-helm
+    - https://github.com/camunda/zeebe
+    type: application
+    urls:
+    - https://github.com/zeebe-io/benchmark-helm/releases/download/zeebe-benchmark-0.1.12/zeebe-benchmark-0.1.12.tgz
+    version: 0.1.12
+  - annotations:
+      artifacthub.io/changes: |
         - kind: changed
           description: "disable GMP integration via labels"
       artifacthub.io/containsSecurityUpdates: "false"
@@ -333,4 +366,4 @@ entries:
     urls:
     - https://github.com/zeebe-io/benchmark-helm/releases/download/zeebe-benchmark-0.1.2/zeebe-benchmark-0.1.2.tgz
     version: 0.1.2
-generated: "2023-05-30T08:57:04.405169876Z"
+generated: "2023-06-07T08:09:27.329633495Z"
