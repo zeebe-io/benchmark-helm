@@ -4,6 +4,37 @@ entries:
   - annotations:
       artifacthub.io/changes: |
         - kind: fixed
+          description: "use renamed curator image"
+      artifacthub.io/containsSecurityUpdates: "false"
+      artifacthub.io/links: |
+        - name: Zeebe Repo
+          url: https://github.com/camunda/zeebe
+        - name: Zeebe Docs
+          url: https://docs.camunda.io/docs/components/zeebe/zeebe-overview/
+    apiVersion: v2
+    appVersion: 8.2.5
+    created: "2023-06-28T10:09:56.336095946Z"
+    dependencies:
+    - condition: camunda.enabled
+      name: camunda-platform
+      repository: https://helm.camunda.io
+      version: 8.2.5
+    description: A Helm chart for Zeebe benchmarks
+    digest: c1ae64066433373dc8cebded7b52ce3e32229f0735be204a7de37168a913cd73
+    maintainers:
+    - email: christopher.zell@camunda.com
+      name: Zelldon
+    name: zeebe-benchmark
+    sources:
+    - https://github.com/zeebe-io/benchmark-helm
+    - https://github.com/camunda/zeebe
+    type: application
+    urls:
+    - https://github.com/zeebe-io/benchmark-helm/releases/download/zeebe-benchmark-0.1.13/zeebe-benchmark-0.1.13.tgz
+    version: 0.1.13
+  - annotations:
+      artifacthub.io/changes: |
+        - kind: fixed
           description: "disable global ingress"
         - kind: fixed
           description: "disable unnecessary components"
@@ -366,4 +397,4 @@ entries:
     urls:
     - https://github.com/zeebe-io/benchmark-helm/releases/download/zeebe-benchmark-0.1.2/zeebe-benchmark-0.1.2.tgz
     version: 0.1.2
-generated: "2023-06-07T08:09:27.329633495Z"
+generated: "2023-06-28T10:09:56.336305149Z"
