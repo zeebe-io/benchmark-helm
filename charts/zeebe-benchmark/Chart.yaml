@@ -22,4 +22,4 @@ annotations:
     - name: Zeebe Docs
       url: https://docs.camunda.io/docs/components/zeebe/zeebe-overview/
   artifacthub.io/containsSecurityUpdates: "false"
-  artifacthub.io/changes: "- kind: fixed\n  description: \"disable global ingress\"\n- kind: fixed\n  description: \"disable unnecessary components\"\n"
+  artifacthub.io/changes: "- kind: fixed\n  description: \"use renamed curator image\"\n"
