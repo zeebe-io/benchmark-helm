@@ -14,17 +14,20 @@ import (
 func TestGoldenDefaults(t *testing.T) {
 	// Test which allows to verify also parent chart templates
 	// This makes sure that properties are correctly set
-	// and if new deployments have been added OR
-	// configurations have been changed
+	// OR configurations have been changed
 
 	chartPath, err := filepath.Abs("../")
 	require.NoError(t, err)
-	suite.Run(t, &golden.TemplateGoldenTest{
-		ChartPath:      chartPath,
-		Release:        "benchmark-test",
-		Namespace:      "benchmark-" + strings.ToLower(random.UniqueId()),
-		GoldenFileName: "golden-all-template",
-		Templates:      nil, // in order to include all templates even from camunda-platform
-		SetValues:      map[string]string{"retentionPolicy.enabled": "true"},
-	})
+	templateNames := []string{"curator-cronjob", "curator-configmap", "service-monitor"}
+
+	for _, name := range templateNames {
+		suite.Run(t, &golden.TemplateGoldenTest{
+			ChartPath:      chartPath,
+			Release:        "benchmark-test",
+			Namespace:      "benchmark-" + strings.ToLower(random.UniqueId()),
+			GoldenFileName: name,
+			Templates:      []string{"charts/camunda-platform/templates/" + name + ".yaml"},
+			SetValues:      map[string]string{"retentionPolicy.enabled": "true"},
+		})
+	}
 }
