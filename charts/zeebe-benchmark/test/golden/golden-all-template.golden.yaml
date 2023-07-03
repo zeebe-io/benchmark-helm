@@ -1271,7 +1271,7 @@ spec:
 apiVersion: v1
 kind: Pod
 metadata:
-  name: "benchmark-test-otvpi-test"
+  name: "benchmark-test-edcmp-test"
   annotations:
     "helm.sh/hook": test
     "helm.sh/hook-delete-policy": hook-succeeded
@@ -1280,7 +1280,7 @@ spec:
     fsGroup: 1000
     runAsUser: 1000
   containers:
-  - name: "benchmark-test-xgclx-test"
+  - name: "benchmark-test-qmhhm-test"
     image: "docker.elastic.co/elasticsearch/elasticsearch:7.16.2"
     imagePullPolicy: "IfNotPresent"
     command:
