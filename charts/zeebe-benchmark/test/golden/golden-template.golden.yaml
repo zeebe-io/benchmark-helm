@@ -1,0 +1,1315 @@
+---
+# Source: zeebe-benchmark/charts/camunda-platform/charts/elasticsearch/templates/poddisruptionbudget.yaml
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: "elasticsearch-master-pdb"
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: "elasticsearch-master"
+---
+# Source: zeebe-benchmark/charts/camunda-platform/charts/zeebe-gateway/templates/gateway-serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: benchmark-test-zeebe-gateway-gateway
+  labels:
+    app: camunda-platform
+    app.kubernetes.io/name: zeebe-gateway
+    app.kubernetes.io/instance: benchmark-test
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: camunda-platform
+    app.kubernetes.io/version: "SNAPSHOT"
+    app.kubernetes.io/component: zeebe-gateway
+---
+# Source: zeebe-benchmark/charts/camunda-platform/charts/zeebe/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: benchmark-test-zeebe
+  labels:
+    app: camunda-platform
+    app.kubernetes.io/name: zeebe
+    app.kubernetes.io/instance: benchmark-test
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: camunda-platform
+    app.kubernetes.io/version: "SNAPSHOT"
+    app.kubernetes.io/component: zeebe-broker
+---
+# Source: zeebe-benchmark/charts/camunda-platform/charts/zeebe-gateway/templates/configmap.yaml
+kind: ConfigMap
+metadata:
+  name: benchmark-test-zeebe-gateway-gateway
+  labels:
+    app: camunda-platform
+    app.kubernetes.io/name: zeebe-gateway
+    app.kubernetes.io/instance: benchmark-test
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: camunda-platform
+    app.kubernetes.io/version: "SNAPSHOT"
+    app.kubernetes.io/component: zeebe-gateway
+apiVersion: v1
+data:
+  gateway-log4j2.xml: |
+---
+# Source: zeebe-benchmark/charts/camunda-platform/charts/zeebe/templates/configmap.yaml
+kind: ConfigMap
+metadata:
+  name: benchmark-test-zeebe
+  labels:
+    app: camunda-platform
+    app.kubernetes.io/name: zeebe
+    app.kubernetes.io/instance: benchmark-test
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: camunda-platform
+    app.kubernetes.io/version: "SNAPSHOT"
+    app.kubernetes.io/component: zeebe-broker
+apiVersion: v1
+data:
+  startup.sh: |
+    #!/usr/bin/env bash
+    set -eux -o pipefail
+
+    export ZEEBE_BROKER_CLUSTER_NODEID=${ZEEBE_BROKER_CLUSTER_NODEID:-${K8S_NAME##*-}}
+
+    if [ "$(ls -A /exporters/)" ]; then
+      mkdir /usr/local/zeebe/exporters/
+      cp -a /exporters/*.jar /usr/local/zeebe/exporters/
+    else
+      echo "No exporters available."
+    fi
+
+    exec /usr/local/zeebe/bin/broker
+
+  broker-log4j2.xml: |
+---
+# Source: zeebe-benchmark/charts/camunda-platform/templates/curator-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: camunda-platform-curator-config
+  labels:
+    app: camunda-platform
+    app.kubernetes.io/name: camunda-platform
+    app.kubernetes.io/instance: benchmark-test
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: camunda-platform
+    app.kubernetes.io/version: "SNAPSHOT"
+data:
+  action_file.yml: |-
+    ---
+    # Remember, leave a key empty if there is no value.  None will be a string,
+    # not a Python "NoneType"
+    #
+    # Also remember that all examples have 'disable_action' set to True.  If you
+    # want to use this action as a template, be sure to set this to False after
+    # copying it.
+    actions:
+      # delete zeebe- indices
+      1:
+        action: delete_indices
+        description: "Clean up ES by deleting old Zeebe indices"
+        options:
+          timeout_override:
+          continue_if_exception: False
+          disable_action: False
+          ignore_empty_list: True
+        filters:
+          - filtertype: pattern
+            kind: prefix
+            value: zeebe-
+          - filtertype: age
+            source: name
+            direction: older
+            timestring: '%Y-%m-%d'
+            unit: days
+            unit_count: 1
+            field:
+            stats_result:
+            epoch:
+            exclude: False
+      # delete operate- indices
+      2:
+        action: delete_indices
+        description: "Clean up ES by deleting old Operate indices"
+        options:
+          timeout_override:
+          continue_if_exception: False
+          disable_action: False
+          ignore_empty_list: True
+        filters:
+          - filtertype: pattern
+            kind: prefix
+            value: operate-
+          - filtertype: age
+            source: name
+            direction: older
+            timestring: '%Y-%m-%d'
+            unit: days
+            unit_count: 30
+            field:
+            stats_result:
+            epoch:
+            exclude: False
+      # delete tasklist- indices
+      3:
+        action: delete_indices
+        description: "Clean up ES by deleting old Tasklist indices"
+        options:
+          timeout_override:
+          continue_if_exception: False
+          disable_action: False
+          ignore_empty_list: True
+        filters:
+          - filtertype: pattern
+            kind: prefix
+            value: tasklist-
+          - filtertype: age
+            source: name
+            direction: older
+            timestring: '%Y-%m-%d'
+            unit: days
+            unit_count: 30
+            field:
+            stats_result:
+            epoch:
+            exclude: False
+      # or delete indices which exceed the total size of 10 gig
+      4:
+        action: delete_indices
+        description: "Clean up ES by deleting too big Zeebe indices"
+        options:
+          timeout_override:
+          continue_if_exception: False
+          disable_action: False
+          ignore_empty_list: True
+        filters:
+          - filtertype: pattern
+            kind: prefix
+            value: zeebe-
+          - filtertype: space
+            disk_space: 1
+            source: name
+            timestring: '%Y-%m-%d'
+  config.yml: |-
+    ---
+    # Remember, leave a key empty if there is no value.  None will be a string,
+    # not a Python "NoneType"
+    client:
+      hosts:
+        - elasticsearch-master-headless
+      port: 9200
+      url_prefix:
+      use_ssl: False
+      certificate:
+      client_cert:
+      client_key:
+      ssl_no_validate: False
+      http_auth:
+      timeout: 30
+      master_only: False
+    logging:
+      loglevel: INFO
+      logfile:
+      logformat: default
+      blacklist: ['elasticsearch', 'urllib3']
+---
+# Source: zeebe-benchmark/templates/zeebe-config.yaml
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: zeebe-config
+  labels:
+    app.kubernetes.io/name: zeebe-benchmark
+    app.kubernetes.io/instance: benchmark-test
+    app.kubernetes.io/version: "8.2.5"
+    app.kubernetes.io/managed-by: Helm
+data: 
+  application.yml: | 
+    zeebe.broker.data.diskUsageCommandWatermark: "0.8"
+    zeebe.broker.data.diskUsageReplicationWatermark: "0.9"
+    zeebe.broker.executionMetricsExporterEnabled: "true"
+    zeebe.broker.experimental.consistencyChecks.enableForeignKeyChecks: "true"
+    zeebe.broker.experimental.consistencyChecks.enablePreconditions: "true"
+    zeebe.gateway.monitoring.enabled: "true"
+    zeebe.gateway.threads.managementThreads: "1"
+---
+# Source: zeebe-benchmark/charts/camunda-platform/charts/elasticsearch/templates/service.yaml
+kind: Service
+apiVersion: v1
+metadata:
+  name: elasticsearch-master
+  labels:
+    heritage: "Helm"
+    release: "benchmark-test"
+    chart: "elasticsearch"
+    app: "elasticsearch-master"
+  annotations:
+    {}
+spec:
+  type: ClusterIP
+  selector:
+    release: "benchmark-test"
+    chart: "elasticsearch"
+    app: "elasticsearch-master"
+  publishNotReadyAddresses: false
+  ports:
+  - name: http
+    protocol: TCP
+    port: 9200
+  - name: transport
+    protocol: TCP
+    port: 9300
+---
+# Source: zeebe-benchmark/charts/camunda-platform/charts/elasticsearch/templates/service.yaml
+kind: Service
+apiVersion: v1
+metadata:
+  name: elasticsearch-master-headless
+  labels:
+    heritage: "Helm"
+    release: "benchmark-test"
+    chart: "elasticsearch"
+    app: "elasticsearch-master"
+  annotations:
+    service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
+spec:
+  clusterIP: None # This is needed for statefulset hostnames like elasticsearch-0 to resolve
+  # Create endpoints also if the related pod isn't ready
+  publishNotReadyAddresses: true
+  selector:
+    app: "elasticsearch-master"
+  ports:
+  - name: http
+    port: 9200
+  - name: transport
+    port: 9300
+---
+# Source: zeebe-benchmark/charts/camunda-platform/charts/zeebe-gateway/templates/gateway-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: "benchmark-test-zeebe-gateway"
+  labels:
+    app: camunda-platform
+    app.kubernetes.io/name: zeebe-gateway
+    app.kubernetes.io/instance: benchmark-test
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: camunda-platform
+    app.kubernetes.io/version: "SNAPSHOT"
+    app.kubernetes.io/component: zeebe-gateway
+  annotations:
+spec:
+  type: ClusterIP
+  selector:
+      app: camunda-platform
+      app.kubernetes.io/name: zeebe-gateway
+      app.kubernetes.io/instance: benchmark-test
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/part-of: camunda-platform
+      app.kubernetes.io/component: zeebe-gateway
+  ports:
+    - port: 9600
+      protocol: TCP
+      name: http
+    - port: 26500
+      protocol: TCP
+      name: gateway
+---
+# Source: zeebe-benchmark/charts/camunda-platform/charts/zeebe/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: "benchmark-test-zeebe"
+  labels:
+    app: camunda-platform
+    app.kubernetes.io/name: zeebe
+    app.kubernetes.io/instance: benchmark-test
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: camunda-platform
+    app.kubernetes.io/version: "SNAPSHOT"
+    app.kubernetes.io/component: zeebe-broker
+  annotations:
+    {}
+spec:
+  clusterIP: None
+  publishNotReadyAddresses: true
+  type: ClusterIP
+  ports:
+    - port: 9600
+      protocol: TCP
+      name: http
+    - port: 26502
+      protocol: TCP
+      name: internal
+    - port: 26501
+      protocol: TCP
+      name: command
+  selector:
+    app: camunda-platform
+    app.kubernetes.io/name: zeebe
+    app.kubernetes.io/instance: benchmark-test
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: camunda-platform
+    app.kubernetes.io/component: zeebe-broker
+---
+# Source: zeebe-benchmark/templates/clients-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: clients
+  labels:
+    app.kubernetes.io/component: zeebe-client
+    app.kubernetes.io/name: zeebe-benchmark
+    app.kubernetes.io/instance: benchmark-test
+    app.kubernetes.io/version: "8.2.5"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  selector:
+    app.kubernetes.io/component: zeebe-client
+  ports:
+  - name: http
+    port: 9600
+---
+# Source: zeebe-benchmark/charts/camunda-platform/charts/zeebe-gateway/templates/gateway-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "benchmark-test-zeebe-gateway"
+  labels:
+    app: camunda-platform
+    app.kubernetes.io/name: zeebe-gateway
+    app.kubernetes.io/instance: benchmark-test
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: camunda-platform
+    app.kubernetes.io/version: "SNAPSHOT"
+    app.kubernetes.io/component: zeebe-gateway
+  annotations:
+    {}
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: camunda-platform
+      app.kubernetes.io/name: zeebe-gateway
+      app.kubernetes.io/instance: benchmark-test
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/part-of: camunda-platform
+      app.kubernetes.io/component: zeebe-gateway
+  template:
+    metadata:
+      labels:
+        app: camunda-platform
+        app.kubernetes.io/name: zeebe-gateway
+        app.kubernetes.io/instance: benchmark-test
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/part-of: camunda-platform
+        app.kubernetes.io/version: "SNAPSHOT"
+        app.kubernetes.io/component: zeebe-gateway
+      annotations:
+        {}
+    spec:
+      imagePullSecrets:
+        []
+      initContainers:
+        - command:
+          - wget
+          - https://github.com/pyroscope-io/pyroscope-java/releases/latest/download/pyroscope.jar
+          - -O
+          - /pyroscope/pyroscope.jar
+          image: alpine
+          name: pyroscope
+          volumeMounts:
+          - mountPath: /pyroscope
+            name: pyroscope
+      containers:
+        - name: zeebe-gateway
+          image: "camunda/zeebe:SNAPSHOT"
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 9600
+              name: http
+            - containerPort: 26500
+              name: gateway
+            - containerPort: 26502
+              name: internal
+          env:
+            - name: ZEEBE_STANDALONE_GATEWAY
+              value: "true"
+            - name: ZEEBE_GATEWAY_CLUSTER_CLUSTERNAME
+              value: benchmark-test-zeebe
+            - name: ZEEBE_GATEWAY_CLUSTER_MEMBERID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: ZEEBE_LOG_LEVEL
+              value: "debug"
+            - name: JAVA_TOOL_OPTIONS
+              value: "-XX:+ExitOnOutOfMemoryError"
+            - name: ZEEBE_GATEWAY_CLUSTER_CONTACTPOINT
+              value: benchmark-test-zeebe:26502
+            - name: ZEEBE_GATEWAY_NETWORK_HOST
+              value: 0.0.0.0
+            - name: ZEEBE_GATEWAY_NETWORK_PORT
+              value: "26500"
+            - name: ZEEBE_GATEWAY_CLUSTER_HOST
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: ZEEBE_GATEWAY_CLUSTER_PORT
+              value: "26502"
+            - name: ZEEBE_GATEWAY_MONITORING_HOST
+              value: 0.0.0.0
+            - name: ZEEBE_GATEWAY_MONITORING_PORT
+              value: "9600"
+            - name: ZEEBE_LOG_APPENDER
+              value: Stackdriver
+            - name: ZEEBE_LOG_STACKDRIVER_SERVICENAME
+              value: zeebe
+            - name: ZEEBE_LOG_STACKDRIVER_SERVICEVERSION
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: ATOMIX_LOG_LEVEL
+              value: INFO
+            - name: ZEEBE_LOG_LEVEL
+              value: DEBUG
+            - name: PYROSCOPE_SERVER_ADDRESS
+              value: http://pyroscope.pyroscope.svc.cluster.local:4040
+            - name: PYROSCOPE_APPLICATION_NAME
+              value: io.camunda.zeebe.gateway
+            - name: PYROSCOPE_LOG_LEVEL
+              value: debug
+            - name: PYROSCOPE_FORMAT
+              value: jfr
+            - name: PYROSCOPE_PROFILER_EVENT
+              value: cpu
+            - name: PYROSCOPE_PROFILER_ALLOC
+              value: "0"
+            - name: PYROSCOPE_PROFILER_LOCK
+              value: "0"
+            - name: PYROSCOPE_LABELS
+              value: namespace=$(K8S_NAMESPACE), pod=$(K8S_NAME)
+            - name: JAVA_OPTS
+              valueFrom:
+                configMapKeyRef:
+                  key: java-opts
+                  name: zeebe-config
+                  optional: true
+          volumeMounts:
+            
+            - mountPath: /pyroscope
+              name: pyroscope
+            - mountPath: /usr/local/zeebe/config/application.yaml
+              name: zeebe-config
+              subPath: application.yml
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 9600
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            successThreshold: 1
+            failureThreshold: 5
+            timeoutSeconds: 1
+          resources:
+            limits:
+              cpu: 450m
+              memory: 400Mi
+            requests:
+              cpu: 450m
+              memory: 400Mi
+      volumes:
+        - name: config
+          configMap:
+            name: benchmark-test-zeebe-gateway-gateway
+            defaultMode: 484
+        - configMap:
+            defaultMode: 492
+            name: zeebe-config
+          name: zeebe-config
+        - emptyDir: {}
+          name: pyroscope
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app.kubernetes.io/component
+                operator: In
+                values:
+                - zeebe-gateway
+            topologyKey: kubernetes.io/hostname
+---
+# Source: zeebe-benchmark/templates/publisher.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: publisher
+  labels:
+    app: publisher
+spec:
+  selector:
+    matchLabels:
+      app: publisher
+  replicas: 0
+  template:
+    metadata:
+      labels:
+        app: publisher
+        app.kubernetes.io/component: zeebe-client
+    spec:
+      containers:
+        - name: publisher
+          image: "gcr.io/zeebe-io/starter:SNAPSHOT"
+          imagePullPolicy: Always
+          env:
+            - name: JDK_JAVA_OPTIONS
+              value: >-
+                -Dconfig.override_with_env_vars=true
+                -Dapp.brokerUrl=benchmark-test-zeebe-gateway:26500
+                -Dapp.starter.rate=25
+                -Dzeebe.client.requestTimeout=62000
+                -XX:+HeapDumpOnOutOfMemoryError
+                -Dapp.starter.bpmnXmlPath=bpmn/msg_one_task.bpmn
+                -Dapp.starter.startViaMessage=true
+            - name: LOG_LEVEL
+              value: "warn"
+          envFrom:
+            - configMapRef:
+                name: publisher-config
+                optional: true
+          resources:
+            limits:
+              cpu: 250m
+              memory: 256Mi
+            requests:
+              cpu: 250m
+              memory: 256Mi
+          ports:
+            - containerPort: 9600
+              name: "http"
+---
+# Source: zeebe-benchmark/templates/starter.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: starter
+  labels:
+    app: starter
+spec:
+  selector:
+    matchLabels:
+      app: starter
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: starter
+        app.kubernetes.io/component: zeebe-client
+    spec:
+      containers:
+        - name: starter
+          image: "gcr.io/zeebe-io/starter:SNAPSHOT"
+          imagePullPolicy: Always
+          env:
+            - name: JDK_JAVA_OPTIONS
+              value: >-
+                -Dconfig.override_with_env_vars=true
+                -Dapp.brokerUrl=benchmark-test-zeebe-gateway:26500
+                -Dapp.starter.rate=150
+                -Dapp.starter.durationLimit=0
+                -Dzeebe.client.requestTimeout=62000
+                -XX:+HeapDumpOnOutOfMemoryError
+            - name: LOG_LEVEL
+              value: "warn"
+          envFrom:
+            - configMapRef:
+                name: starter-config
+                optional: true
+          resources:
+            limits:
+              cpu: 250m
+              memory: 256Mi
+            requests:
+              cpu: 250m
+              memory: 256Mi
+          ports:
+            - containerPort: 9600
+              name: "http"
+---
+# Source: zeebe-benchmark/templates/timer.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: timer
+  labels:
+    app: timer
+spec:
+  selector:
+    matchLabels:
+      app: timer
+  replicas: 0 
+  template:
+    metadata:
+      labels:
+        app: timer
+        app.kubernetes.io/component: zeebe-client
+    spec:
+      containers:
+        - name: timer
+          image: "gcr.io/zeebe-io/starter:SNAPSHOT"
+          imagePullPolicy: Always
+          env:
+            - name: JDK_JAVA_OPTIONS
+              value: >-
+                -Dconfig.override_with_env_vars=true
+                -Dapp.brokerUrl=benchmark-test-zeebe-gateway:26500
+                -Dapp.starter.rate=25
+                -Dzeebe.client.requestTimeout=62000
+                -XX:+HeapDumpOnOutOfMemoryError
+                -Dapp.starter.bpmnXmlPath=bpmn/timerProcess.bpmn
+                -Dapp.starter.processId=timerProcess
+            - name: LOG_LEVEL
+              value: "warn"
+          envFrom:
+            - configMapRef:
+                name: timer-config
+                optional: true
+          resources:
+            limits:
+              cpu: 250m
+              memory: 256Mi
+            requests:
+              cpu: 250m
+              memory: 256Mi
+          ports:
+            - containerPort: 9600
+              name: "http"
+---
+# Source: zeebe-benchmark/templates/worker.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker
+  labels:
+    app: worker
+spec:
+  selector:
+    matchLabels:
+      app: worker
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: worker
+        app.kubernetes.io/component: zeebe-client
+    spec:
+      containers:
+        - name: worker
+          image: "gcr.io/zeebe-io/worker:SNAPSHOT"
+          imagePullPolicy: Always
+          env:
+            - name: JDK_JAVA_OPTIONS
+              value: >-
+                -Dconfig.override_with_env_vars=true
+                -Dapp.brokerUrl=benchmark-test-zeebe-gateway:26500
+                -Dzeebe.client.requestTimeout=62000
+                -Dapp.worker.capacity=60
+                -Dapp.worker.pollingDelay=1ms
+                -Dapp.worker.completionDelay=50ms
+                -XX:+HeapDumpOnOutOfMemoryError
+            - name: LOG_LEVEL
+              value: "warn"
+          envFrom:
+            - configMapRef:
+                name: worker-config
+                optional: true
+          resources:
+            limits:
+              cpu: 500m
+              memory: 256Mi
+            requests:
+              cpu: 500m
+              memory: 256Mi
+          ports:
+            - containerPort: 9600
+              name: "http"
+---
+# Source: zeebe-benchmark/charts/camunda-platform/charts/elasticsearch/templates/statefulset.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: elasticsearch-master
+  labels:
+    heritage: "Helm"
+    release: "benchmark-test"
+    chart: "elasticsearch"
+    app: "elasticsearch-master"
+  annotations:
+    esMajorVersion: "7"
+spec:
+  serviceName: elasticsearch-master-headless
+  selector:
+    matchLabels:
+      app: "elasticsearch-master"
+  replicas: 3
+  podManagementPolicy: Parallel
+  updateStrategy:
+    type: RollingUpdate
+  volumeClaimTemplates:
+  - metadata:
+      name: elasticsearch-master
+      labels:
+        release: "benchmark-test"
+        chart: "elasticsearch"
+        app: "elasticsearch-master"
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 16Gi
+      storageClassName: ssd
+  template:
+    metadata:
+      name: "elasticsearch-master"
+      labels:
+        release: "benchmark-test"
+        chart: "elasticsearch"
+        app: "elasticsearch-master"
+      annotations:
+        
+    spec:
+      securityContext:
+        fsGroup: 1000
+        runAsUser: 1000
+      automountServiceAccountToken: true
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - "elasticsearch-master"
+            topologyKey: kubernetes.io/hostname
+      terminationGracePeriodSeconds: 120
+      volumes:
+      enableServiceLinks: true
+      initContainers:
+      - name: configure-sysctl
+        securityContext:
+          runAsUser: 0
+          privileged: true
+        image: "docker.elastic.co/elasticsearch/elasticsearch:7.16.2"
+        imagePullPolicy: "IfNotPresent"
+        command: ["sysctl", "-w", "vm.max_map_count=262144"]
+        resources:
+          {}
+
+      containers:
+      - name: "elasticsearch"
+        securityContext:
+          capabilities:
+            drop:
+            - ALL
+          runAsNonRoot: true
+          runAsUser: 1000
+        image: "docker.elastic.co/elasticsearch/elasticsearch:7.16.2"
+        imagePullPolicy: "IfNotPresent"
+        readinessProbe:
+          exec:
+            command:
+              - bash
+              - -c
+              - |
+                set -e
+                # If the node is starting up wait for the cluster to be ready (request params: "wait_for_status=green&timeout=1s" )
+                # Once it has started only check that the node itself is responding
+                START_FILE=/tmp/.es_start_file
+
+                # Disable nss cache to avoid filling dentry cache when calling curl
+                # This is required with Elasticsearch Docker using nss < 3.52
+                export NSS_SDB_USE_CACHE=no
+
+                http () {
+                  local path="${1}"
+                  local args="${2}"
+                  set -- -XGET -s
+
+                  if [ "$args" != "" ]; then
+                    set -- "$@" $args
+                  fi
+
+                  if [ -n "${ELASTIC_PASSWORD}" ]; then
+                    set -- "$@" -u "elastic:${ELASTIC_PASSWORD}"
+                  fi
+
+                  curl --output /dev/null -k "$@" "http://127.0.0.1:9200${path}"
+                }
+
+                if [ -f "${START_FILE}" ]; then
+                  echo 'Elasticsearch is already running, lets check the node is healthy'
+                  HTTP_CODE=$(http "/" "-w %{http_code}")
+                  RC=$?
+                  if [[ ${RC} -ne 0 ]]; then
+                    echo "curl --output /dev/null -k -XGET -s -w '%{http_code}' \${BASIC_AUTH} http://127.0.0.1:9200/ failed with RC ${RC}"
+                    exit ${RC}
+                  fi
+                  # ready if HTTP code 200, 503 is tolerable if ES version is 6.x
+                  if [[ ${HTTP_CODE} == "200" ]]; then
+                    exit 0
+                  elif [[ ${HTTP_CODE} == "503" && "7" == "6" ]]; then
+                    exit 0
+                  else
+                    echo "curl --output /dev/null -k -XGET -s -w '%{http_code}' \${BASIC_AUTH} http://127.0.0.1:9200/ failed with HTTP code ${HTTP_CODE}"
+                    exit 1
+                  fi
+
+                else
+                  echo 'Waiting for elasticsearch cluster to become ready (request params: "wait_for_status=green&timeout=1s" )'
+                  if http "/_cluster/health?wait_for_status=green&timeout=1s" "--fail" ; then
+                    touch ${START_FILE}
+                    exit 0
+                  else
+                    echo 'Cluster is not yet ready (request params: "wait_for_status=green&timeout=1s" )'
+                    exit 1
+                  fi
+                fi
+          failureThreshold: 3
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 3
+          timeoutSeconds: 5
+        ports:
+        - name: http
+          containerPort: 9200
+        - name: transport
+          containerPort: 9300
+        resources:
+          limits:
+            cpu: 2
+            memory: 6Gi
+          requests:
+            cpu: 1
+            memory: 3Gi
+        env:
+          - name: node.name
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: cluster.initial_master_nodes
+            value: "elasticsearch-master-0,elasticsearch-master-1,elasticsearch-master-2,"
+          - name: discovery.seed_hosts
+            value: "elasticsearch-master-headless"
+          - name: cluster.name
+            value: "elasticsearch"
+          - name: network.host
+            value: "0.0.0.0"
+          - name: cluster.deprecation_indexing.enabled
+            value: "false"
+          - name: ES_JAVA_OPTS
+            value: "-Xmx3g -Xms3g"
+          - name: node.data
+            value: "true"
+          - name: node.ingest
+            value: "true"
+          - name: node.master
+            value: "true"
+          - name: node.ml
+            value: "true"
+          - name: node.remote_cluster_client
+            value: "true"
+          - name: xpack.security.enabled
+            value: "false"
+        volumeMounts:
+          - name: "elasticsearch-master"
+            mountPath: /usr/share/elasticsearch/data
+---
+# Source: zeebe-benchmark/charts/camunda-platform/charts/zeebe/templates/statefulset.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: "benchmark-test-zeebe"
+  labels:
+    app: camunda-platform
+    app.kubernetes.io/name: zeebe
+    app.kubernetes.io/instance: benchmark-test
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: camunda-platform
+    app.kubernetes.io/version: "SNAPSHOT"
+    app.kubernetes.io/component: zeebe-broker
+  annotations:
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: camunda-platform
+      app.kubernetes.io/name: zeebe
+      app.kubernetes.io/instance: benchmark-test
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/part-of: camunda-platform
+      app.kubernetes.io/component: zeebe-broker
+  serviceName: "benchmark-test-zeebe"
+  updateStrategy:
+    type: RollingUpdate
+  podManagementPolicy: Parallel
+  template:
+    metadata:
+      labels:
+        app: camunda-platform
+        app.kubernetes.io/name: zeebe
+        app.kubernetes.io/instance: benchmark-test
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/part-of: camunda-platform
+        app.kubernetes.io/version: "SNAPSHOT"
+        app.kubernetes.io/component: zeebe-broker
+      annotations:
+    spec:
+      imagePullSecrets:
+        []
+      initContainers:
+        - command:
+          - wget
+          - https://github.com/pyroscope-io/pyroscope-java/releases/latest/download/pyroscope.jar
+          - -O
+          - /pyroscope/pyroscope.jar
+          image: alpine
+          name: pyroscope
+          volumeMounts:
+          - mountPath: /pyroscope
+            name: pyroscope
+      containers:
+      - name: zeebe
+        image: "camunda/zeebe:SNAPSHOT"
+        imagePullPolicy: Always
+        securityContext:
+          capabilities:
+            add:
+            - NET_ADMIN
+        env:
+        - name: LC_ALL
+          value: C.UTF-8
+        - name: K8S_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: K8S_SERVICE_NAME
+          value: "benchmark-test-zeebe"
+        - name: K8S_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: ZEEBE_BROKER_NETWORK_ADVERTISEDHOST
+          value: "$(K8S_NAME).$(K8S_SERVICE_NAME).$(K8S_NAMESPACE).svc"
+        - name: ZEEBE_BROKER_CLUSTER_INITIALCONTACTPOINTS
+          value:
+            $(K8S_SERVICE_NAME)-0.$(K8S_SERVICE_NAME).$(K8S_NAMESPACE).svc:26502,
+            $(K8S_SERVICE_NAME)-1.$(K8S_SERVICE_NAME).$(K8S_NAMESPACE).svc:26502,
+            $(K8S_SERVICE_NAME)-2.$(K8S_SERVICE_NAME).$(K8S_NAMESPACE).svc:26502,
+        - name: ZEEBE_BROKER_CLUSTER_CLUSTERNAME
+          value: benchmark-test-zeebe
+        - name: ZEEBE_LOG_LEVEL
+          value: "info"
+        - name: ZEEBE_BROKER_CLUSTER_PARTITIONSCOUNT
+          value: "3"
+        - name: ZEEBE_BROKER_CLUSTER_CLUSTERSIZE
+          value: "3"
+        - name: ZEEBE_BROKER_CLUSTER_REPLICATIONFACTOR
+          value: "3"
+        - name: ZEEBE_BROKER_THREADS_CPUTHREADCOUNT
+          value: "3"
+        - name: ZEEBE_BROKER_THREADS_IOTHREADCOUNT
+          value: "3"
+        - name: ZEEBE_BROKER_GATEWAY_ENABLE
+          value: "false"
+        - name: ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_CLASSNAME
+          value: "io.camunda.zeebe.exporter.ElasticsearchExporter"
+        - name: ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_ARGS_URL
+          value: "http://elasticsearch-master:9200"
+        - name: ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_ARGS_INDEX_PREFIX
+          value: "zeebe-record"
+        - name: ZEEBE_BROKER_NETWORK_COMMANDAPI_PORT
+          value: "26501"
+        - name: ZEEBE_BROKER_NETWORK_INTERNALAPI_PORT
+          value: "26502"
+        - name: ZEEBE_BROKER_NETWORK_MONITORINGAPI_PORT
+          value: "9600"
+        - name: K8S_POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: JAVA_TOOL_OPTIONS
+          value: "-XX:MaxRAMPercentage=25.0 -XX:+ExitOnOutOfMemoryError -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/usr/local/zeebe/data -XX:ErrorFile=/usr/local/zeebe/data/zeebe_error%p.log -Xlog:gc*:file=/usr/local/zeebe/data/gc.log:time:filecount=7,filesize=8M"
+        - name: K8S_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: K8S_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: ZEEBE_LOG_APPENDER
+          value: Stackdriver
+        - name: ZEEBE_LOG_STACKDRIVER_SERVICENAME
+          value: zeebe
+        - name: ZEEBE_LOG_STACKDRIVER_SERVICEVERSION
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: ATOMIX_LOG_LEVEL
+          value: INFO
+        - name: ZEEBE_LOG_LEVEL
+          value: DEBUG
+        - name: PYROSCOPE_SERVER_ADDRESS
+          value: http://pyroscope.pyroscope.svc.cluster.local:4040
+        - name: PYROSCOPE_APPLICATION_NAME
+          value: io.camunda.zeebe.broker
+        - name: PYROSCOPE_LOG_LEVEL
+          value: debug
+        - name: PYROSCOPE_FORMAT
+          value: jfr
+        - name: PYROSCOPE_PROFILER_EVENT
+          value: cpu
+        - name: PYROSCOPE_PROFILER_ALLOC
+          value: "0"
+        - name: PYROSCOPE_PROFILER_LOCK
+          value: "0"
+        - name: PYROSCOPE_LABELS
+          value: namespace=$(K8S_NAMESPACE), pod=$(K8S_NAME)
+        - name: JAVA_OPTS
+          valueFrom:
+            configMapKeyRef:
+              key: java-opts
+              name: zeebe-config
+              optional: true
+        ports:
+        - containerPort: 9600
+          name: http
+        - containerPort: 26501
+          name: command
+        - containerPort: 26502
+          name: internal
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 9600
+          initialDelaySeconds: 30
+          periodSeconds: 30
+          successThreshold: 1
+          failureThreshold: 5
+          timeoutSeconds: 1
+        resources:
+          limits:
+            cpu: 1350m
+            memory: 4Gi
+          requests:
+            cpu: 1350m
+            memory: 2Gi
+        volumeMounts:
+        - name: config
+          mountPath: /usr/local/bin/startup.sh
+          subPath: startup.sh
+        - name: data
+          mountPath: /usr/local/zeebe/data
+        - name: exporters
+          mountPath: /exporters
+        
+        - mountPath: /usr/local/zeebe/config/application.yaml
+          name: zeebe-config
+          subPath: application.yml
+        - mountPath: /pyroscope
+          name: pyroscope
+      volumes:
+        - name: config
+          configMap:
+            name: benchmark-test-zeebe
+            defaultMode: 492
+        - name: exporters
+          emptyDir: {}
+          
+        - configMap:
+            defaultMode: 492
+            name: zeebe-config
+          name: zeebe-config
+        - emptyDir: {}
+          name: pyroscope
+      nodeSelector:
+        cloud.google.com/gke-nodepool: n2-standard-2
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app.kubernetes.io/component
+                operator: In
+                values:
+                - zeebe-broker
+            topologyKey: kubernetes.io/hostname
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes: [ReadWriteOnce]
+      storageClassName: ssd
+      resources:
+        requests:
+          storage: "32Gi"
+---
+# Source: zeebe-benchmark/charts/camunda-platform/templates/curator-cronjob.yaml
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: camunda-platform-curator
+  labels:
+    app: camunda-platform
+    app.kubernetes.io/name: camunda-platform
+    app.kubernetes.io/instance: benchmark-test
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: camunda-platform
+    app.kubernetes.io/version: "SNAPSHOT"
+spec:
+  schedule: "*/15 * * * *"
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  concurrencyPolicy: Forbid
+  startingDeadlineSeconds: 120
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - image: "bitnami/elasticsearch-curator-archived:5.8.4"
+              name: curator
+              args: ["--config", "/etc/config/config.yml", "/etc/config/action_file.yml"]
+              volumeMounts:
+                - name: config
+                  mountPath: /etc/config
+          volumes:
+            - name: config
+              configMap:
+                name: camunda-platform-curator-config
+                defaultMode: 0744
+          restartPolicy: OnFailure
+---
+# Source: zeebe-benchmark/templates/leader-balancing-cron.yaml
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: leader-balancer
+  labels:
+    app.kubernetes.io/name: zeebe-benchmark
+    app.kubernetes.io/instance: benchmark-test
+    app.kubernetes.io/version: "8.2.5"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  schedule: "*/15 * * * *"
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  concurrencyPolicy: Forbid
+  startingDeadlineSeconds: 120
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - image: "curlimages/curl:7.87.0"
+              name: curl
+              args: ["-L", "-v", "-X", "POST", "http://benchmark-test-zeebe-gateway:9600/actuator/rebalance"]
+          restartPolicy: OnFailure
+---
+# Source: zeebe-benchmark/charts/camunda-platform/templates/service-monitor.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: benchmark-test-camunda-platform
+  labels:
+    app: camunda-platform
+    app.kubernetes.io/name: camunda-platform
+    app.kubernetes.io/instance: benchmark-test
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: camunda-platform
+    app.kubernetes.io/version: "SNAPSHOT"
+    release: monitoring
+spec:
+  selector:
+    matchLabels:
+      app: camunda-platform
+  endpoints:
+    - honorLabels: true
+      path: /actuator/prometheus
+      port: http
+      interval: 30s
+---
+# Source: zeebe-benchmark/templates/clients-service.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: clients
+  labels:
+    release: monitoring
+    app.kubernetes.io/name: zeebe-benchmark
+    app.kubernetes.io/instance: benchmark-test
+    app.kubernetes.io/version: "8.2.5"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: zeebe-client
+  endpoints:
+  - honorLabels: true
+    # since - is not supported directly, we have to use the index function and quote "camunda-platform"
+    interval: 30s
+    path: /prometheus
+    port: http
+---
+# Source: zeebe-benchmark/charts/camunda-platform/charts/elasticsearch/templates/test/test-elasticsearch-health.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "benchmark-test-otvpi-test"
+  annotations:
+    "helm.sh/hook": test
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  securityContext:
+    fsGroup: 1000
+    runAsUser: 1000
+  containers:
+  - name: "benchmark-test-xgclx-test"
+    image: "docker.elastic.co/elasticsearch/elasticsearch:7.16.2"
+    imagePullPolicy: "IfNotPresent"
+    command:
+      - "sh"
+      - "-c"
+      - |
+        #!/usr/bin/env bash -e
+        curl -XGET --fail 'elasticsearch-master:9200/_cluster/health?wait_for_status=green&timeout=1s'
+  restartPolicy: Never
+---
+# Source: zeebe-benchmark/charts/camunda-platform/charts/zeebe/templates/tests/test-connection.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "benchmark-test-zeebe-test-connection"
+  labels: 
+    app: camunda-platform
+    app.kubernetes.io/name: zeebe
+    app.kubernetes.io/instance: benchmark-test
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: camunda-platform
+    app.kubernetes.io/version: "SNAPSHOT"
+    app.kubernetes.io/component: zeebe-broker
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args:  ['benchmark-test-zeebe:9600']
+  restartPolicy: Never
