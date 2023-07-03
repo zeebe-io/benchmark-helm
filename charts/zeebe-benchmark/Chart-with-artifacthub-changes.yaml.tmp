@@ -2,7 +2,7 @@ apiVersion: v2
 name: zeebe-benchmark
 description: A Helm chart for Zeebe benchmarks
 type: application
-version: 0.1.13
+version: 0.1.14
 appVersion: "8.2.5"
 sources:
   - https://github.com/zeebe-io/benchmark-helm
@@ -10,7 +10,7 @@ sources:
 dependencies:
   - name: camunda-platform
     repository: "https://helm.camunda.io"
-    version: 8.2.5
+    version: 8.2.6
     condition: "camunda.enabled"
 maintainers:
   - name: Zelldon
@@ -22,4 +22,4 @@ annotations:
     - name: Zeebe Docs
       url: https://docs.camunda.io/docs/components/zeebe/zeebe-overview/
   artifacthub.io/containsSecurityUpdates: "false"
-  artifacthub.io/changes: "- kind: fixed\n  description: \"use renamed curator image\"\n"
+  artifacthub.io/changes: "- kind: fixed\n  description: \"correctly indent the image object\"\n- kind: changed\n  description: \"rename golden file\"\n"
