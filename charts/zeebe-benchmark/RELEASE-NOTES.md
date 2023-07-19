@@ -2,25 +2,15 @@ The changelog is automatically generated using [git-chglog](https://github.com/g
 and it follows [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) format.
 
 
-<a name="zeebe-benchmark-0.1.14"></a>
-## [zeebe-benchmark-0.1.14](https://github.com/camunda/camunda-platform-helm/compare/zeebe-benchmark-0.1.13...zeebe-benchmark-0.1.14) (2023-07-03)
+<a name="zeebe-benchmark-0.1.15"></a>
+## [zeebe-benchmark-0.1.15](https://github.com/camunda/camunda-platform-helm/compare/zeebe-benchmark-0.1.14...zeebe-benchmark-0.1.15) (2023-07-19)
 
 ### Fix
 
-* correctly indent the image object
-
-### Refactor
-
-* rename golden file
-
-### Test
-
-* rework test
-* add new golden all test
+* set fsGroup for zeebe user
 
 ### Pull Requests
 
-* Merge pull request [#75](https://github.com/camunda/camunda-platform-helm/issues/75) from zeebe-io/zell-fix-curator-again
-* Merge pull request [#68](https://github.com/camunda/camunda-platform-helm/issues/68) from zeebe-io/renovate/camunda-platform-8.x
-* Merge pull request [#73](https://github.com/camunda/camunda-platform-helm/issues/73) from zeebe-io/release
+* Merge pull request [#79](https://github.com/camunda/camunda-platform-helm/issues/79) from zeebe-io/meg-fsgroup
+* Merge pull request [#76](https://github.com/camunda/camunda-platform-helm/issues/76) from zeebe-io/release
 
