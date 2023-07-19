@@ -116,7 +116,13 @@ camunda-platform:
     # CpuThreadCount defines how many threads can be used for the processing on each broker pod
     cpuThreadCount: 3
     # IoThreadCount defines how many threads can be used for the exporting on each broker pod
-    ioThreadCount: 3
+    ioThreadCount: 3  
+
+    # PodSecurityContext defines the security options the Zeebe broker pod should be run with
+    podSecurityContext:
+      # needed to make sure the zeebe user has file permissions on mounted PVCs
+      # TODO remove once it's configured in the upstream helmchart
+      fsGroup: 1000
 
     # ContainerSecurityContext defines the security options the Zeebe broker container should be run with
     containerSecurityContext:
