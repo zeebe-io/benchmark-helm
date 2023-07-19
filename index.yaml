@@ -4,6 +4,37 @@ entries:
   - annotations:
       artifacthub.io/changes: |
         - kind: fixed
+          description: "set fsGroup for zeebe user"
+      artifacthub.io/containsSecurityUpdates: "false"
+      artifacthub.io/links: |
+        - name: Zeebe Repo
+          url: https://github.com/camunda/zeebe
+        - name: Zeebe Docs
+          url: https://docs.camunda.io/docs/components/zeebe/zeebe-overview/
+    apiVersion: v2
+    appVersion: 8.2.5
+    created: "2023-07-19T07:55:41.687265402Z"
+    dependencies:
+    - condition: camunda.enabled
+      name: camunda-platform
+      repository: https://helm.camunda.io
+      version: 8.2.8
+    description: A Helm chart for Zeebe benchmarks
+    digest: 5d82a9d62243446e9c22625b9380b741c98f16e53aaa1bbcfc557a5881ee0a04
+    maintainers:
+    - email: christopher.zell@camunda.com
+      name: Zelldon
+    name: zeebe-benchmark
+    sources:
+    - https://github.com/zeebe-io/benchmark-helm
+    - https://github.com/camunda/zeebe
+    type: application
+    urls:
+    - https://github.com/zeebe-io/benchmark-helm/releases/download/zeebe-benchmark-0.1.15/zeebe-benchmark-0.1.15.tgz
+    version: 0.1.15
+  - annotations:
+      artifacthub.io/changes: |
+        - kind: fixed
           description: "correctly indent the image object"
         - kind: changed
           description: "rename golden file"
@@ -430,4 +461,4 @@ entries:
     urls:
     - https://github.com/zeebe-io/benchmark-helm/releases/download/zeebe-benchmark-0.1.2/zeebe-benchmark-0.1.2.tgz
     version: 0.1.2
-generated: "2023-07-03T14:14:44.58208408Z"
+generated: "2023-07-19T07:55:41.687518705Z"
