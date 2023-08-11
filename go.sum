@@ -81,6 +81,8 @@ github.com/gruntwork-io/terratest v0.43.0 h1:/ewxlYwd/HBralCt7P2bAhYM8hdkOiFJHrM
 github.com/gruntwork-io/terratest v0.43.0/go.mod h1:vZO4J6UW023NDvl1vI+twZk9r//+QEaNT6MfkheH7z0=
 github.com/gruntwork-io/terratest v0.43.5 h1:SlIwa1ijRN6DwPysOfaGf2a4cbeajCy3y9IQe7fNGsc=
 github.com/gruntwork-io/terratest v0.43.5/go.mod h1:Tw+6/fcJFiBPpsx9NNSkLG5oHKIeaqiJHVLpQ+ORIfQ=
+github.com/gruntwork-io/terratest v0.43.12 h1:e1SgJe/JF3zh1k/7BDMv7sF3wTKqkSYNx79UJT/74+o=
+github.com/gruntwork-io/terratest v0.43.12/go.mod h1:Tw+6/fcJFiBPpsx9NNSkLG5oHKIeaqiJHVLpQ+ORIfQ=
 github.com/hashicorp/errwrap v1.0.0 h1:hLrqtEDnRye3+sgx6z4qVLNuviH3MR5aQ0ykNJa/UYA=
 github.com/hashicorp/errwrap v1.0.0/go.mod h1:YH+1FKiLXxHSkmPseP+kNlulaMuP3n2brvKWEqk/Jc4=
 github.com/hashicorp/go-multierror v1.1.0 h1:B9UzwGQJehnUY1yNrnwREHc3fGbC2xefo8g4TbElacI=
