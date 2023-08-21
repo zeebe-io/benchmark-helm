@@ -1,0 +1,29 @@
+---
+# Source: zeebe-benchmark/charts/prometheus-elasticsearch-exporter/templates/servicemonitor.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: benchmark-test-prometheus-elasticsearch-exporter
+  labels:
+    chart: prometheus-elasticsearch-exporter-5.2.0
+    app: prometheus-elasticsearch-exporter
+    release: "benchmark-test"
+    heritage: "Helm"
+    release: monitoring
+spec:
+  endpoints:
+  - interval: 10s
+    scrapeTimeout: 10s
+    honorLabels: true
+    port: http
+    path: /metrics
+    scheme: http
+  jobLabel: benchmark-test
+  selector:
+    matchLabels:
+      app: prometheus-elasticsearch-exporter
+      release: "benchmark-test"
+  namespaceSelector:
+    matchNames:
+      - benchmark-65lu92
+  sampleLimit: 0

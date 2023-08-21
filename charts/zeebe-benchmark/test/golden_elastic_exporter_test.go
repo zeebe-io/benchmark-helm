@@ -11,14 +11,14 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
-func TestGoldenDefaults(t *testing.T) {
+func TestGoldenElasticExporterDefaults(t *testing.T) {
 	// Test which allows to verify also parent chart templates
 	// This makes sure that properties are correctly set
 	// OR configurations have been changed
 
 	chartPath, err := filepath.Abs("../")
 	require.NoError(t, err)
-	templateNames := []string{"curator-cronjob", "curator-configmap", "service-monitor"}
+	templateNames := []string{"servicemonitor", "deployment"}
 
 	for _, name := range templateNames {
 		suite.Run(t, &golden.TemplateGoldenTest{
@@ -26,7 +26,7 @@ func TestGoldenDefaults(t *testing.T) {
 			Release:        "benchmark-test",
 			Namespace:      "benchmark-" + strings.ToLower(random.UniqueId()),
 			GoldenFileName: name,
-			Templates:      []string{"charts/camunda-platform/templates/" + name + ".yaml"},
+			Templates:      []string{"charts/prometheus-elasticsearch-exporter/templates/" + name + ".yaml"},
 			SetValues:      map[string]string{"retentionPolicy.enabled": "true"},
 		})
 	}
