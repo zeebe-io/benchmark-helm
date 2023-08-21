@@ -25,5 +25,5 @@ spec:
       release: "benchmark-test"
   namespaceSelector:
     matchNames:
-      - benchmark-65lu92
+      - benchmark-test
   sampleLimit: 0

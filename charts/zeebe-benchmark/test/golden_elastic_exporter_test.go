@@ -3,10 +3,8 @@ package test
 import (
 	"benchmark-helm/charts/zeebe-benchmark/test/golden"
 	"path/filepath"
-	"strings"
 	"testing"
 
-	"github.com/gruntwork-io/terratest/modules/random"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 )
@@ -24,10 +22,9 @@ func TestGoldenElasticExporterDefaults(t *testing.T) {
 		suite.Run(t, &golden.TemplateGoldenTest{
 			ChartPath:      chartPath,
 			Release:        "benchmark-test",
-			Namespace:      "benchmark-" + strings.ToLower(random.UniqueId()),
+			Namespace:      "benchmark-test",
 			GoldenFileName: name,
 			Templates:      []string{"charts/prometheus-elasticsearch-exporter/templates/" + name + ".yaml"},
-			SetValues:      map[string]string{"retentionPolicy.enabled": "true"},
 		})
 	}
 }
