@@ -12,6 +12,10 @@ dependencies:
     repository: "https://helm.camunda.io"
     version: 8.2.12
     condition: "camunda.enabled"
+  - name: prometheus-elasticsearch-exporter
+    repository: "https://prometheus-community.github.io/helm-charts"
+    version: 5.2.0
+    condition: "prometheus-elasticsearch-exporter.enabled"
 maintainers:
   - name: Zelldon
     email: christopher.zell@camunda.com

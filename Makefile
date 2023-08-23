@@ -96,6 +96,7 @@ tools.zbctl-topology:
 .PHONY: helm.repos-add
 helm.repos-add:
 	helm repo add zeebe https://helm.camunda.io
+	helm repo add prometheus https://prometheus-community.github.io/helm-charts
 	helm repo update
 
 # helm.dependency-update: update and downloads the dependencies for the Helm chart

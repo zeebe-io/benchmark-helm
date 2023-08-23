@@ -1,0 +1,83 @@
+---
+# Source: zeebe-benchmark/charts/prometheus-elasticsearch-exporter/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: benchmark-test-prometheus-elasticsearch-exporter
+  labels:
+    chart: prometheus-elasticsearch-exporter-5.2.0
+    app: prometheus-elasticsearch-exporter
+    release: "benchmark-test"
+    heritage: "Helm"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prometheus-elasticsearch-exporter
+      release: "benchmark-test"
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: prometheus-elasticsearch-exporter
+        release: "benchmark-test"
+    spec:
+      serviceAccountName: default
+      
+      restartPolicy: Always
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: exporter
+          env:
+          image: "quay.io/prometheuscommunity/elasticsearch-exporter:v1.5.0"
+          imagePullPolicy: IfNotPresent
+          command: ["elasticsearch_exporter",
+                    "--log.format=logfmt",
+                    "--log.level=info",
+                    "--es.uri=http://elasticsearch-master:9200",
+                    "--es.all",
+                    "--es.indices",
+                    "--es.indices_settings",
+                    "--es.indices_mappings",
+                    "--es.shards",
+                    "--es.snapshots",
+                    "--es.timeout=30s",
+                    "--web.listen-address=:9108",
+                    "--web.telemetry-path=/metrics"]
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            readOnlyRootFilesystem: true
+          ports:
+            - containerPort: 9108
+              name: http
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 5
+            timeoutSeconds: 5
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 1
+            timeoutSeconds: 5
+            periodSeconds: 5
+          lifecycle:
+            preStop:
+              exec:
+                command: ["/bin/bash", "-c", "sleep 20"]
+          volumeMounts:
+      volumes:

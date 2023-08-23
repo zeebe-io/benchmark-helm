@@ -386,3 +386,20 @@ camunda-platform:
     labels:
       release: monitoring
     scrapeInterval: 30s
+
+prometheus-elasticsearch-exporter:
+  es:
+    ## Address (host and port) of the Elasticsearch node we should connect to.
+    ## This could be a local node (localhost:9200, for instance), or the address
+    ## of a remote Elasticsearch server. When basic auth is needed,
+    ## specify as: <proto>://<user>:<password>@<host>:<port>. e.g., http://admin:pass@localhost:9200.
+    ##
+    uri: http://elasticsearch-master:9200
+  serviceMonitor:
+    ## If true, a ServiceMonitor CRD is created for a prometheus operator
+    ## https://github.com/coreos/prometheus-operator
+    ##
+    enabled: true
+    # Labels used by the service monitor, specific to our prometheus installation
+    labels:
+      release: monitoring

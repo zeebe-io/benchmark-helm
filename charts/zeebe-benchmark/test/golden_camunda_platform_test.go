@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
-func TestGoldenDefaults(t *testing.T) {
+func TestGoldenCamundaPlatformDefaults(t *testing.T) {
 	// Test which allows to verify also parent chart templates
 	// This makes sure that properties are correctly set
 	// OR configurations have been changed
