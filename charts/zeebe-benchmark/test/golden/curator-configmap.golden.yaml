@@ -62,7 +62,7 @@ data:
             direction: older
             timestring: '%Y-%m-%d'
             unit: days
-            unit_count: 30
+            unit_count: 1
             field:
             stats_result:
             epoch:
@@ -85,7 +85,7 @@ data:
             direction: older
             timestring: '%Y-%m-%d'
             unit: days
-            unit_count: 30
+            unit_count: 1
             field:
             stats_result:
             epoch:
@@ -104,7 +104,7 @@ data:
             kind: prefix
             value: zeebe-
           - filtertype: space
-            disk_space: 1
+            disk_space: 30
             source: name
             timestring: '%Y-%m-%d'
   config.yml: |-
