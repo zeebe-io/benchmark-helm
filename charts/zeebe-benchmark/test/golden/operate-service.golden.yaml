@@ -1,0 +1,29 @@
+---
+# Source: zeebe-benchmark/charts/camunda-platform/charts/operate/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: benchmark-test-operate
+  labels:
+    app: camunda-platform
+    app.kubernetes.io/name: operate
+    app.kubernetes.io/instance: benchmark-test
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: camunda-platform
+    app.kubernetes.io/version: "8.2.8"
+    app.kubernetes.io/component: operate
+  annotations:
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    name: http
+    targetPort: 8080
+    protocol: TCP
+  selector:
+    app: camunda-platform
+    app.kubernetes.io/name: operate
+    app.kubernetes.io/instance: benchmark-test
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: camunda-platform
+    app.kubernetes.io/component: operate

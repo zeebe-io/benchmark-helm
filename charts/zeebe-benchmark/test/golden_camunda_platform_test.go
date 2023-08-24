@@ -25,9 +25,30 @@ func TestGoldenCamundaPlatformDefaults(t *testing.T) {
 			ChartPath:      chartPath,
 			Release:        "benchmark-test",
 			Namespace:      "benchmark-" + strings.ToLower(random.UniqueId()),
-			GoldenFileName: name,
+			GoldenFileName: "c8-" + name,
 			Templates:      []string{"charts/camunda-platform/templates/" + name + ".yaml"},
 			SetValues:      map[string]string{"retentionPolicy.enabled": "true"},
+		})
+	}
+}
+
+func TestGoldenCamundaPlatformOperateDefaults(t *testing.T) {
+	// Test which allows to verify also parent chart templates
+	// This makes sure that properties are correctly set
+	// OR configurations have been changed
+
+	chartPath, err := filepath.Abs("../")
+	require.NoError(t, err)
+	templateNames := []string{"deployment", "service", "configmap"}
+
+	for _, name := range templateNames {
+		suite.Run(t, &golden.TemplateGoldenTest{
+			ChartPath:      chartPath,
+			Release:        "benchmark-test",
+			Namespace:      "benchmark-" + strings.ToLower(random.UniqueId()),
+			GoldenFileName: "operate-" + name,
+			Templates:      []string{"charts/camunda-platform/charts/operate/templates/" + name + ".yaml"},
+			SetValues:      map[string]string{"camunda-platform.operate.enabled": "true"},
 		})
 	}
 }
