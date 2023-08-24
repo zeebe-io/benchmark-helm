@@ -2,15 +2,26 @@ The changelog is automatically generated using [git-chglog](https://github.com/g
 and it follows [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) format.
 
 
-<a name="zeebe-benchmark-0.1.15"></a>
-## [zeebe-benchmark-0.1.15](https://github.com/camunda/camunda-platform-helm/compare/zeebe-benchmark-0.1.14...zeebe-benchmark-0.1.15) (2023-07-19)
+<a name="zeebe-benchmark-0.1.16"></a>
+## [zeebe-benchmark-0.1.16](https://github.com/camunda/camunda-platform-helm/compare/zeebe-benchmark-0.1.15...zeebe-benchmark-0.1.16) (2023-08-24)
+
+### Feat
+
+* configure operate correctly
+* add elastic metric exporter
 
 ### Fix
 
-* set fsGroup for zeebe user
+* set correct elastic url
+
+### Test
+
+* update golden files
+* add operate golden test
+* update golden files
 
 ### Pull Requests
 
-* Merge pull request [#79](https://github.com/camunda/camunda-platform-helm/issues/79) from zeebe-io/meg-fsgroup
-* Merge pull request [#76](https://github.com/camunda/camunda-platform-helm/issues/76) from zeebe-io/release
+* Merge pull request [#83](https://github.com/camunda/camunda-platform-helm/issues/83) from zeebe-io/ck-elastic-exporter
+* Merge pull request [#80](https://github.com/camunda/camunda-platform-helm/issues/80) from zeebe-io/release
 
