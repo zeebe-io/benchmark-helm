@@ -3,6 +3,45 @@ entries:
   zeebe-benchmark:
   - annotations:
       artifacthub.io/changes: |
+        - kind: added
+          description: "configure operate correctly"
+        - kind: added
+          description: "add elastic metric exporter"
+        - kind: fixed
+          description: "set correct elastic url"
+      artifacthub.io/containsSecurityUpdates: "false"
+      artifacthub.io/links: |
+        - name: Zeebe Repo
+          url: https://github.com/camunda/zeebe
+        - name: Zeebe Docs
+          url: https://docs.camunda.io/docs/components/zeebe/zeebe-overview/
+    apiVersion: v2
+    appVersion: 8.2.5
+    created: "2023-08-24T14:02:07.082339877Z"
+    dependencies:
+    - condition: camunda.enabled
+      name: camunda-platform
+      repository: https://helm.camunda.io
+      version: 8.2.12
+    - condition: prometheus-elasticsearch-exporter.enabled
+      name: prometheus-elasticsearch-exporter
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 5.2.0
+    description: A Helm chart for Zeebe benchmarks
+    digest: 233e503ffaa5a58a46bcd0516a3cf44d506a3db08b2ed1a9ad2a7ba079688041
+    maintainers:
+    - email: christopher.zell@camunda.com
+      name: Zelldon
+    name: zeebe-benchmark
+    sources:
+    - https://github.com/zeebe-io/benchmark-helm
+    - https://github.com/camunda/zeebe
+    type: application
+    urls:
+    - https://github.com/zeebe-io/benchmark-helm/releases/download/zeebe-benchmark-0.1.16/zeebe-benchmark-0.1.16.tgz
+    version: 0.1.16
+  - annotations:
+      artifacthub.io/changes: |
         - kind: fixed
           description: "set fsGroup for zeebe user"
       artifacthub.io/containsSecurityUpdates: "false"
@@ -461,4 +500,4 @@ entries:
     urls:
     - https://github.com/zeebe-io/benchmark-helm/releases/download/zeebe-benchmark-0.1.2/zeebe-benchmark-0.1.2.tgz
     version: 0.1.2
-generated: "2023-07-19T07:55:41.687518705Z"
+generated: "2023-08-24T14:02:07.082462878Z"
