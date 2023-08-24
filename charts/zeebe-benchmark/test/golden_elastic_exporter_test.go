@@ -23,7 +23,7 @@ func TestGoldenElasticExporterDefaults(t *testing.T) {
 			ChartPath:      chartPath,
 			Release:        "benchmark-test",
 			Namespace:      "benchmark-test",
-			GoldenFileName: name,
+			GoldenFileName: "es-exporter-" + name,
 			Templates:      []string{"charts/prometheus-elasticsearch-exporter/templates/" + name + ".yaml"},
 		})
 	}
