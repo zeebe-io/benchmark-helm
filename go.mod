@@ -3,7 +3,7 @@ module benchmark-helm
 go 1.19
 
 require (
-	github.com/gruntwork-io/terratest v0.43.12
+	github.com/gruntwork-io/terratest v0.43.13
 	github.com/stretchr/testify v1.8.4
 	k8s.io/api v0.27.3
 )
