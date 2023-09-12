@@ -215,7 +215,7 @@ camunda-platform:
         memory: 4Gi
       requests:
         cpu: 1350m
-        memory: 2Gi
+        memory: 4Gi
 
     nodeSelector:
       cloud.google.com/gke-nodepool: n2-standard-2
