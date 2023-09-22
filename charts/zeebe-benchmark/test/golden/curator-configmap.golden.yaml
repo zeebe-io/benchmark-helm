@@ -74,7 +74,7 @@ data:
         filters:
           - filtertype: pattern
             kind: prefix
-            value: zeebe-
+            value: zeebe-record_message
           - filtertype: space
             disk_space: 1
             source: name
@@ -90,7 +90,7 @@ data:
         filters:
           - filtertype: pattern
             kind: prefix
-            value: zeebe-
+            value: zeebe-record_process-instance-creation
           - filtertype: space
             disk_space: 1
             source: name
