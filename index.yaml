@@ -3,6 +3,47 @@ entries:
   zeebe-benchmark:
   - annotations:
       artifacthub.io/changes: |
+        - kind: added
+          description: "adjust schedule"
+        - kind: added
+          description: "define new retentionPolicy"
+        - kind: added
+          description: "add new templates for curator"
+        - kind: changed
+          description: "adjust name and labels"
+      artifacthub.io/containsSecurityUpdates: "false"
+      artifacthub.io/links: |
+        - name: Zeebe Repo
+          url: https://github.com/camunda/zeebe
+        - name: Zeebe Docs
+          url: https://docs.camunda.io/docs/components/zeebe/zeebe-overview/
+    apiVersion: v2
+    appVersion: 8.2.5
+    created: "2023-09-22T14:38:41.666699834Z"
+    dependencies:
+    - condition: camunda.enabled
+      name: camunda-platform
+      repository: https://helm.camunda.io
+      version: 8.2.12
+    - condition: prometheus-elasticsearch-exporter.enabled
+      name: prometheus-elasticsearch-exporter
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 5.2.0
+    description: A Helm chart for Zeebe benchmarks
+    digest: 4c5b4174ce427634b8f06f2eb49a716a8d0fa94e7b0d9e004f2bbe966897e16d
+    maintainers:
+    - email: christopher.zell@camunda.com
+      name: Zelldon
+    name: zeebe-benchmark
+    sources:
+    - https://github.com/zeebe-io/benchmark-helm
+    - https://github.com/camunda/zeebe
+    type: application
+    urls:
+    - https://github.com/zeebe-io/benchmark-helm/releases/download/zeebe-benchmark-0.1.19/zeebe-benchmark-0.1.19.tgz
+    version: 0.1.19
+  - annotations:
+      artifacthub.io/changes: |
         - kind: fixed
           description: "match memory request and limit for brokers"
       artifacthub.io/containsSecurityUpdates: "false"
@@ -570,4 +611,4 @@ entries:
     urls:
     - https://github.com/zeebe-io/benchmark-helm/releases/download/zeebe-benchmark-0.1.2/zeebe-benchmark-0.1.2.tgz
     version: 0.1.2
-generated: "2023-09-12T10:36:08.344531787Z"
+generated: "2023-09-22T14:38:41.666830436Z"
