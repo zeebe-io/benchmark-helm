@@ -97,10 +97,9 @@ zeebe:
 # RetentionPolicy configuration to configure the elasticsearch index retention policies
 retentionPolicy:
   # RetentionPolicy.enabled if true, elasticsearch curator cronjob and configuration will be deployed.
-  enabled: false
+  enabled: false # only enabled if really needed
   # RetentionPolicy.schedule defines how often/when the curator should run
-  schedule: "*/15 * * * *"
-
+  schedule: "0 * * * *" # every full hour at minute 0 https://crontab.guru/#0_*_*_*_*
   # Policies defines a list of policies, which allows to specify policies for specific indexes or globally (based
   # on the pattern specified). The policy is applied via the name, which is used as pattern to match indices.
   # Each policy can define the maxSize and timeToLive.
