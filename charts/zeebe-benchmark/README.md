@@ -9,6 +9,7 @@
 - [Configuration](#configuration)
     - [Global](#global)
     - [Camunda Platform](#camunda-platform)
+    - [Retention Policy](#retention-policy)
     - [Worker](#worker)
     - [Starter](#publisher)
     - [Publisher](#starter)
@@ -139,6 +140,19 @@ camunda-platform:
 ```
 
 Per default Zeebe and Zeebe-Gateway are enabled and all other components are disabled.
+
+### Retention Policy
+
+Allows to configure the elasticsearch index retention policies, which are much more fine granular in contrast to the ones provided by the parent helm chart (camunda-platform). 
+
+| Section | Parameter | Description | Default |
+|-|-|-|-|
+| `retentionPolicy` | | Configuration to configure the elasticsearch index retention policies | |
+| | `enabled` | If true, elasticsearch curator cronjob and configuration will be deployed. | `false` |
+| | `schedule` |Defines how often/when the curator should run. | `"0 * * * *"` |
+| | `policies` |Defines a list of policies, which allows to specify policies for specific indexes or globally (based on the pattern specified). | `"0 * * * *"` |
+| | `image` |Configuration for the elasticsearch curator cronjob. ||
+
 
 ### Worker
 
