@@ -51,7 +51,7 @@ data:
         filters:
           - filtertype: pattern
             kind: prefix
-            value: zeebe-
+            value: {{ $policy.name }}
           - filtertype: space
             disk_space: {{ $policy.maxSize }}
             source: name
