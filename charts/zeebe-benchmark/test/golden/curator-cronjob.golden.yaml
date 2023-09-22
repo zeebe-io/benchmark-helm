@@ -3,16 +3,14 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: camunda-platform-curator
+  name: zeebe-benchmark-curator
   labels:
-    
     app.kubernetes.io/name: zeebe-benchmark
     app.kubernetes.io/instance: benchmark-test
+    app.kubernetes.io/version: "8.2.5"
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/part-of: camunda-platform
-    app.kubernetes.io/version: "SNAPSHOT"
 spec:
-  schedule: "*/15 * * * *"
+  schedule: "0 * * * *"
   successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 3
   concurrencyPolicy: Forbid

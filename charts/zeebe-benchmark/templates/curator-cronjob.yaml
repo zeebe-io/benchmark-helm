@@ -2,9 +2,9 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: camunda-platform-curator
+  name: zeebe-benchmark-curator
   labels:
-    {{- include "camundaPlatform.labels" . | nindent 4 }}
+    {{- include "zeebe-benchmark.labels" . | nindent 4 }}
 spec:
   schedule: {{ .Values.retentionPolicy.schedule | quote }}
   successfulJobsHistoryLimit: 1

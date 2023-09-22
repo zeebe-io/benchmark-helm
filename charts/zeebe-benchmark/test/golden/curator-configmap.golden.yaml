@@ -3,14 +3,12 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: camunda-platform-curator-config
+  name: zeebe-benchmark-curator-config
   labels:
-    
     app.kubernetes.io/name: zeebe-benchmark
     app.kubernetes.io/instance: benchmark-test
+    app.kubernetes.io/version: "8.2.5"
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/part-of: camunda-platform
-    app.kubernetes.io/version: "SNAPSHOT"
 data:
   action_file.yml: |-
     ---
