@@ -2,7 +2,7 @@ apiVersion: v2
 name: zeebe-benchmark
 description: A Helm chart for Zeebe benchmarks
 type: application
-version: 0.1.20
+version: 0.1.21
 appVersion: "8.2.5"
 sources:
   - https://github.com/zeebe-io/benchmark-helm
@@ -10,7 +10,7 @@ sources:
 dependencies:
   - name: camunda-platform
     repository: "https://helm.camunda.io"
-    version: 8.2.12
+    version: 8.2.13
     condition: "camunda.enabled"
   - name: prometheus-elasticsearch-exporter
     repository: "https://prometheus-community.github.io/helm-charts"
@@ -26,4 +26,4 @@ annotations:
     - name: Zeebe Docs
       url: https://docs.camunda.io/docs/components/zeebe/zeebe-overview/
   artifacthub.io/containsSecurityUpdates: "false"
-  artifacthub.io/changes: "- kind: fixed\n  description: \"use the correct index name\"\n"
+  artifacthub.io/changes: "- kind: fixed\n  description: \"refer to custom curator config map\"\n"
