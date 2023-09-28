@@ -25,7 +25,7 @@ spec:
           volumes:
             - name: config
               configMap:
-                name: camunda-platform-curator-config
+                name: zeebe-benchmark-curator-config
                 defaultMode: 0744
           restartPolicy: OnFailure
 {{- end }}
