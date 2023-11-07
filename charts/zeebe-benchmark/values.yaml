@@ -135,7 +135,7 @@ camunda-platform:
   enabled: true
   global:
     image:
-      tag: SNAPSHOT
+      tag: 8.3.1
       pullPolicy: Always
 
   zeebe:
@@ -143,6 +143,8 @@ camunda-platform:
     image:
       # Image.repository defines which image repository to use
       repository: camunda/zeebe
+      tag: 8.3.1
+
     # ClusterSize defines the amount of brokers (=replicas), which are deployed via helm
     clusterSize: "3"
     # PartitionCount defines how many zeebe partitions are set up in the cluster
@@ -194,6 +196,9 @@ camunda-platform:
     extraInitContainers:
       - name: pyroscope
         image: alpine
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 1000  # Use a non-root user ID
         command: ['wget', 'https://github.com/pyroscope-io/pyroscope-java/releases/latest/download/pyroscope.jar', '-O', '/pyroscope/pyroscope.jar']
         volumeMounts:
           - name: pyroscope
@@ -272,6 +277,7 @@ camunda-platform:
     image:
       # Image.repository defines which image repository to use
       repository: camunda/zeebe
+      tag: 8.3.1
     # LogLevel defines the log level which is used by the gateway
     logLevel: debug
 
@@ -293,6 +299,9 @@ camunda-platform:
     extraInitContainers:
       - name: pyroscope
         image: alpine
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 1000  # Use a non-root user ID
         command: ['wget', 'https://github.com/pyroscope-io/pyroscope-java/releases/latest/download/pyroscope.jar', '-O', '/pyroscope/pyroscope.jar']
         volumeMounts:
           - name: pyroscope
@@ -374,7 +383,7 @@ camunda-platform:
   operate:
     enabled: false
     image:
-      tag: 8.2.8
+      tag: 8.3.1
     # Resources configuration to set request and limit configuration for the container https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#requests-and-limits
     resources:
       requests:
@@ -394,13 +403,17 @@ camunda-platform:
             fieldPath: metadata.namespace  
 
   tasklist:
-    enabled: false
+    enabled: true
+    tag: 8.3.1
 
   identity:
     enabled: false
 
   optimize:
     enabled: false
+    image:
+      repository: gcr.io/zeebe-io/optimize
+      tag: 8.3.2-SNAPSHOT-ES-SETUP
 
   connectors:
     enabled: false
@@ -411,10 +424,90 @@ camunda-platform:
   postgresql:
     enabled: false
 
-  # ELASTIC
-  elasticsearch:
+  # ELASTIC-ZEEBE
+  elasticsearch-zeebe:
+
     enabled: true
-    imageTag: 7.16.2
+    #imageTag: 7.16.2
+    global:
+      # Disable kibana
+      kibanaEnabled: false
+
+    replicas: 3
+    minimumMasterNodes: 2
+
+    volumeClaimTemplate:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "ssd"
+      resources:
+        requests:
+          storage: 16Gi
+
+    esJavaOpts: "-Xmx3g -Xms3g"
+
+    resources:
+      requests:
+        cpu: 1
+        memory: 3Gi
+      limits:
+        cpu: 2
+        memory: 6Gi
+
+  # ELASTIC-TASKLIST
+  elasticsearch-tasklist:
+    enabled: true
+
+    global:
+      # Disable kibana
+      kibanaEnabled: false
+
+    replicas: 3
+    minimumMasterNodes: 2
+
+    volumeClaimTemplate:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "ssd"
+      resources:
+        requests:
+          storage: 16Gi
+
+    esJavaOpts: "-Xmx3g -Xms3g"
+
+    resources:
+      requests:
+        cpu: 1
+        memory: 3Gi
+      limits:
+        cpu: 2
+        memory: 6Gi
+
+  # ELASTIC-OPERATE
+  elasticsearch-operate:
+    enabled: false
+
+    replicas: 3
+    minimumMasterNodes: 2
+
+    volumeClaimTemplate:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "ssd"
+      resources:
+        requests:
+          storage: 16Gi
+
+    esJavaOpts: "-Xmx3g -Xms3g"
+
+    resources:
+      requests:
+        cpu: 1
+        memory: 3Gi
+      limits:
+        cpu: 2
+        memory: 6Gi
+
+  # ELASTIC-OPTIMIZE
+  elasticsearch-optimize:
+    enabled: false
 
     replicas: 3
     minimumMasterNodes: 2
@@ -450,12 +543,12 @@ prometheus-elasticsearch-exporter:
     ## of a remote Elasticsearch server. When basic auth is needed,
     ## specify as: <proto>://<user>:<password>@<host>:<port>. e.g., http://admin:pass@localhost:9200.
     ##
-    uri: http://elasticsearch-master:9200
+    uri: http://elasticsearch-zeebe-master:9200
   serviceMonitor:
     ## If true, a ServiceMonitor CRD is created for a prometheus operator
     ## https://github.com/coreos/prometheus-operator
     ##
-    enabled: true
+    enabled: false
     # Labels used by the service monitor, specific to our prometheus installation
     labels:
       release: monitoring
