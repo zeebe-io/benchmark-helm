@@ -1,0 +1,127 @@
+# create namespace
+# => kubectl create namespace dm-benchmark-multiple-es-instances-all-apps-enabled
+# switch namespace
+# => kubectl config set-context --current --namespace=dm-benchmark-multiple-es-instances-all-apps-enabled
+#
+#
+# to make template invoke the following:
+# => helm template dm-benchmark charts/zeebe-benchmark -f kind/multiple-es-instances-all-apps-enabled-values.yaml --output-dir out_multiple-es-instances-all-apps-enabled-values
+#
+# to install charts invoke the following:
+# => helm install dm-benchmark charts/zeebe-benchmark -f kind/multiple-es-instances-all-apps-enabled-values.yaml --render-subchart-notes
+#
+# to uninstall charts invoke the following:
+# => helm uninstall dm-benchmark && kubectl delete pvc -l app.kubernetes.io/instance=dm-benchmark && kubectl delete pvc -l release=dm-benchmark
+#
+# delete namespace
+# => kubectl delete namespace dm-benchmark-multiple-es-instances-all-apps-enabled
+#
+
+camunda-platform:
+
+  zeebe:
+    # ZEEBE_BROKER_THREADS_CPUTHREADCOUNT
+    cpuThreadCount: "5"
+    # ZEEBE_BROKER_THREADS_IOTHREADCOUNT
+    ioThreadCount: "5"
+    env:
+      - name: ZEEBE_BROKER_DATA_DISKUSAGEREPLICATIONWATERMARK
+        value: "0.87"
+      - name: ZEEBE_BROKER_DATA_DISKUSAGECOMMANDWATERMARK
+        value: "0.85"
+    resources:
+      limits:
+        memory: "4Gi"
+        cpu: "2000m"
+      requests:
+        memory: "4Gi"
+        cpu: "1350m"
+
+  zeebe-gateway:
+    env:
+      - name: ZEEBE_GATEWAY_THREADS_MANAGEMENTTHREADS
+        value: "2"
+    resources:
+      limits:
+        memory: "2Gi"
+        cpu: "2"
+      requests:
+        memory: "1Gi"
+        cpu: "1"
+
+  operate:
+    enabled: true
+    resources:
+      limits:
+        memory: "2Gi"
+        cpu: "1000m"
+      requests:
+        memory: "250Mi"
+        cpu: "400m"
+
+  tasklist:
+    enabled: true
+    resources:
+      limits:
+        memory: "1Gi"
+        cpu: "1"
+      requests:
+        memory: "400Mi"
+        cpu: "400m"
+
+  optimize:
+    enabled: true
+    resources:
+      limits:
+        memory: "4Gi"
+        cpu: "1500m"
+      requests:
+        memory: "1500Mi"
+        cpu: "500m"
+
+  postgresql:
+    enabled: true
+
+  elasticsearch-zeebe:
+    enabled: true
+    master:
+      resources:
+        limits:
+          memory: "3Gi"
+          cpu: "1"
+        requests:
+          memory: "2Gi"
+          cpu: "500m"
+
+  elasticsearch-tasklist:
+    enabled: true
+    master:
+      resources:
+        limits:
+          memory: "3Gi"
+          cpu: "1"
+        requests:
+          memory: "2Gi"
+          cpu: "500m"
+
+  elasticsearch-optimize:
+    enabled: true
+    master:
+      resources:
+        limits:
+          memory: "3Gi"
+          cpu: "1"
+        requests:
+          memory: "2Gi"
+          cpu: "500m"
+
+  elasticsearch-operate:
+    enabled: true
+    master:
+      resources:
+        limits:
+          memory: "3Gi"
+          cpu: "1"
+        requests:
+          memory: "2Gi"
+          cpu: "500m"

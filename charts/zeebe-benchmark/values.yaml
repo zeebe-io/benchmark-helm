@@ -381,7 +381,7 @@ camunda-platform:
       tag: 5.8.4
 
   operate:
-    enabled: false
+    enabled: true
     image:
       tag: 8.3.1
     # Resources configuration to set request and limit configuration for the container https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#requests-and-limits
@@ -404,13 +404,16 @@ camunda-platform:
 
   tasklist:
     enabled: true
-    tag: 8.3.1
+    image:
+      tag: 8.3.1
 
   identity:
-    enabled: false
+    enabled: true
+    image:
+      tag: 8.3.1
 
   optimize:
-    enabled: false
+    enabled: true
     image:
       repository: gcr.io/zeebe-io/optimize
       tag: 8.3.2-SNAPSHOT-ES-SETUP
@@ -424,27 +427,44 @@ camunda-platform:
   postgresql:
     enabled: false
 
-  # ELASTIC-ZEEBE
-  elasticsearch-zeebe:
-
-    enabled: true
-    #imageTag: 7.16.2
+  # ELASTIC-COMMON
+  elasticsearch:
+    enabled: false
     global:
       # Disable kibana
       kibanaEnabled: false
-
     replicas: 3
     minimumMasterNodes: 2
-
     volumeClaimTemplate:
       accessModes: [ "ReadWriteOnce" ]
       storageClassName: "ssd"
       resources:
         requests:
           storage: 16Gi
-
     esJavaOpts: "-Xmx3g -Xms3g"
+    resources:
+      requests:
+        cpu: 1
+        memory: 3Gi
+      limits:
+        cpu: 2
+        memory: 6Gi
 
+  # ELASTIC-ZEEBE
+  elasticsearch-zeebe:
+    enabled: true
+    global:
+      # Disable kibana
+      kibanaEnabled: false
+    replicas: 3
+    minimumMasterNodes: 2
+    volumeClaimTemplate:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "ssd"
+      resources:
+        requests:
+          storage: 16Gi
+    esJavaOpts: "-Xmx3g -Xms3g"
     resources:
       requests:
         cpu: 1
@@ -456,23 +476,18 @@ camunda-platform:
   # ELASTIC-TASKLIST
   elasticsearch-tasklist:
     enabled: true
-
     global:
       # Disable kibana
       kibanaEnabled: false
-
     replicas: 3
     minimumMasterNodes: 2
-
     volumeClaimTemplate:
       accessModes: [ "ReadWriteOnce" ]
       storageClassName: "ssd"
       resources:
         requests:
           storage: 16Gi
-
     esJavaOpts: "-Xmx3g -Xms3g"
-
     resources:
       requests:
         cpu: 1
@@ -483,20 +498,19 @@ camunda-platform:
 
   # ELASTIC-OPERATE
   elasticsearch-operate:
-    enabled: false
-
+    enabled: true
+    global:
+      # Disable kibana
+      kibanaEnabled: false
     replicas: 3
     minimumMasterNodes: 2
-
     volumeClaimTemplate:
       accessModes: [ "ReadWriteOnce" ]
       storageClassName: "ssd"
       resources:
         requests:
           storage: 16Gi
-
     esJavaOpts: "-Xmx3g -Xms3g"
-
     resources:
       requests:
         cpu: 1
@@ -507,20 +521,19 @@ camunda-platform:
 
   # ELASTIC-OPTIMIZE
   elasticsearch-optimize:
-    enabled: false
-
+    enabled: true
+    global:
+      # Disable kibana
+      kibanaEnabled: false
     replicas: 3
     minimumMasterNodes: 2
-
     volumeClaimTemplate:
       accessModes: [ "ReadWriteOnce" ]
       storageClassName: "ssd"
       resources:
         requests:
           storage: 16Gi
-
     esJavaOpts: "-Xmx3g -Xms3g"
-
     resources:
       requests:
         cpu: 1
@@ -543,12 +556,12 @@ prometheus-elasticsearch-exporter:
     ## of a remote Elasticsearch server. When basic auth is needed,
     ## specify as: <proto>://<user>:<password>@<host>:<port>. e.g., http://admin:pass@localhost:9200.
     ##
-    uri: http://elasticsearch-zeebe-master:9200
+    uri: http://elasticsearch-master:9200
   serviceMonitor:
     ## If true, a ServiceMonitor CRD is created for a prometheus operator
     ## https://github.com/coreos/prometheus-operator
     ##
-    enabled: false
+    enabled: true
     # Labels used by the service monitor, specific to our prometheus installation
     labels:
       release: monitoring
