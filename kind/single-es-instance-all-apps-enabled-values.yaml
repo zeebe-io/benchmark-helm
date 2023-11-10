@@ -5,14 +5,14 @@
 #
 #
 # to make template invoke the following:
-# => helm template dm-benchmark charts/zeebe-benchmark -f kind/single-es-instance-all-apps-enabled-values.yaml --output-dir out_single-es-instance-all-apps-enabled-values
+# => helm template dm-benchmark-s charts/zeebe-benchmark -f kind/single-es-instance-all-apps-enabled-values.yaml --output-dir out_single-es-instance-all-apps-enabled-values
 #
 # to install charts invoke the following:
-# => helm install dm-benchmark charts/zeebe-benchmark -f kind/single-es-instance-all-apps-enabled-values.yaml --render-subchart-notes
+# => helm install dm-benchmark-s charts/zeebe-benchmark -f kind/single-es-instance-all-apps-enabled-values.yaml --render-subchart-notes
 #
 #
 # to uninstall charts invoke the following:
-# => helm uninstall dm-benchmark && kubectl delete pvc -l app.kubernetes.io/instance=dm-benchmark && kubectl delete pvc -l release=dm-benchmark
+# => helm uninstall dm-benchmark-s && kubectl delete pvc -l app.kubernetes.io/instance=dm-benchmark-s && kubectl delete pvc -l release=dm-benchmark-s
 #
 # delete namespace
 # => kubectl delete namespace dm-benchmark-single-es-instance-all-apps-enabled
@@ -36,33 +36,37 @@ camunda-platform:
 
   zeebe:
     # ZEEBE_BROKER_THREADS_CPUTHREADCOUNT
-    cpuThreadCount: "5"
+    #cpuThreadCount: "3"
     # ZEEBE_BROKER_THREADS_IOTHREADCOUNT
-    ioThreadCount: "5"
-    env:
-      - name: ZEEBE_BROKER_DATA_DISKUSAGEREPLICATIONWATERMARK
-        value: "0.87"
-      - name: ZEEBE_BROKER_DATA_DISKUSAGECOMMANDWATERMARK
-        value: "0.85"
-    resources:
-      limits:
-        memory: "4Gi"
-        cpu: "2000m"
-      requests:
-        memory: "4Gi"
-        cpu: "1350m"
+    #ioThreadCount: "3"
+    #env:
+    #  - name: ZEEBE_BROKER_DATA_DISKUSAGEREPLICATIONWATERMARK
+    #    value: "0.87"
+    #  - name: ZEEBE_BROKER_DATA_DISKUSAGECOMMANDWATERMARK
+    #    value: "0.85"
+    retention:
+      enabled: true
+      ## @param zeebe.retention.minimumAge defines how old the data must be, before the data is deleted as a duration.
+      minimumAge: 1h
+    #resources:
+    #  limits:
+    #    memory: "4Gi"
+    #    cpu: "2000m"
+    #  requests:
+    #    memory: "4Gi"
+    #    cpu: "1350m"
 
-  zeebe-gateway:
-    env:
-      - name: ZEEBE_GATEWAY_THREADS_MANAGEMENTTHREADS
-        value: "2"
-    resources:
-      limits:
-        memory: "2Gi"
-        cpu: "2000m"
-      requests:
-        memory: "1Gi"
-        cpu: "1000m"
+  #zeebe-gateway:
+  #  env:
+  #    - name: ZEEBE_GATEWAY_THREADS_MANAGEMENTTHREADS
+  #      value: "2"
+  #  resources:
+  #    limits:
+  #      memory: "2Gi"
+  #      cpu: "2000m"
+  #    requests:
+  #      memory: "1Gi"
+  #      cpu: "1000m"
 
   operate:
     enabled: true
@@ -73,6 +77,12 @@ camunda-platform:
       limits:
         memory: "2Gi"
         cpu: "1000m"
+    # Retention can be used to define the data in Elasticsearch (ILM).
+    retention:
+      ## @param operate.retention.enabled if true, the ILM Policy is created and applied to the index templates.
+      enabled: true
+      ## @param operate.retention.minimumAge defines how old the data must be, before the data is deleted as a duration.
+      minimumAge: 1h
 
   tasklist:
     enabled: true
@@ -83,9 +93,14 @@ camunda-platform:
       requests:
         memory: "400Mi"
         cpu: "400m"
+    retention:
+      ## @param tasklist.retention.enabled if true, the ILM Policy is created and applied to the index templates.
+      enabled: true
+      ## @param tasklist.retention.minimumAge defines how old the data must be, before the data is deleted as a duration.
+      minimumAge: 1h
 
   optimize:
-    enabled: true
+    enabled: false
     resources:
       limits:
         memory: "4Gi"
@@ -94,8 +109,11 @@ camunda-platform:
         memory: "1500Mi"
         cpu: "500m"
 
+  identity:
+    enabled: false
+
   postgresql:
-    enabled: true
+    enabled: false
 
   elasticsearch:
     enabled: true
@@ -119,3 +137,21 @@ camunda-platform:
 
   elasticsearch-operate:
     enabled: false
+
+starter:
+  rate: 10
+
+worker:
+  replicas: 1
+
+timer:
+  replicas: 1
+  rate: 5
+
+publisher:
+  replicas: 1
+  rate: 5
+
+prometheus-elasticsearch-exporter:
+  es:
+    uri: http://{{ .Release.Name }}-elasticsearch:9200

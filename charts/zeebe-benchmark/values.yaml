@@ -269,6 +269,14 @@ camunda-platform:
     # PvcStorageClassName can be used to set the storage class name which should be used by the persistent volume claim. It is recommended to use a storage class, which is backed with a SSD.
     pvcStorageClassName: ssd
 
+    retention:
+      ## @param zeebe.retention.enabled if true, the ILM Policy is created and applied to the index templates.
+      enabled: false
+      ## @param zeebe.retention.minimumAge defines how old the data must be, before the data is deleted as a duration.
+      minimumAge: 1d
+      ## @param zeebe.retention.policyName defines the name of the created and applied ILM policy.
+      policyName: zeebe-record-retention-policy
+
   zeebe-gateway:
     # Replicas defines how many standalone gateways are deployed
     replicas: 2
@@ -400,12 +408,23 @@ camunda-platform:
       - name: OPERATE_LOG_STACKDRIVER_SERVICEVERSION
         valueFrom:
           fieldRef:
-            fieldPath: metadata.namespace  
+            fieldPath: metadata.namespace
+    # Retention can be used to define the data in Elasticsearch (ILM).
+    retention:
+      ## @param operate.retention.enabled if true, the ILM Policy is created and applied to the index templates.
+      enabled: false
+      ## @param operate.retention.minimumAge defines how old the data must be, before the data is deleted as a duration.
+      minimumAge: 1d
 
   tasklist:
     enabled: true
     image:
       tag: 8.3.1
+    retention:
+      ## @param tasklist.retention.enabled if true, the ILM Policy is created and applied to the index templates.
+      enabled: false
+      ## @param tasklist.retention.minimumAge defines how old the data must be, before the data is deleted as a duration.
+      minimumAge: 1d
 
   identity:
     enabled: true
@@ -433,22 +452,11 @@ camunda-platform:
     global:
       # Disable kibana
       kibanaEnabled: false
-    replicas: 3
-    minimumMasterNodes: 2
-    volumeClaimTemplate:
+    master:
+      replicaCount: 3
+      persistence:
+        storageClass: "ssd"
       accessModes: [ "ReadWriteOnce" ]
-      storageClassName: "ssd"
-      resources:
-        requests:
-          storage: 16Gi
-    esJavaOpts: "-Xmx3g -Xms3g"
-    resources:
-      requests:
-        cpu: 1
-        memory: 3Gi
-      limits:
-        cpu: 2
-        memory: 6Gi
 
   # ELASTIC-ZEEBE
   elasticsearch-zeebe:
@@ -456,22 +464,11 @@ camunda-platform:
     global:
       # Disable kibana
       kibanaEnabled: false
-    replicas: 3
-    minimumMasterNodes: 2
-    volumeClaimTemplate:
+    master:
+      replicaCount: 2
+      persistence:
+        storageClass: "ssd"
       accessModes: [ "ReadWriteOnce" ]
-      storageClassName: "ssd"
-      resources:
-        requests:
-          storage: 16Gi
-    esJavaOpts: "-Xmx3g -Xms3g"
-    resources:
-      requests:
-        cpu: 1
-        memory: 3Gi
-      limits:
-        cpu: 2
-        memory: 6Gi
 
   # ELASTIC-TASKLIST
   elasticsearch-tasklist:
@@ -479,22 +476,11 @@ camunda-platform:
     global:
       # Disable kibana
       kibanaEnabled: false
-    replicas: 3
-    minimumMasterNodes: 2
-    volumeClaimTemplate:
+    master:
+      replicaCount: 2
+      persistence:
+        storageClass: "ssd"
       accessModes: [ "ReadWriteOnce" ]
-      storageClassName: "ssd"
-      resources:
-        requests:
-          storage: 16Gi
-    esJavaOpts: "-Xmx3g -Xms3g"
-    resources:
-      requests:
-        cpu: 1
-        memory: 3Gi
-      limits:
-        cpu: 2
-        memory: 6Gi
 
   # ELASTIC-OPERATE
   elasticsearch-operate:
@@ -502,22 +488,11 @@ camunda-platform:
     global:
       # Disable kibana
       kibanaEnabled: false
-    replicas: 3
-    minimumMasterNodes: 2
-    volumeClaimTemplate:
+    master:
+      replicaCount: 2
+      persistence:
+        storageClass: "ssd"
       accessModes: [ "ReadWriteOnce" ]
-      storageClassName: "ssd"
-      resources:
-        requests:
-          storage: 16Gi
-    esJavaOpts: "-Xmx3g -Xms3g"
-    resources:
-      requests:
-        cpu: 1
-        memory: 3Gi
-      limits:
-        cpu: 2
-        memory: 6Gi
 
   # ELASTIC-OPTIMIZE
   elasticsearch-optimize:
@@ -525,22 +500,11 @@ camunda-platform:
     global:
       # Disable kibana
       kibanaEnabled: false
-    replicas: 3
-    minimumMasterNodes: 2
-    volumeClaimTemplate:
+    master:
+      replicaCount: 2
+      persistence:
+        storageClass: "ssd"
       accessModes: [ "ReadWriteOnce" ]
-      storageClassName: "ssd"
-      resources:
-        requests:
-          storage: 16Gi
-    esJavaOpts: "-Xmx3g -Xms3g"
-    resources:
-      requests:
-        cpu: 1
-        memory: 3Gi
-      limits:
-        cpu: 2
-        memory: 6Gi
 
   # Change these settings to configure a different way to collect metrics
   prometheusServiceMonitor:
@@ -550,13 +514,14 @@ camunda-platform:
     scrapeInterval: 30s
 
 prometheus-elasticsearch-exporter:
+  enabled: true
   es:
     ## Address (host and port) of the Elasticsearch node we should connect to.
     ## This could be a local node (localhost:9200, for instance), or the address
     ## of a remote Elasticsearch server. When basic auth is needed,
     ## specify as: <proto>://<user>:<password>@<host>:<port>. e.g., http://admin:pass@localhost:9200.
     ##
-    uri: http://elasticsearch-master:9200
+    uri: http://elasticsearch:9200
   serviceMonitor:
     ## If true, a ServiceMonitor CRD is created for a prometheus operator
     ## https://github.com/coreos/prometheus-operator

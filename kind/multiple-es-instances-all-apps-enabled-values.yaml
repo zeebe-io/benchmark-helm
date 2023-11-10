@@ -21,9 +21,9 @@ camunda-platform:
 
   zeebe:
     # ZEEBE_BROKER_THREADS_CPUTHREADCOUNT
-    cpuThreadCount: "5"
+    cpuThreadCount: "3"
     # ZEEBE_BROKER_THREADS_IOTHREADCOUNT
-    ioThreadCount: "5"
+    ioThreadCount: "3"
     env:
       - name: ZEEBE_BROKER_DATA_DISKUSAGEREPLICATIONWATERMARK
         value: "0.87"
@@ -80,7 +80,7 @@ camunda-platform:
         cpu: "500m"
 
   postgresql:
-    enabled: true
+    enabled: false
 
   elasticsearch-zeebe:
     enabled: true
@@ -125,3 +125,6 @@ camunda-platform:
         requests:
           memory: "2Gi"
           cpu: "500m"
+
+prometheus-elasticsearch-exporter:
+  enabled: false
