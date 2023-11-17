@@ -5,10 +5,10 @@
 #
 #
 # to make template invoke the following:
-# => helm template dm-benchmark-s charts/zeebe-benchmark -f kind/single-es-instance-all-apps-enabled-values.yaml --output-dir out_single-es-instance-all-apps-enabled-values
+# => helm dependency update charts/zeebe-benchmark && helm template dm-benchmark-s charts/zeebe-benchmark -f kind/single-es-instance-all-apps-enabled-values.yaml --output-dir out_single/single-es-all-apps-enabled-values
 #
 # to install charts invoke the following:
-# => helm install dm-benchmark-s charts/zeebe-benchmark -f kind/single-es-instance-all-apps-enabled-values.yaml --render-subchart-notes
+# => helm dependency update charts/zeebe-benchmark && helm install dm-benchmark-s charts/zeebe-benchmark -f kind/single-es-instance-all-apps-enabled-values.yaml --render-subchart-notes
 #
 #
 # to uninstall charts invoke the following:
@@ -47,7 +47,7 @@ camunda-platform:
     retention:
       enabled: true
       ## @param zeebe.retention.minimumAge defines how old the data must be, before the data is deleted as a duration.
-      minimumAge: 1h
+      minimumAge: 5m
     #resources:
     #  limits:
     #    memory: "4Gi"
@@ -77,12 +77,6 @@ camunda-platform:
       limits:
         memory: "2Gi"
         cpu: "1000m"
-    # Retention can be used to define the data in Elasticsearch (ILM).
-    retention:
-      ## @param operate.retention.enabled if true, the ILM Policy is created and applied to the index templates.
-      enabled: true
-      ## @param operate.retention.minimumAge defines how old the data must be, before the data is deleted as a duration.
-      minimumAge: 1h
 
   tasklist:
     enabled: true
@@ -93,11 +87,6 @@ camunda-platform:
       requests:
         memory: "400Mi"
         cpu: "400m"
-    retention:
-      ## @param tasklist.retention.enabled if true, the ILM Policy is created and applied to the index templates.
-      enabled: true
-      ## @param tasklist.retention.minimumAge defines how old the data must be, before the data is deleted as a duration.
-      minimumAge: 1h
 
   optimize:
     enabled: false
@@ -138,8 +127,29 @@ camunda-platform:
   elasticsearch-operate:
     enabled: false
 
+retentionPolicy:
+  enabled: true
+  # Every 5 minutes => https://crontab.guru/#*/5_*_*_*_*
+  schedule: "*/5 * * * *"
+  policies:
+    - name: zeebe-
+      maxSize:
+      unit: minutes
+      timeToLive: 14
+    - name: operate-
+      unit: minutes
+      timeToLive: 12
+    - name: tasklist-
+      unit: minutes
+      timeToLive: 10
+    # the following are not consumed by operate so we want to get rid of them rather quickly
+    - name: zeebe-record_message
+      maxSize: 1
+    - name: zeebe-record_process-instance-creation
+      maxSize: 1
+
 starter:
-  rate: 10
+  rate: 5
 
 worker:
   replicas: 1

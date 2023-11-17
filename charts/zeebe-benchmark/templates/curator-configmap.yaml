@@ -20,7 +20,7 @@ data:
       {{ $counter }}:
       {{- if $policy.timeToLive }}
         action: delete_indices
-        description: "Clean up ES by deleting old indices"
+        description: "Clean up ES by deleting old indices with '{{ $policy.name }}' prefix"
         options:
           timeout_override:
           continue_if_exception: False
@@ -34,7 +34,7 @@ data:
             source: name
             direction: older
             timestring: '%Y-%m-%d'
-            unit: days
+            unit: {{ $policy.unit }}
             unit_count: {{ $policy.timeToLive }}
             field:
             stats_result:
@@ -42,7 +42,7 @@ data:
             exclude: False
       {{- else }}
         action: delete_indices
-        description: "Clean up ES by deleting too big indices"
+        description: "Clean up ES by deleting too big indices with '{{ $policy.name }}' prefix"
         options:
           timeout_override:
           continue_if_exception: False
@@ -63,22 +63,20 @@ data:
     ---
     # Remember, leave a key empty if there is no value.  None will be a string,
     # not a Python "NoneType"
-    client:
-      hosts:
-        - elasticsearch-master-headless
-      port: 9200
-      url_prefix:
-      use_ssl: False
-      certificate:
-      client_cert:
-      client_key:
-      ssl_no_validate: False
-      http_auth:
-      timeout: 30
-      master_only: False
+    elasticsearch:
+      client:
+        hosts:
+  {{- $root := . }}
+  {{- range .Values.retentionPolicy.client.hosts }}
+          - {{ . | replace "RELEASE_NAME" $root.Release.Name }}
+  {{- end }}
+        verify_certs: False
+        request_timeout: 30
+      other_settings:
+        master_only: False
     logging:
       loglevel: INFO
       logfile:
       logformat: default
       blacklist: ['elasticsearch', 'urllib3']
-{{- end }}
+      {{- end }}

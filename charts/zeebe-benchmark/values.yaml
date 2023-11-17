@@ -112,23 +112,28 @@ retentionPolicy:
   policies:
     - name: zeebe-
       maxSize:
+      unit: days
       timeToLive: 2
     - name: operate-
+      unit: days
       timeToLive: 1
     # the following are not consumed by operate so we want to get rid of them rather quickly
     - name: zeebe-record_message
       maxSize: 1
     - name: zeebe-record_process-instance-creation
       maxSize: 1
+  client:
+    hosts:
+      - "http://RELEASE_NAME-elasticsearch-master-hl:9200"
   # Image configuration for the elasticsearch curator cronjob
   # https://hub.docker.com/r/bitnami/elasticsearch-curator-archived/tags
   image:
     # Image.registry can be used to set container image registry.
     registry: ""
     # Image.repository defines which image repository to use
-    repository: bitnami/elasticsearch-curator-archived
+    repository: untergeek/curator
     # Image.tag defines the tag / version which should be used in the chart
-    tag: 5.8.4
+    tag: 8.0.8
 
 
 camunda-platform:
@@ -389,7 +394,7 @@ camunda-platform:
       tag: 5.8.4
 
   operate:
-    enabled: true
+    enabled: false
     image:
       tag: 8.3.1
     # Resources configuration to set request and limit configuration for the container https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#requests-and-limits
@@ -417,7 +422,7 @@ camunda-platform:
       minimumAge: 1d
 
   tasklist:
-    enabled: true
+    enabled: false
     image:
       tag: 8.3.1
     retention:
@@ -427,12 +432,12 @@ camunda-platform:
       minimumAge: 1d
 
   identity:
-    enabled: true
+    enabled: false
     image:
       tag: 8.3.1
 
   optimize:
-    enabled: true
+    enabled: false
     image:
       repository: gcr.io/zeebe-io/optimize
       tag: 8.3.2-SNAPSHOT-ES-SETUP
@@ -448,7 +453,7 @@ camunda-platform:
 
   # ELASTIC-COMMON
   elasticsearch:
-    enabled: false
+    enabled: true
     global:
       # Disable kibana
       kibanaEnabled: false
@@ -460,7 +465,7 @@ camunda-platform:
 
   # ELASTIC-ZEEBE
   elasticsearch-zeebe:
-    enabled: true
+    enabled: false
     global:
       # Disable kibana
       kibanaEnabled: false
@@ -472,7 +477,7 @@ camunda-platform:
 
   # ELASTIC-TASKLIST
   elasticsearch-tasklist:
-    enabled: true
+    enabled: false
     global:
       # Disable kibana
       kibanaEnabled: false
@@ -484,7 +489,7 @@ camunda-platform:
 
   # ELASTIC-OPERATE
   elasticsearch-operate:
-    enabled: true
+    enabled: false
     global:
       # Disable kibana
       kibanaEnabled: false
@@ -496,7 +501,7 @@ camunda-platform:
 
   # ELASTIC-OPTIMIZE
   elasticsearch-optimize:
-    enabled: true
+    enabled: false
     global:
       # Disable kibana
       kibanaEnabled: false
@@ -530,3 +535,15 @@ prometheus-elasticsearch-exporter:
     # Labels used by the service monitor, specific to our prometheus installation
     labels:
       release: monitoring
+
+prometheus-elasticsearch-exporter-zeebe:
+  enabled: false
+
+prometheus-elasticsearch-exporter-tasklist:
+  enabled: false
+
+prometheus-elasticsearch-exporter-operate:
+  enabled: false
+
+prometheus-elasticsearch-exporter-optimize:
+  enabled: false

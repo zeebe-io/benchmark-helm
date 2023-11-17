@@ -9,13 +9,33 @@ sources:
   - https://github.com/camunda/zeebe
 dependencies:
   - name: camunda-platform
-    repository: "https://helm.camunda.io"
-    version: 8.2.15
+    repository: "file:///Users/dmelnychuk/IdeaProjects/work/camunda/camunda-platform-helm/charts/camunda-platform"
+    version: 8.3.2
     condition: "camunda.enabled"
   - name: prometheus-elasticsearch-exporter
     repository: "https://prometheus-community.github.io/helm-charts"
     version: 5.2.0
     condition: "prometheus-elasticsearch-exporter.enabled"
+  - name: prometheus-elasticsearch-exporter
+    repository: "https://prometheus-community.github.io/helm-charts"
+    version: 5.2.0
+    condition: "prometheus-elasticsearch-exporter-zeebe.enabled"
+    alias: prometheus-elasticsearch-exporter-zeebe
+  - name: prometheus-elasticsearch-exporter
+    repository: "https://prometheus-community.github.io/helm-charts"
+    version: 5.2.0
+    condition: "prometheus-elasticsearch-exporter-tasklist.enabled"
+    alias: prometheus-elasticsearch-exporter-tasklist
+  - name: prometheus-elasticsearch-exporter
+    repository: "https://prometheus-community.github.io/helm-charts"
+    version: 5.2.0
+    condition: "prometheus-elasticsearch-exporter-operate.enabled"
+    alias: prometheus-elasticsearch-exporter-operate
+  - name: prometheus-elasticsearch-exporter
+    repository: "https://prometheus-community.github.io/helm-charts"
+    version: 5.2.0
+    condition: "prometheus-elasticsearch-exporter-optimize.enabled"
+    alias: prometheus-elasticsearch-exporter-optimize
 maintainers:
   - name: Zelldon
     email: christopher.zell@camunda.com
