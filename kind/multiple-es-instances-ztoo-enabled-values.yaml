@@ -1,37 +1,42 @@
 # create namespace
-# => kubectl create namespace dm-benchmark-multiple-es-instances-all-apps-enabled
+# => kubectl create namespace dm-benchmark-multiple-es-ztoo
 # switch namespace
-# => kubectl config set-context --current --namespace=dm-benchmark-multiple-es-instances-all-apps-enabled
+# => kubectl config set-context --current --namespace=dm-benchmark-multiple-es-ztoo
 #
 #
 # to make template invoke the following:
-# => helm dependency update charts/zeebe-benchmark && helm template dm-benchmark-m charts/zeebe-benchmark -f kind/multiple-es-instances-all-apps-enabled-values.yaml --output-dir out_multiple/multiple-es-all-apps-enabled-values
+# => helm dependency update charts/zeebe-benchmark && helm template dm-bmrk-m-ztoo charts/zeebe-benchmark -f kind/multiple-es-instances-ztoo-enabled-values.yaml --output-dir out/multiple/multiple-es-ztoo-enabled-values
 #
 # to install charts invoke the following:
-# => helm dependency update charts/zeebe-benchmark && helm install dm-benchmark-m charts/zeebe-benchmark -f kind/multiple-es-instances-all-apps-enabled-values.yaml --render-subchart-notes
+# => helm dependency update charts/zeebe-benchmark && helm install dm-bmrk-m-ztoo charts/zeebe-benchmark -f kind/multiple-es-instances-ztoo-enabled-values.yaml --render-subchart-notes
 #
 # to uninstall charts invoke the following:
-# => helm uninstall dm-benchmark-m && kubectl delete pvc -l app.kubernetes.io/instance=dm-benchmark-m && kubectl delete pvc -l release=dm-benchmark-m
+# => helm uninstall dm-bmrk-m-ztoo && kubectl delete pvc -l app.kubernetes.io/instance=dm-bmrk-m-ztoo && kubectl delete pvc -l release=dm-bmrk-m-ztoo
 #
 # delete namespace
-# => kubectl delete namespace dm-benchmark-multiple-es-instances-all-apps-enabled
+# => kubectl delete namespace dm-benchmark-multiple-es-ztoo
 #
+
+global:
+  identity:
+    auth:
+      enabled: false
 
 camunda-platform:
   global:
     elasticsearch:
       zeebe:
         host: "{{ .Release.Name }}-elasticsearch-zeebe"
-        clusterName: "elastic-cluster"
+        clusterName: "zeebe-cluster"
       tasklist:
         host: "{{ .Release.Name }}-elasticsearch-tasklist"
-        clusterName: "elastic-cluster"
+        clusterName: "tasklist-cluster"
       operate:
         host: "{{ .Release.Name }}-elasticsearch-operate"
-        clusterName: "elastic-cluster"
+        clusterName: "operate-cluster"
       optimize:
         host: "{{ .Release.Name }}-elasticsearch-optimize"
-        clusterName: "elastic-cluster"
+        clusterName: "optimize-cluster"
   zeebe:
     # ZEEBE_BROKER_THREADS_CPUTHREADCOUNT
     #cpuThreadCount: "3"
@@ -49,6 +54,10 @@ camunda-platform:
       #requests:
         #memory: "4Gi"
         #cpu: "1350m"
+    retention:
+      enabled: true
+      ## @param zeebe.retention.minimumAge defines how old the data must be, before the data is deleted as a duration.
+      minimumAge: 1h
 
   #zeebe-gateway:
     #env:
@@ -71,6 +80,9 @@ camunda-platform:
       requests:
         memory: "250Mi"
         cpu: "400m"
+    retention:
+      enabled: true
+      minimumAge: 1h
 
   tasklist:
     enabled: true
@@ -81,15 +93,15 @@ camunda-platform:
       requests:
         memory: "400Mi"
         cpu: "400m"
+    retention:
+      enabled: true
+      minimumAge: 1h
 
   identity:
     enabled: false
 
-  postgresql:
-    enabled: false
-
   optimize:
-    enabled: false
+    enabled: true
     resources:
       limits:
         memory: "4Gi"
@@ -97,6 +109,22 @@ camunda-platform:
       requests:
         memory: "1500Mi"
         cpu: "500m"
+    retention:
+      enabled: trues
+      # triggered every 15 minutes => https://crontab.guru/#*/15_*_*_*_*
+      cronTrigger: "*/15 * * * *"
+      # https://docs.oracle.com/javase/9/docs/api/java/time/Period.html#parse-java.lang.CharSequence-
+      ttl: "P1D"
+      processDataCleanup:
+        enabled: true
+      decisionDataCleanup:
+        enabled: true
+      ingestedEventCleanup:
+        enabled: true
+      externalVariableCleanup:
+        enabled: true
+    archiver:
+      enabled: true
 
   elasticsearch:
     enabled: false
@@ -138,9 +166,11 @@ camunda-platform:
           cpu: "500m"
 
   elasticsearch-optimize:
-    enabled: false
+    enabled: true
     master:
       replicaCount: 1
+      persistence:
+        size: 128Gi
       resources:
         limits:
           memory: "3Gi"
@@ -164,7 +194,7 @@ publisher:
   rate: 5
 
 retentionPolicy:
-  enabled: true
+  enabled: false
   # Every 5 minutes => https://crontab.guru/#*/5_*_*_*_*
   schedule: "*/5 * * * *"
   policies:
@@ -220,7 +250,7 @@ prometheus-elasticsearch-exporter-operate:
       release: monitoring
 
 prometheus-elasticsearch-exporter-optimize:
-  enabled: false
+  enabled: true
   es:
     uri: http://{{ .Release.Name }}-elasticsearch-optimize:9200
   serviceMonitor:

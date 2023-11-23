@@ -20,42 +20,40 @@ data:
       {{ $counter }}:
       {{- if $policy.timeToLive }}
         action: delete_indices
-        description: "Clean up ES by deleting old indices with '{{ $policy.name }}' prefix"
+        description: "Clean up ES by deleting old indices with '{{ $policy.name }}' prefix and containing and older than {{ $policy.timeToLive }} {{ default "days" $policy.unit }}"
         options:
           timeout_override:
-          continue_if_exception: False
+          continue_if_exception: {{ if $policy.ignoreException }}True{{ else }}False{{ end }}
           disable_action: False
           ignore_empty_list: True
         filters:
-          - filtertype: pattern
-            kind: prefix
-            value: {{ $policy.name }}
-          - filtertype: age
-            source: name
-            direction: older
-            timestring: '%Y-%m-%d'
-            unit: {{ $policy.unit }}
-            unit_count: {{ $policy.timeToLive }}
-            field:
-            stats_result:
-            epoch:
-            exclude: False
+        - filtertype: pattern
+          kind: prefix
+          value: {{ $policy.name }}
+          exclude: False
+        - filtertype: age
+          source: name
+          direction: older
+          timestring: '%Y-%m-%d'
+          unit: {{ default "days" $policy.unit }}
+          unit_count: {{ $policy.timeToLive }}
+          exclude: False
       {{- else }}
         action: delete_indices
-        description: "Clean up ES by deleting too big indices with '{{ $policy.name }}' prefix"
+        description: "Clean up ES by deleting too big indices with '{{ $policy.name }}' prefix and bigger than {{ $policy.maxSize }} Gb"
         options:
           timeout_override:
-          continue_if_exception: False
+          continue_if_exception: {{ if $policy.ignoreException }}True{{ else }}False{{ end }}
           disable_action: False
           ignore_empty_list: True
         filters:
-          - filtertype: pattern
-            kind: prefix
-            value: {{ $policy.name }}
-          - filtertype: space
-            disk_space: {{ $policy.maxSize }}
-            source: name
-            timestring: '%Y-%m-%d'
+        - filtertype: pattern
+          kind: prefix
+          value: {{ $policy.name }}
+        - filtertype: space
+          disk_space: {{ $policy.maxSize }}
+          source: name
+          timestring: '%Y-%m-%d'
       {{- end }}
       {{- $counter = add1 $counter }}
       {{- end }}

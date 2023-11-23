@@ -1,0 +1,195 @@
+# create namespace
+# => kubectl create namespace dm-benchmark-single-es-ztoo
+# switch namespace
+# => kubectl config set-context --current --namespace=dm-benchmark-single-es-ztoo
+#
+# update dependencies
+# => helm dependency update charts/zeebe-benchmark
+#
+# to make template invoke the following:
+# => helm template dm-bmrk-s-ztoo charts/zeebe-benchmark -f kind/single-es-instance-ztoo-enabled-values.yaml --output-dir out/single/single-es-ztoo-enabled-values
+#
+# to install charts invoke the following:
+# => helm dependency update charts/zeebe-benchmark && helm install dm-bmrk-s-ztoo charts/zeebe-benchmark -f kind/single-es-instance-ztoo-enabled-values.yaml --render-subchart-notes
+#
+#
+# to uninstall charts invoke the following:
+# => helm uninstall dm-bmrk-s-ztoo && kubectl delete pvc -l app.kubernetes.io/instance=dm-bmrk-s-ztoo && kubectl delete pvc -l release=dm-bmrk-s-ztoo
+#
+# delete namespace
+# => kubectl delete namespace dm-benchmark-single-es-ztoo
+#
+
+global:
+  identity:
+    auth:
+      enabled: false
+
+camunda-platform:
+  global:
+    elasticsearch:
+      zeebe:
+        host: "{{ .Release.Name }}-elasticsearch"
+        clusterName: "elastic-cluster"
+      tasklist:
+        host: "{{ .Release.Name }}-elasticsearch"
+        clusterName: "elastic-cluster"
+      operate:
+        host: "{{ .Release.Name }}-elasticsearch"
+        clusterName: "elastic-cluster"
+      optimize:
+        host: "{{ .Release.Name }}-elasticsearch"
+        clusterName: "elastic-cluster"
+
+  zeebe:
+    # ZEEBE_BROKER_THREADS_CPUTHREADCOUNT
+    #cpuThreadCount: "3"
+    # ZEEBE_BROKER_THREADS_IOTHREADCOUNT
+    #ioThreadCount: "3"
+    #env:
+    #  - name: ZEEBE_BROKER_DATA_DISKUSAGEREPLICATIONWATERMARK
+    #    value: "0.87"
+    #  - name: ZEEBE_BROKER_DATA_DISKUSAGECOMMANDWATERMARK
+    #    value: "0.85"
+    retention:
+      enabled: true
+      ## @param zeebe.retention.minimumAge defines how old the data must be, before the data is deleted as a duration.
+      minimumAge: 1h
+    #resources:
+    #  limits:
+    #    memory: "4Gi"
+    #    cpu: "2000m"
+    #  requests:
+    #    memory: "4Gi"
+    #    cpu: "1350m"
+
+  #zeebe-gateway:
+  #  env:
+  #    - name: ZEEBE_GATEWAY_THREADS_MANAGEMENTTHREADS
+  #      value: "2"
+  #  resources:
+  #    limits:
+  #      memory: "2Gi"
+  #      cpu: "2000m"
+  #    requests:
+  #      memory: "1Gi"
+  #      cpu: "1000m"
+
+  operate:
+    enabled: true
+    resources:
+      requests:
+        memory: "250Mi"
+        cpu: "400m"
+      limits:
+        memory: "2Gi"
+        cpu: "1000m"
+    retention:
+      enabled: true
+      minimumAge: 1h
+
+  tasklist:
+    enabled: true
+    resources:
+      limits:
+        memory: "1Gi"
+        cpu: "1"
+      requests:
+        memory: "400Mi"
+        cpu: "400m"
+    retention:
+      enabled: true
+      minimumAge: 1h
+
+  optimize:
+    enabled: true
+    resources:
+      limits:
+        memory: "4Gi"
+        cpu: "1500m"
+      requests:
+        memory: "1500Mi"
+        cpu: "500m"
+    retention:
+      enabled: true
+      # triggered every 15 minutes => https://crontab.guru/#*/15_*_*_*_*
+      cronTrigger: "*/15 * * * *"
+      # https://docs.oracle.com/javase/9/docs/api/java/time/Period.html#parse-java.lang.CharSequence-
+      ttl: "P1D"
+      processDataCleanup:
+        enabled: true
+      decisionDataCleanup:
+        enabled: true
+      ingestedEventCleanup:
+        enabled: true
+      externalVariableCleanup:
+        enabled: true
+    archiver:
+      enabled: true
+
+  identity:
+    enabled: false
+
+  elasticsearch:
+    enabled: true
+    master:
+      persistence:
+        size: 256Gi
+      resources:
+        limits:
+          memory: "10Gi"
+          cpu: "4000m"
+        requests:
+          memory: "6Gi"
+          cpu: "2000m"
+
+  elasticsearch-zeebe:
+    enabled: false
+
+  elasticsearch-tasklist:
+    enabled: false
+
+  elasticsearch-optimize:
+    enabled: false
+
+  elasticsearch-operate:
+    enabled: false
+
+retentionPolicy:
+  enabled: false
+  # Every 15 minutes => https://crontab.guru/#*/15_*_*_*_*
+  schedule: "*/15 * * * *"
+  policies:
+    - name: zeebe-
+      unit: days
+      maxSize:
+      timeToLive: 1
+    - name: operate-
+      unit: days
+      timeToLive: 1
+    - name: tasklist-
+      unit: days
+      timeToLive: 1
+    # the following are not consumed by operate so we want to get rid of them rather quickly
+    - name: zeebe-record_message
+      maxSize: 1
+    - name: zeebe-record_process-instance-creation
+      maxSize: 1
+
+starter:
+  rate: 5
+
+worker:
+  replicas: 1
+
+timer:
+  replicas: 1
+  rate: 5
+
+publisher:
+  replicas: 1
+  rate: 5
+
+prometheus-elasticsearch-exporter:
+  es:
+    uri: http://{{ .Release.Name }}-elasticsearch:9200

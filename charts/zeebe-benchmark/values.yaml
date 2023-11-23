@@ -112,10 +112,8 @@ retentionPolicy:
   policies:
     - name: zeebe-
       maxSize:
-      unit: days
       timeToLive: 2
     - name: operate-
-      unit: days
       timeToLive: 1
     # the following are not consumed by operate so we want to get rid of them rather quickly
     - name: zeebe-record_message

@@ -1,22 +1,27 @@
 # create namespace
-# => kubectl create namespace dm-benchmark-single-es-instance-all-apps-enabled
+# => kubectl create namespace dm-benchmark-single-es-zto
 # switch namespace
-# => kubectl config set-context --current --namespace=dm-benchmark-single-es-instance-all-apps-enabled
+# => kubectl config set-context --current --namespace=dm-benchmark-single-es-zto
 #
 #
 # to make template invoke the following:
-# => helm dependency update charts/zeebe-benchmark && helm template dm-benchmark-s charts/zeebe-benchmark -f kind/single-es-instance-all-apps-enabled-values.yaml --output-dir out_single/single-es-all-apps-enabled-values
+# => helm dependency update charts/zeebe-benchmark && helm template dm-bmrk-s-zto charts/zeebe-benchmark -f kind/single-es-instance-zto-enabled-values.yaml --output-dir out/single-es-all-apps-enabled-values
 #
 # to install charts invoke the following:
-# => helm dependency update charts/zeebe-benchmark && helm install dm-benchmark-s charts/zeebe-benchmark -f kind/single-es-instance-all-apps-enabled-values.yaml --render-subchart-notes
+# => helm dependency update charts/zeebe-benchmark && helm install dm-bmrk-s-zto charts/zeebe-benchmark -f kind/single-es-instance-zto-enabled-values.yaml --render-subchart-notes
 #
 #
 # to uninstall charts invoke the following:
-# => helm uninstall dm-benchmark-s && kubectl delete pvc -l app.kubernetes.io/instance=dm-benchmark-s && kubectl delete pvc -l release=dm-benchmark-s
+# => helm uninstall dm-bmrk-s-zto && kubectl delete pvc -l app.kubernetes.io/instance=dm-bmrk-s-zto && kubectl delete pvc -l release=dm-bmrk-s-zto
 #
 # delete namespace
-# => kubectl delete namespace dm-benchmark-single-es-instance-all-apps-enabled
+# => kubectl delete namespace dm-benchmark-single-es-zto
 #
+
+global:
+  identity:
+    auth:
+      enabled: false
 
 camunda-platform:
   global:
@@ -47,7 +52,7 @@ camunda-platform:
     retention:
       enabled: true
       ## @param zeebe.retention.minimumAge defines how old the data must be, before the data is deleted as a duration.
-      minimumAge: 5m
+      minimumAge: 10m
     #resources:
     #  limits:
     #    memory: "4Gi"
@@ -77,6 +82,9 @@ camunda-platform:
       limits:
         memory: "2Gi"
         cpu: "1000m"
+    retention:
+      enabled: true
+      minimumAge: 10m
 
   tasklist:
     enabled: true
@@ -87,6 +95,9 @@ camunda-platform:
       requests:
         memory: "400Mi"
         cpu: "400m"
+    retention:
+      enabled: true
+      minimumAge: 10m
 
   optimize:
     enabled: false
@@ -99,9 +110,6 @@ camunda-platform:
         cpu: "500m"
 
   identity:
-    enabled: false
-
-  postgresql:
     enabled: false
 
   elasticsearch:
@@ -129,19 +137,18 @@ camunda-platform:
 
 retentionPolicy:
   enabled: true
-  # Every 5 minutes => https://crontab.guru/#*/5_*_*_*_*
-  schedule: "*/5 * * * *"
+  # Every 30 minutes => https://crontab.guru/#*/30_*_*_*_*
+  schedule: "*/30 * * * *"
   policies:
     - name: zeebe-
       maxSize:
-      unit: minutes
-      timeToLive: 14
+      timeToLive: 2
     - name: operate-
-      unit: minutes
-      timeToLive: 12
+      unit: days
+      timeToLive: 1
     - name: tasklist-
-      unit: minutes
-      timeToLive: 10
+      unit: days
+      timeToLive: 1
     # the following are not consumed by operate so we want to get rid of them rather quickly
     - name: zeebe-record_message
       maxSize: 1
