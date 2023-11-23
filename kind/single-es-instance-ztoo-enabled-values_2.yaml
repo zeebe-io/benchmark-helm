@@ -1,21 +1,23 @@
 # create namespace
-# => kubectl create namespace dm-benchmark-single-es-zto
+# => kubectl create namespace dm-benchmark-single-es-ztoo-2
 # switch namespace
-# => kubectl config set-context --current --namespace=dm-benchmark-single-es-zto
+# => kubectl config set-context --current --namespace=dm-benchmark-single-es-ztoo-2
 #
+# update dependencies
+# => helm dependency update charts/zeebe-benchmark
 #
 # to make template invoke the following:
-# => helm dependency update charts/zeebe-benchmark && helm template dm-bmrk-s-zto charts/zeebe-benchmark -f kind/single-es-instance-zto-enabled-values.yaml --output-dir out/single-es-all-apps-enabled-values
+# => helm template dm-bmrk-s-ztoo-2 charts/zeebe-benchmark -f kind/single-es-instance-ztoo-enabled-values_2.yaml --output-dir out/single/single-es-ztoo-enabled-2-values
 #
 # to install charts invoke the following:
-# => helm dependency update charts/zeebe-benchmark && helm install dm-bmrk-s-zto charts/zeebe-benchmark -f kind/single-es-instance-zto-enabled-values.yaml --render-subchart-notes
+# => helm dependency update charts/zeebe-benchmark && helm install dm-bmrk-s-ztoo-2 charts/zeebe-benchmark -f kind/single-es-instance-ztoo-enabled-values_2.yaml --render-subchart-notes
 #
 #
 # to uninstall charts invoke the following:
-# => helm uninstall dm-bmrk-s-zto && kubectl delete pvc -l app.kubernetes.io/instance=dm-bmrk-s-zto && kubectl delete pvc -l release=dm-bmrk-s-zto
+# => helm uninstall dm-bmrk-s-ztoo-2 && kubectl delete pvc -l app.kubernetes.io/instance=dm-bmrk-s-ztoo-2 && kubectl delete pvc -l release=dm-bmrk-s-ztoo-2
 #
 # delete namespace
-# => kubectl delete namespace dm-benchmark-single-es-zto
+# => kubectl delete namespace dm-benchmark-single-es-ztoo-2
 #
 
 global:
@@ -41,9 +43,9 @@ camunda-platform:
 
   zeebe:
     # ZEEBE_BROKER_THREADS_CPUTHREADCOUNT
-    #cpuThreadCount: "3"
+    #cpuThreadCount: "5"
     # ZEEBE_BROKER_THREADS_IOTHREADCOUNT
-    #ioThreadCount: "3"
+    #ioThreadCount: "5"
     #env:
     #  - name: ZEEBE_BROKER_DATA_DISKUSAGEREPLICATIONWATERMARK
     #    value: "0.87"
@@ -52,26 +54,34 @@ camunda-platform:
     retention:
       enabled: true
       ## @param zeebe.retention.minimumAge defines how old the data must be, before the data is deleted as a duration.
-      minimumAge: 10m
-    #resources:
-    #  limits:
-    #    memory: "4Gi"
-    #    cpu: "2000m"
-    #  requests:
-    #    memory: "4Gi"
-    #    cpu: "1350m"
+      minimumAge: 1h
+    resources:
+      limits:
+        # default 4Gi
+        memory: "6Gi"
+        # default 1350m
+        cpu: "3000m"
+      requests:
+        # default 4Gi
+        memory: "4Gi"
+        # default 1350m
+        cpu: "2000m"
 
-  #zeebe-gateway:
-  #  env:
-  #    - name: ZEEBE_GATEWAY_THREADS_MANAGEMENTTHREADS
-  #      value: "2"
-  #  resources:
-  #    limits:
-  #      memory: "2Gi"
-  #      cpu: "2000m"
-  #    requests:
-  #      memory: "1Gi"
-  #      cpu: "1000m"
+  zeebe-gateway:
+    #env:
+    #  - name: ZEEBE_GATEWAY_THREADS_MANAGEMENTTHREADS
+    #    value: "2"
+    resources:
+      limits:
+        # default 400Mi
+        memory: "2Gi"
+        # default 450m
+        cpu: "2000m"
+      requests:
+        # default 400Mi
+        memory: "1Gi"
+        # default 450m
+        cpu: "1000m"
 
   operate:
     enabled: true
@@ -84,7 +94,7 @@ camunda-platform:
         cpu: "1000m"
     retention:
       enabled: true
-      minimumAge: 10m
+      minimumAge: 1h
 
   tasklist:
     enabled: true
@@ -97,10 +107,10 @@ camunda-platform:
         cpu: "400m"
     retention:
       enabled: true
-      minimumAge: 10m
+      minimumAge: 1h
 
   optimize:
-    enabled: false
+    enabled: true
     resources:
       limits:
         memory: "4Gi"
@@ -108,6 +118,22 @@ camunda-platform:
       requests:
         memory: "1500Mi"
         cpu: "500m"
+    retention:
+      enabled: true
+      # triggered every 15 minutes => https://crontab.guru/#*/15_*_*_*_*
+      cronTrigger: "*/15 * * * *"
+      # https://docs.oracle.com/javase/9/docs/api/java/time/Period.html#parse-java.lang.CharSequence-
+      ttl: "P1D"
+      processDataCleanup:
+        enabled: true
+      decisionDataCleanup:
+        enabled: true
+      ingestedEventCleanup:
+        enabled: true
+      externalVariableCleanup:
+        enabled: true
+    archiver:
+      enabled: true
 
   identity:
     enabled: false
@@ -115,6 +141,8 @@ camunda-platform:
   elasticsearch:
     enabled: true
     master:
+      persistence:
+        size: 256Gi
       resources:
         limits:
           memory: "10Gi"
@@ -136,13 +164,14 @@ camunda-platform:
     enabled: false
 
 retentionPolicy:
-  enabled: true
-  # Every 30 minutes => https://crontab.guru/#*/30_*_*_*_*
-  schedule: "*/30 * * * *"
+  enabled: false
+  # Every 15 minutes => https://crontab.guru/#*/15_*_*_*_*
+  schedule: "*/15 * * * *"
   policies:
     - name: zeebe-
+      unit: days
       maxSize:
-      timeToLive: 2
+      timeToLive: 1
     - name: operate-
       unit: days
       timeToLive: 1
