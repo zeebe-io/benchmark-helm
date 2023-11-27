@@ -393,6 +393,10 @@ camunda-platform:
           fieldRef:
             fieldPath: metadata.namespace  
 
+    logging:
+      level:
+        io.camunda.operate: INFO
+
   tasklist:
     enabled: false
 
