@@ -58,14 +58,14 @@ camunda-platform:
     resources:
       limits:
         # default 4Gi
-        memory: "6Gi"
+        memory: "4Gi"
         # default 1350m
-        cpu: "3000m"
+        cpu: "2000m"
       requests:
         # default 4Gi
         memory: "4Gi"
         # default 1350m
-        cpu: "2000m"
+        cpu: "1500m"
 
   zeebe-gateway:
     #env:
@@ -185,17 +185,17 @@ retentionPolicy:
       maxSize: 1
 
 starter:
-  rate: 5
+  rate: 100
 
 worker:
   replicas: 1
 
 timer:
-  replicas: 1
+  replicas: 0
   rate: 5
 
 publisher:
-  replicas: 1
+  replicas: 0
   rate: 5
 
 prometheus-elasticsearch-exporter:

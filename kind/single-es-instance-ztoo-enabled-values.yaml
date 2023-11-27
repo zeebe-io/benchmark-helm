@@ -43,9 +43,9 @@ camunda-platform:
 
   zeebe:
     # ZEEBE_BROKER_THREADS_CPUTHREADCOUNT
-    #cpuThreadCount: "3"
+    #cpuThreadCount: "5"
     # ZEEBE_BROKER_THREADS_IOTHREADCOUNT
-    #ioThreadCount: "3"
+    #ioThreadCount: "5"
     #env:
     #  - name: ZEEBE_BROKER_DATA_DISKUSAGEREPLICATIONWATERMARK
     #    value: "0.87"
@@ -55,25 +55,33 @@ camunda-platform:
       enabled: true
       ## @param zeebe.retention.minimumAge defines how old the data must be, before the data is deleted as a duration.
       minimumAge: 1h
-    #resources:
-    #  limits:
-    #    memory: "4Gi"
-    #    cpu: "2000m"
-    #  requests:
-    #    memory: "4Gi"
-    #    cpu: "1350m"
+    resources:
+      limits:
+        # default 4Gi
+        memory: "4Gi"
+        # default 1350m
+        cpu: "2000m"
+      requests:
+        # default 4Gi
+        memory: "4Gi"
+        # default 1350m
+        cpu: "1500m"
 
-  #zeebe-gateway:
-  #  env:
-  #    - name: ZEEBE_GATEWAY_THREADS_MANAGEMENTTHREADS
-  #      value: "2"
-  #  resources:
-  #    limits:
-  #      memory: "2Gi"
-  #      cpu: "2000m"
-  #    requests:
-  #      memory: "1Gi"
-  #      cpu: "1000m"
+  zeebe-gateway:
+    #env:
+    #  - name: ZEEBE_GATEWAY_THREADS_MANAGEMENTTHREADS
+    #    value: "2"
+    resources:
+      limits:
+        # default 400Mi
+        memory: "2Gi"
+        # default 450m
+        cpu: "2000m"
+      requests:
+        # default 400Mi
+        memory: "1Gi"
+        # default 450m
+        cpu: "1000m"
 
   operate:
     enabled: true
@@ -177,17 +185,17 @@ retentionPolicy:
       maxSize: 1
 
 starter:
-  rate: 5
+  rate: 30
 
 worker:
   replicas: 1
 
 timer:
-  replicas: 1
+  replicas: 0
   rate: 5
 
 publisher:
-  replicas: 1
+  replicas: 0
   rate: 5
 
 prometheus-elasticsearch-exporter:

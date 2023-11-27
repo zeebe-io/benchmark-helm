@@ -26,6 +26,7 @@ spec:
                 -Dapp.brokerUrl={{ .Release.Name }}-zeebe-gateway:26500
                 -Dapp.starter.rate={{ .Values.starter.rate }}
                 -Dapp.starter.durationLimit=0
+                -Dapp.starter.payloadPath=bpmn/small_payload.json
                 -Dzeebe.client.requestTimeout=62000
                 -XX:+HeapDumpOnOutOfMemoryError
             - name: LOG_LEVEL
