@@ -339,10 +339,10 @@ camunda-platform:
     resources:
       limits:
         cpu: 450m
-        memory: 400Mi
+        memory: 1Gi
       requests:
         cpu: 450m
-        memory: 400Mi
+        memory: 1Gi
 
   # RetentionPolicy configuration to configure the elasticsearch index retention policies
   retentionPolicy:
