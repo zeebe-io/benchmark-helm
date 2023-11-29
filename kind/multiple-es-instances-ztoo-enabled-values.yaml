@@ -108,7 +108,7 @@ camunda-platform:
         cpu: "1500m"
       requests:
         memory: "1500Mi"
-        cpu: "500m"
+        cpu: "600m"
     retention:
       enabled: trues
       # triggered every 15 minutes => https://crontab.guru/#*/15_*_*_*_*
@@ -125,6 +125,8 @@ camunda-platform:
         enabled: true
     archiver:
       enabled: true
+    elasticSearch:
+      indexNumberOfReplicas: 0
 
   elasticsearch:
     enabled: false
@@ -180,17 +182,17 @@ camunda-platform:
           cpu: "500m"
 
 starter:
-  rate: 5
+  rate: 15
 
 worker:
   replicas: 1
 
 timer:
-  replicas: 1
+  replicas: 0
   rate: 5
 
 publisher:
-  replicas: 1
+  replicas: 0
   rate: 5
 
 retentionPolicy:

@@ -54,7 +54,7 @@ camunda-platform:
     retention:
       enabled: true
       ## @param zeebe.retention.minimumAge defines how old the data must be, before the data is deleted as a duration.
-      minimumAge: 1h
+      minimumAge: 1d
     resources:
       limits:
         # default 4Gi
@@ -94,7 +94,7 @@ camunda-platform:
         cpu: "1000m"
     retention:
       enabled: true
-      minimumAge: 1h
+      minimumAge: 1d
 
   tasklist:
     enabled: true
@@ -107,7 +107,7 @@ camunda-platform:
         cpu: "400m"
     retention:
       enabled: true
-      minimumAge: 1h
+      minimumAge: 1d
 
   optimize:
     enabled: true
@@ -185,7 +185,7 @@ retentionPolicy:
       maxSize: 1
 
 starter:
-  rate: 100
+  rate: 15
 
 worker:
   replicas: 1
