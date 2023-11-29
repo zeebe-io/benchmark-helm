@@ -1,23 +1,23 @@
 # create namespace
-# => kubectl create namespace dm-benchmark-single-es-ztoo-g3-s
+# => kubectl create namespace dm-benchmark-single-es-ztoo-g3-s-50
 # switch namespace
-# => kubectl config set-context --current --namespace=dm-benchmark-single-es-ztoo-g3-s
+# => kubectl config set-context --current --namespace=dm-benchmark-single-es-ztoo-g3-s-50
 #
 # update dependencies
 # => helm dependency update charts/zeebe-benchmark
 #
 # to make template invoke the following:
-# => helm template dm-bmrk-s-ztoo-g3-s charts/zeebe-benchmark -f kind/single-es-instance-ztoo-g3-s-values.yaml --output-dir out/single/single-es-ztoo-values-g3-s
+# => helm template dm-bmrk-s-ztoo-g3-s-50 charts/zeebe-benchmark -f kind/single-es-instance-ztoo-g3-s-50-values.yaml --output-dir out/single/single-es-ztoo-values-g3-s-50
 #
 # to install charts invoke the following:
-# => helm dependency update charts/zeebe-benchmark && helm install dm-bmrk-s-ztoo-g3-s charts/zeebe-benchmark -f kind/single-es-instance-ztoo-g3-s-values.yaml --render-subchart-notes
+# => helm dependency update charts/zeebe-benchmark && helm install dm-bmrk-s-ztoo-g3-s-50 charts/zeebe-benchmark -f kind/single-es-instance-ztoo-g3-s-50-values.yaml --render-subchart-notes
 #
 #
 # to uninstall charts invoke the following:
-# => helm uninstall dm-bmrk-s-ztoo-g3-s && kubectl delete pvc -l app.kubernetes.io/instance=dm-bmrk-s-ztoo-g3-s && kubectl delete pvc -l release=dm-bmrk-s-ztoo-g3-s
+# => helm uninstall dm-bmrk-s-ztoo-g3-s-50 && kubectl delete pvc -l app.kubernetes.io/instance=dm-bmrk-s-ztoo-g3-s-50 && kubectl delete pvc -l release=dm-bmrk-s-ztoo-g3-s-50
 #
 # delete namespace
-# => kubectl delete namespace dm-benchmark-single-es-ztoo-g3-s
+# => kubectl delete namespace dm-benchmark-single-es-ztoo-g3-s-50
 #
 
 global:
