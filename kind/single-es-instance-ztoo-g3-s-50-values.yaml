@@ -111,6 +111,7 @@ camunda-platform:
     enabled: true
     master:
       replicaCount: 1
+      heapSize: 3072m
       persistence:
         size: 192Gi
       resources:
@@ -118,7 +119,7 @@ camunda-platform:
           memory: "6Gi"
           cpu: "3000m"
         requests:
-          memory: "3Gi"
+          memory: "6Gi"
           cpu: "2000m"
 
   elasticsearch-zeebe:
