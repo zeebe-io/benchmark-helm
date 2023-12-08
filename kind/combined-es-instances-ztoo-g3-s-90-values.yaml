@@ -1,23 +1,20 @@
 # create namespace
-# => kubectl create namespace dm-benchmark-single-es-ztoo-g3-s-50
+# => kubectl create namespace dm-benchmark-combined-es-ztoo-g3-s-90
 # switch namespace
-# => kubectl config set-context --current --namespace=dm-benchmark-single-es-ztoo-g3-s-50
+# => kubectl config set-context --current --namespace=dm-benchmark-combined-es-ztoo-g3-s-90
 #
-# update dependencies
-# => helm dependency update charts/zeebe-benchmark
 #
 # to make template invoke the following:
-# => helm template dm-bmrk-s-ztoo-g3-s-50 charts/zeebe-benchmark -f kind/single-es-instance-ztoo-g3-s-50-values.yaml --output-dir out/single/single-es-ztoo-values-g3-s-50
+# => helm dependency update charts/zeebe-benchmark && helm template dm-bmrk-c-ztoo-g3-s-90 charts/zeebe-benchmark -f kind/combined-es-instances-ztoo-g3-s-90-values.yaml --output-dir out/combined/combined-es-ztoo-values-g3-s-90
 #
 # to install charts invoke the following:
-# => helm dependency update charts/zeebe-benchmark && helm install dm-bmrk-s-ztoo-g3-s-50 charts/zeebe-benchmark -f kind/single-es-instance-ztoo-g3-s-50-values.yaml --render-subchart-notes
-#
+# => helm dependency update charts/zeebe-benchmark && helm install dm-bmrk-c-ztoo-g3-s-90 charts/zeebe-benchmark -f kind/combined-es-instances-ztoo-g3-s-90-values.yaml --render-subchart-notes
 #
 # to uninstall charts invoke the following:
-# => helm uninstall dm-bmrk-s-ztoo-g3-s-50 && kubectl delete pvc -l app.kubernetes.io/instance=dm-bmrk-s-ztoo-g3-s-50 && kubectl delete pvc -l release=dm-bmrk-s-ztoo-g3-s-50
+# => helm uninstall dm-bmrk-c-ztoo-g3-s-90 && kubectl delete pvc -l app.kubernetes.io/instance=dm-bmrk-c-ztoo-g3-s-90 && kubectl delete pvc -l release=dm-bmrk-c-ztoo-g3-s-90
 #
 # delete namespace
-# => kubectl delete namespace dm-benchmark-single-es-ztoo-g3-s-50
+# => kubectl delete namespace dm-benchmark-combined-es-ztoo-g3-s-90
 #
 
 global:
@@ -38,9 +35,8 @@ camunda-platform:
         host: "{{ .Release.Name }}-elasticsearch"
         clusterName: "elastic-cluster"
       optimize:
-        host: "{{ .Release.Name }}-elasticsearch"
-        clusterName: "elastic-cluster"
-
+        host: "{{ .Release.Name }}-elasticsearch-optimize"
+        clusterName: "optimize-cluster"
   zeebe:
     retention:
       enabled: true
@@ -104,23 +100,20 @@ camunda-platform:
     elasticSearch:
       indexNumberOfReplicas: 0
 
-  identity:
-    enabled: false
-
   elasticsearch:
     enabled: true
     master:
       replicaCount: 1
-      heapSize: 3072m
+      heapSize: 2048m
       persistence:
         size: 192Gi
       resources:
         limits:
-          memory: "6Gi"
-          cpu: "3000m"
-        requests:
-          memory: "6Gi"
+          memory: "4Gi"
           cpu: "2000m"
+        requests:
+          memory: "4Gi"
+          cpu: "1500m"
 
   elasticsearch-zeebe:
     enabled: false
@@ -128,17 +121,25 @@ camunda-platform:
   elasticsearch-tasklist:
     enabled: false
 
-  elasticsearch-optimize:
-    enabled: false
-
   elasticsearch-operate:
     enabled: false
 
-retentionPolicy:
-  enabled: false
+  elasticsearch-optimize:
+    enabled: true
+    master:
+      replicaCount: 1
+      persistence:
+        size: 128Gi
+      resources:
+        limits:
+          memory: "2Gi"
+          cpu: "1"
+        requests:
+          memory: "2Gi"
+          cpu: "500m"
 
 starter:
-  rate: 50
+  rate: 90
 
 worker:
   replicas: 1
@@ -151,6 +152,32 @@ publisher:
   replicas: 0
   rate: 5
 
+retentionPolicy:
+  enabled: false
+
 prometheus-elasticsearch-exporter:
+  enabled: true
   es:
     uri: http://{{ .Release.Name }}-elasticsearch:9200
+  serviceMonitor:
+    enabled: true
+    labels:
+      release: monitoring
+
+prometheus-elasticsearch-exporter-zeebe:
+  enabled: false
+
+prometheus-elasticsearch-exporter-tasklist:
+  enabled: false
+
+prometheus-elasticsearch-exporter-operate:
+  enabled: false
+
+prometheus-elasticsearch-exporter-optimize:
+  enabled: true
+  es:
+    uri: http://{{ .Release.Name }}-elasticsearch-optimize:9200
+  serviceMonitor:
+    enabled: true
+    labels:
+      release: monitoring

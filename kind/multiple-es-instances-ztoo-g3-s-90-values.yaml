@@ -108,13 +108,15 @@ camunda-platform:
     master:
       replicaCount: 1
       heapSize: 512m
+      persistence:
+        size: 128Gi
       resources:
         limits:
           memory: "1Gi"
-          cpu: "1"
+          cpu: "3000m"
         requests:
           memory: "1Gi"
-          cpu: "500m"
+          cpu: "2000m"
 
   elasticsearch-tasklist:
     enabled: true
@@ -138,10 +140,10 @@ camunda-platform:
       resources:
         limits:
           memory: "2Gi"
-          cpu: "1"
+          cpu: "3000m"
         requests:
           memory: "2Gi"
-          cpu: "500m"
+          cpu: "2000m"
 
   elasticsearch-optimize:
     enabled: true
