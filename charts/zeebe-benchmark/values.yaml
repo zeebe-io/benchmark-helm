@@ -155,14 +155,16 @@ camunda-platform:
     # IoThreadCount defines how many threads can be used for the exporting on each broker pod
     ioThreadCount: 3  
 
-    # PodSecurityContext defines the security options the Zeebe broker pod should be run with
-    podSecurityContext:
-      # needed to make sure the zeebe user has file permissions on mounted PVCs
-      # TODO remove once it's configured in the upstream helmchart
-      fsGroup: 1000
-
     # ContainerSecurityContext defines the security options the Zeebe broker container should be run with
     containerSecurityContext:
+      ## @param securityContext.allowPrivilegeEscalation
+      allowPrivilegeEscalation: true
+      ## @param securityContext.privileged
+      privileged: true
+      ## @param securityContext.readOnlyRootFilesystem
+      readOnlyRootFilesystem: true
+      ## @param securityContext.runAsUser
+      runAsUser: 1000
       capabilities:
         add: [ "NET_ADMIN" ]
 
@@ -198,6 +200,23 @@ camunda-platform:
         volumeMounts:
           - name: pyroscope
             mountPath: /pyroscope
+        # We have to configure the security context to not run as Root
+        securityContext:
+          ## @param securityContext.allowPrivilegeEscalation
+          allowPrivilegeEscalation: false
+          ## @param securityContext.privileged
+          privileged: false
+          ## @param securityContext.readOnlyRootFilesystem
+          readOnlyRootFilesystem: true
+          ## @param securityContext.runAsUser
+          runAsUser: 1000
+
+    # Retention can be used to define the data in Elasticsearch (ILM).
+    retention:
+      ## @param zeebe.retention.enabled if true, the ILM Policy is created and applied to the index templates.
+      enabled: true
+      ## @param zeebe.retention.minimumAge defines how old the data must be, before the data is deleted as a duration.
+      minimumAge: 1d # set it to a higher value if we run with operate, so operate has enough time to consume the data
 
     # Environment variables
     env:
@@ -297,6 +316,15 @@ camunda-platform:
         volumeMounts:
           - name: pyroscope
             mountPath: /pyroscope
+        securityContext:
+          ## @param zeebe.containerSecurityContext.allowPrivilegeEscalation
+          allowPrivilegeEscalation: false
+          ## @param zeebe.containerSecurityContext.privileged
+          privileged: false
+          ## @param zeebe.containerSecurityContext.readOnlyRootFilesystem
+          readOnlyRootFilesystem: true
+          ## @param zeebe.containerSecurityContext.runAsUser
+          runAsUser: 1000
 
     # Env can be used to set extra environment variables in each gateway container
     env:
@@ -383,6 +411,14 @@ camunda-platform:
       limits:
         cpu: 2000m
         memory: 2Gi
+
+    # Retention can be used to define the data in Elasticsearch (ILM).
+    retention:
+      ## @param operate.retention.enabled if true, the ILM Policy is created and applied to the index templates.
+      enabled: true
+      ## @param operate.retention.minimumAge defines how old the data must be, before the data is deleted as a duration.
+      minimumAge: 1d # there is no need to keep data longer for our benchmarks, otherwise we will fill up ES pretty quick
+
     env:
       - name: OPERATE_LOG_APPENDER
         value: Stackdriver
@@ -418,7 +454,7 @@ camunda-platform:
   # ELASTIC
   elasticsearch:
     enabled: true
-    imageTag: 7.16.2
+    imageTag: 8.9.2
 
     replicas: 3
     minimumMasterNodes: 2
