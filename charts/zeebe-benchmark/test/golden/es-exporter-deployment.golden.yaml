@@ -42,7 +42,7 @@ spec:
           command: ["elasticsearch_exporter",
                     "--log.format=logfmt",
                     "--log.level=info",
-                    "--es.uri=http://elasticsearch-master:9200",
+                    "--es.uri=http://benchmark-test-elasticsearch:9200",
                     "--es.all",
                     "--es.indices",
                     "--es.indices_settings",

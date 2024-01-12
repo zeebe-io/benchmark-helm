@@ -38,6 +38,9 @@ data:
         port: 9200
         # Index prefix, configured in Zeebe Elasticsearch exporter
         prefix: zeebe-record
+      archiver:
+        ilmEnabled: true
+        ilmMinAgeForDeleteArchivedIndices: 1d
     logging:
       level:
         ROOT: INFO
