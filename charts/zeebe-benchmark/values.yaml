@@ -94,43 +94,6 @@ zeebe:
     # Zeebe.profiling.enabled if true, enables the pyroscope profiling
     enabled: false
 
-# RetentionPolicy configuration to configure the elasticsearch index retention policies
-retentionPolicy:
-  # RetentionPolicy.enabled if true, elasticsearch curator cronjob and configuration will be deployed.
-  enabled: false # only enabled if really needed
-  # RetentionPolicy.schedule defines how often/when the curator should run
-  schedule: "0 * * * *" # every full hour at minute 0 https://crontab.guru/#0_*_*_*_*
-  # Policies defines a list of policies, which allows to specify policies for specific indexes or globally (based
-  # on the pattern specified). The policy is applied via the name, which is used as pattern to match indices.
-  # Each policy can define the maxSize and timeToLive.
-  #
-  # MaxSize can be set to configure the maximum allowed index size in gigabytes. After reaching that size, curator will
-  # delete that corresponding index on the next run. To benefit from that configuration the schedule needs to be
-  # configured small enough, like every 15 minutes.
-  #
-  # TimeToLive defines after how many days an index can be deleted
-  policies:
-    - name: zeebe-
-      maxSize:
-      timeToLive: 2
-    - name: operate-
-      timeToLive: 1
-    # the following are not consumed by operate so we want to get rid of them rather quickly
-    - name: zeebe-record_message
-      maxSize: 1
-    - name: zeebe-record_process-instance-creation
-      maxSize: 1
-  # Image configuration for the elasticsearch curator cronjob
-  # https://hub.docker.com/r/bitnami/elasticsearch-curator-archived/tags
-  image:
-    # Image.registry can be used to set container image registry.
-    registry: ""
-    # Image.repository defines which image repository to use
-    repository: bitnami/elasticsearch-curator-archived
-    # Image.tag defines the tag / version which should be used in the chart
-    tag: 5.8.4
-
-
 camunda-platform:
   enabled: true
   global:
