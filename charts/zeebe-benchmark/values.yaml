@@ -216,7 +216,7 @@ camunda-platform:
       ## @param zeebe.retention.enabled if true, the ILM Policy is created and applied to the index templates.
       enabled: true
       ## @param zeebe.retention.minimumAge defines how old the data must be, before the data is deleted as a duration.
-      minimumAge: 1d # set it to a higher value if we run with operate, so operate has enough time to consume the data
+      minimumAge: 10m # set it to a higher value if we run with operate, so operate has enough time to consume the data
 
     # Environment variables
     env:
