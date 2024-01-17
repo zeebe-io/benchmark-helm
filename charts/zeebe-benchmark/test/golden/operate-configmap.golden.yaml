@@ -40,7 +40,7 @@ data:
         prefix: zeebe-record
       archiver:
         ilmEnabled: true
-        ilmMinAgeForDeleteArchivedIndices: 1d
+        ilmMinAgeForDeleteArchivedIndices: 30m
     logging:
       level:
         ROOT: INFO
