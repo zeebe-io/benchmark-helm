@@ -2,6 +2,59 @@ apiVersion: v1
 entries:
   zeebe-benchmark:
   - annotations:
+      artifacthub.io/changes: |
+        - kind: added
+          description: "configure hourly index"
+        - kind: added
+          description: "update values file"
+        - kind: added
+          description: "upgrade to most recent camunda-platform helm chart"
+        - kind: fixed
+          description: "set a low min_age for operate"
+        - kind: fixed
+          description: "use lower value for min-age"
+        - kind: fixed
+          description: "use correct ES uri"
+        - kind: fixed
+          description: "use correct values for ES chart"
+        - kind: changed
+          description: "remove curator deployments"
+        - kind: changed
+          description: "remove additional retention policy cfg"
+        - kind: changed
+          description: "remove retention policy cfg"
+      artifacthub.io/containsSecurityUpdates: "false"
+      artifacthub.io/links: |
+        - name: Zeebe Repo
+          url: https://github.com/camunda/zeebe
+        - name: Zeebe Docs
+          url: https://docs.camunda.io/docs/components/zeebe/zeebe-overview/
+    apiVersion: v2
+    appVersion: 8.2.5
+    created: "2024-01-17T16:04:54.542082863Z"
+    dependencies:
+    - condition: camunda.enabled
+      name: camunda-platform
+      repository: https://helm.camunda.io
+      version: 9.0.2
+    - condition: prometheus-elasticsearch-exporter.enabled
+      name: prometheus-elasticsearch-exporter
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 5.2.0
+    description: A Helm chart for Zeebe benchmarks
+    digest: 3063e25297466da099f357f722ec4ebdb72650af07926fc664717c9c2f41dd11
+    maintainers:
+    - email: christopher.zell@camunda.com
+      name: Zelldon
+    name: zeebe-benchmark
+    sources:
+    - https://github.com/zeebe-io/benchmark-helm
+    - https://github.com/camunda/zeebe
+    type: application
+    urls:
+    - https://github.com/zeebe-io/benchmark-helm/releases/download/zeebe-benchmark-0.2.0/zeebe-benchmark-0.2.0.tgz
+    version: 0.2.0
+  - annotations:
       artifacthub.io/changes: ""
       artifacthub.io/containsSecurityUpdates: "false"
       artifacthub.io/links: |
@@ -714,4 +767,4 @@ entries:
     urls:
     - https://github.com/zeebe-io/benchmark-helm/releases/download/zeebe-benchmark-0.1.2/zeebe-benchmark-0.1.2.tgz
     version: 0.1.2
-generated: "2023-11-27T14:02:45.301805373Z"
+generated: "2024-01-17T16:04:54.542263862Z"
