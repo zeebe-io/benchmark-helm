@@ -356,7 +356,7 @@ camunda-platform:
       ## @param operate.retention.enabled if true, the ILM Policy is created and applied to the index templates.
       enabled: true
       ## @param operate.retention.minimumAge defines how old the data must be, before the data is deleted as a duration.
-      minimumAge: 1d # there is no need to keep data longer for our benchmarks, otherwise we will fill up ES pretty quick
+      minimumAge: 30m # there is no need to keep data longer for our benchmarks, otherwise we will fill up ES pretty quick
 
     env:
       - name: OPERATE_LOG_APPENDER
