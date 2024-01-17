@@ -18,7 +18,7 @@ func TestGoldenCamundaPlatformDefaults(t *testing.T) {
 
 	chartPath, err := filepath.Abs("../")
 	require.NoError(t, err)
-	templateNames := []string{"curator-cronjob", "curator-configmap", "service-monitor"}
+	templateNames := []string{"zeebe-service-monitor", "zeebe-gateway-service-monitor", "operate-service-monitor"}
 
 	for _, name := range templateNames {
 		suite.Run(t, &golden.TemplateGoldenTest{
@@ -26,8 +26,8 @@ func TestGoldenCamundaPlatformDefaults(t *testing.T) {
 			Release:        "benchmark-test",
 			Namespace:      "benchmark-" + strings.ToLower(random.UniqueId()),
 			GoldenFileName: "c8-" + name,
-			Templates:      []string{"charts/camunda-platform/templates/" + name + ".yaml"},
-			SetValues:      map[string]string{"retentionPolicy.enabled": "true"},
+			Templates:      []string{"charts/camunda-platform/templates/service-monitor/" + name + ".yaml"},
+			SetValues:      map[string]string{"camunda-platform.operate.enabled": "true"},
 		})
 	}
 }
@@ -47,7 +47,7 @@ func TestGoldenCamundaPlatformOperateDefaults(t *testing.T) {
 			Release:        "benchmark-test",
 			Namespace:      "benchmark-" + strings.ToLower(random.UniqueId()),
 			GoldenFileName: "operate-" + name,
-			Templates:      []string{"charts/camunda-platform/charts/operate/templates/" + name + ".yaml"},
+			Templates:      []string{"charts/camunda-platform/templates/operate/" + name + ".yaml"},
 			SetValues:      map[string]string{"camunda-platform.operate.enabled": "true"},
 		})
 	}

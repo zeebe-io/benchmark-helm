@@ -89,47 +89,13 @@ zeebe:
     zeebe.broker.executionMetricsExporterEnabled: "true"
     zeebe.broker.data.diskUsageCommandWatermark: "0.8"
     zeebe.broker.data.diskUsageReplicationWatermark: "0.9"
+    # Configure index suffix with hour pattern, so we create every hour a new index
+    # such that ILM can clean it up quickly
+    zeebe.broker.exporters.elasticsearch.args.index.indexSuffixDatePattern: "yyyy-MM-dd_HH"
   # Zeebe.profiling configuration for pyroscope profiling
   profiling:
     # Zeebe.profiling.enabled if true, enables the pyroscope profiling
     enabled: false
-
-# RetentionPolicy configuration to configure the elasticsearch index retention policies
-retentionPolicy:
-  # RetentionPolicy.enabled if true, elasticsearch curator cronjob and configuration will be deployed.
-  enabled: false # only enabled if really needed
-  # RetentionPolicy.schedule defines how often/when the curator should run
-  schedule: "0 * * * *" # every full hour at minute 0 https://crontab.guru/#0_*_*_*_*
-  # Policies defines a list of policies, which allows to specify policies for specific indexes or globally (based
-  # on the pattern specified). The policy is applied via the name, which is used as pattern to match indices.
-  # Each policy can define the maxSize and timeToLive.
-  #
-  # MaxSize can be set to configure the maximum allowed index size in gigabytes. After reaching that size, curator will
-  # delete that corresponding index on the next run. To benefit from that configuration the schedule needs to be
-  # configured small enough, like every 15 minutes.
-  #
-  # TimeToLive defines after how many days an index can be deleted
-  policies:
-    - name: zeebe-
-      maxSize:
-      timeToLive: 2
-    - name: operate-
-      timeToLive: 1
-    # the following are not consumed by operate so we want to get rid of them rather quickly
-    - name: zeebe-record_message
-      maxSize: 1
-    - name: zeebe-record_process-instance-creation
-      maxSize: 1
-  # Image configuration for the elasticsearch curator cronjob
-  # https://hub.docker.com/r/bitnami/elasticsearch-curator-archived/tags
-  image:
-    # Image.registry can be used to set container image registry.
-    registry: ""
-    # Image.repository defines which image repository to use
-    repository: bitnami/elasticsearch-curator-archived
-    # Image.tag defines the tag / version which should be used in the chart
-    tag: 5.8.4
-
 
 camunda-platform:
   enabled: true
@@ -155,14 +121,16 @@ camunda-platform:
     # IoThreadCount defines how many threads can be used for the exporting on each broker pod
     ioThreadCount: 3  
 
-    # PodSecurityContext defines the security options the Zeebe broker pod should be run with
-    podSecurityContext:
-      # needed to make sure the zeebe user has file permissions on mounted PVCs
-      # TODO remove once it's configured in the upstream helmchart
-      fsGroup: 1000
-
     # ContainerSecurityContext defines the security options the Zeebe broker container should be run with
     containerSecurityContext:
+      ## @param securityContext.allowPrivilegeEscalation
+      allowPrivilegeEscalation: true
+      ## @param securityContext.privileged
+      privileged: true
+      ## @param securityContext.readOnlyRootFilesystem
+      readOnlyRootFilesystem: true
+      ## @param securityContext.runAsUser
+      runAsUser: 1000
       capabilities:
         add: [ "NET_ADMIN" ]
 
@@ -198,6 +166,23 @@ camunda-platform:
         volumeMounts:
           - name: pyroscope
             mountPath: /pyroscope
+        # We have to configure the security context to not run as Root
+        securityContext:
+          ## @param securityContext.allowPrivilegeEscalation
+          allowPrivilegeEscalation: false
+          ## @param securityContext.privileged
+          privileged: false
+          ## @param securityContext.readOnlyRootFilesystem
+          readOnlyRootFilesystem: true
+          ## @param securityContext.runAsUser
+          runAsUser: 1000
+
+    # Retention can be used to define the data in Elasticsearch (ILM).
+    retention:
+      ## @param zeebe.retention.enabled if true, the ILM Policy is created and applied to the index templates.
+      enabled: true
+      ## @param zeebe.retention.minimumAge defines how old the data must be, before the data is deleted as a duration.
+      minimumAge: 10m # set it to a higher value if we run with operate, so operate has enough time to consume the data
 
     # Environment variables
     env:
@@ -297,6 +282,15 @@ camunda-platform:
         volumeMounts:
           - name: pyroscope
             mountPath: /pyroscope
+        securityContext:
+          ## @param zeebe.containerSecurityContext.allowPrivilegeEscalation
+          allowPrivilegeEscalation: false
+          ## @param zeebe.containerSecurityContext.privileged
+          privileged: false
+          ## @param zeebe.containerSecurityContext.readOnlyRootFilesystem
+          readOnlyRootFilesystem: true
+          ## @param zeebe.containerSecurityContext.runAsUser
+          runAsUser: 1000
 
     # Env can be used to set extra environment variables in each gateway container
     env:
@@ -344,33 +338,6 @@ camunda-platform:
         cpu: 450m
         memory: 1Gi
 
-  # RetentionPolicy configuration to configure the elasticsearch index retention policies
-  retentionPolicy:
-    # RetentionPolicy.enabled if true, elasticsearch curator cronjob and configuration will be deployed.
-    enabled: true
-    # RetentionPolicy.schedule defines how often/when the curator should run
-    schedule: "*/15 * * * *"
-    # RetentionPolicy.zeebeIndexTTL defines after how many days a zeebe index can be deleted
-    zeebeIndexTTL: 1
-    # RetentionPolicy.zeebeIndexMaxSize can be set to configure the maximum allowed zeebe index size in gigabytes.
-    # After reaching that size, curator will delete that corresponding index on the next run.
-    # To benefit from that configuration the schedule needs to be configured small enough, like every 15 minutes.
-    zeebeIndexMaxSize: 1
-    # RetentionPolicy.operateIndexTTL defines after how many days an operate index can be deleted
-    operateIndexTTL: 1
-    # RetentionPolicy.tasklistIndexTTL defines after how many days a tasklist index can be deleted
-    tasklistIndexTTL: 1
-
-    # Image configuration for the elasticsearch curator cronjob
-    # https://hub.docker.com/r/bitnami/elasticsearch-curator-archived/tags
-    image:
-      # Image.registry can be used to set container image registry.
-      registry: ""
-      # Image.repository defines which image repository to use
-      repository: "bitnami/elasticsearch-curator-archived"
-      # Image.tag defines the tag / version which should be used in the chart
-      tag: 5.8.4
-
   operate:
     enabled: false
     image:
@@ -383,6 +350,14 @@ camunda-platform:
       limits:
         cpu: 2000m
         memory: 2Gi
+
+    # Retention can be used to define the data in Elasticsearch (ILM).
+    retention:
+      ## @param operate.retention.enabled if true, the ILM Policy is created and applied to the index templates.
+      enabled: true
+      ## @param operate.retention.minimumAge defines how old the data must be, before the data is deleted as a duration.
+      minimumAge: 30m # there is no need to keep data longer for our benchmarks, otherwise we will fill up ES pretty quick
+
     env:
       - name: OPERATE_LOG_APPENDER
         value: Stackdriver
@@ -418,27 +393,31 @@ camunda-platform:
   # ELASTIC
   elasticsearch:
     enabled: true
-    imageTag: 7.16.2
+    imageTag: 8.9.2
 
-    replicas: 3
-    minimumMasterNodes: 2
-
-    volumeClaimTemplate:
-      accessModes: [ "ReadWriteOnce" ]
-      storageClassName: "ssd"
+    master:
+      # Number of master-elegible replicas to deploy
+      replicaCount: 3
+      pdb:
+        minAvailable: 2
+      # Elasticsearch master-eligible node heap size.
+      # Will be converted to -Xms3g
+      heapSize: 3g
+      # The resources configurations for elasticsearch containers
       resources:
         requests:
-          storage: 16Gi
-
-    esJavaOpts: "-Xmx3g -Xms3g"
-
-    resources:
-      requests:
-        cpu: 1
-        memory: 3Gi
-      limits:
-        cpu: 2
-        memory: 6Gi
+          cpu: 1
+          memory: 3Gi
+        limits:
+          cpu: 2
+          memory: 6Gi
+      persistence:
+        # Persistent Volume Storage Class
+        storageClass: "ssd"
+        # Persistent Volume Size
+        size: 16Gi
+        # Persistent Volume Access Modes
+        accessModes: [ "ReadWriteOnce" ]
 
   # Change these settings to configure a different way to collect metrics
   prometheusServiceMonitor:
@@ -454,7 +433,7 @@ prometheus-elasticsearch-exporter:
     ## of a remote Elasticsearch server. When basic auth is needed,
     ## specify as: <proto>://<user>:<password>@<host>:<port>. e.g., http://admin:pass@localhost:9200.
     ##
-    uri: http://elasticsearch-master:9200
+    uri: "http://{{ .Release.Name }}-elasticsearch:9200"
   serviceMonitor:
     ## If true, a ServiceMonitor CRD is created for a prometheus operator
     ## https://github.com/coreos/prometheus-operator

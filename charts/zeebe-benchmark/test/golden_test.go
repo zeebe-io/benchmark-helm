@@ -15,7 +15,7 @@ func TestGoldenCuratorDefaults(t *testing.T) {
 
 	chartPath, err := filepath.Abs("../")
 	require.NoError(t, err)
-	templateNames := []string{"clients-service", "leader-balancing-cron", "publisher", "starter", "timer", "worker", "zeebe-config", "curator-configmap", "curator-cronjob"}
+	templateNames := []string{"clients-service", "leader-balancing-cron", "publisher", "starter", "timer", "worker", "zeebe-config"}
 
 	for _, name := range templateNames {
 		suite.Run(t, &golden.TemplateGoldenTest{
@@ -24,7 +24,7 @@ func TestGoldenCuratorDefaults(t *testing.T) {
 			Namespace:      "benchmark-" + strings.ToLower(random.UniqueId()),
 			GoldenFileName: name,
 			Templates:      []string{"templates/" + name + ".yaml"},
-			SetValues:      map[string]string{"retentionPolicy.enabled": "true"},
+			SetValues:      map[string]string{},
 		})
 	}
 }

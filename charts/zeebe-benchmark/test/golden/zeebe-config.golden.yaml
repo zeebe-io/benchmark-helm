@@ -16,5 +16,6 @@ data:
     zeebe.broker.executionMetricsExporterEnabled: "true"
     zeebe.broker.experimental.consistencyChecks.enableForeignKeyChecks: "true"
     zeebe.broker.experimental.consistencyChecks.enablePreconditions: "true"
+    zeebe.broker.exporters.elasticsearch.args.index.indexSuffixDatePattern: yyyy-MM-dd_HH
     zeebe.gateway.monitoring.enabled: "true"
     zeebe.gateway.threads.managementThreads: "1"

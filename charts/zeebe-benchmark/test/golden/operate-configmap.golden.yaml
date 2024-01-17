@@ -1,17 +1,17 @@
 ---
-# Source: zeebe-benchmark/charts/camunda-platform/charts/operate/templates/configmap.yaml
+# Source: zeebe-benchmark/charts/camunda-platform/templates/operate/configmap.yaml
+apiVersion: v1
 kind: ConfigMap
 metadata:
   name: benchmark-test-operate
   labels:
     app: camunda-platform
-    app.kubernetes.io/name: operate
+    app.kubernetes.io/name: camunda-platform
     app.kubernetes.io/instance: benchmark-test
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/part-of: camunda-platform
-    app.kubernetes.io/version: "8.2.8"
+    app.kubernetes.io/version: "SNAPSHOT"
     app.kubernetes.io/component: operate
-apiVersion: v1
 data:
   application.yml: |
     # Operate configuration file
@@ -21,7 +21,7 @@ data:
         # Cluster name
         clusterName: elasticsearch
         # Host
-        host: elasticsearch-master
+        host: benchmark-test-elasticsearch
         # Transport port
         port: 9200
       # Zeebe instance
@@ -33,11 +33,14 @@ data:
         # Cluster name
         clusterName: elasticsearch
         # Host
-        host: elasticsearch-master
+        host: benchmark-test-elasticsearch
         # Transport port
         port: 9200
         # Index prefix, configured in Zeebe Elasticsearch exporter
         prefix: zeebe-record
+      archiver:
+        ilmEnabled: true
+        ilmMinAgeForDeleteArchivedIndices: 30m
     logging:
       level:
         ROOT: INFO
