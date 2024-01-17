@@ -10,7 +10,7 @@ sources:
 dependencies:
   - name: camunda-platform
     repository: "https://helm.camunda.io"
-    version: 8.2.17
+    version: 8.3.5
     condition: "camunda.enabled"
   - name: prometheus-elasticsearch-exporter
     repository: "https://prometheus-community.github.io/helm-charts"
