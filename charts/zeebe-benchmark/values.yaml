@@ -396,6 +396,8 @@ camunda-platform:
     imageTag: 8.9.2
 
     master:
+      fullnameOverride: elastic
+      nameOverride: elastic
       # Number of master-elegible replicas to deploy
       replicaCount: 3
       pdb:
