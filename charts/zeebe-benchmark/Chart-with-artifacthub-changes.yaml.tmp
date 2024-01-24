@@ -2,7 +2,7 @@ apiVersion: v2
 name: zeebe-benchmark
 description: A Helm chart for Zeebe benchmarks
 type: application
-version: 0.2.0
+version: 0.2.1
 appVersion: "8.2.5"
 sources:
   - https://github.com/zeebe-io/benchmark-helm
@@ -26,4 +26,4 @@ annotations:
     - name: Zeebe Docs
       url: https://docs.camunda.io/docs/components/zeebe/zeebe-overview/
   artifacthub.io/containsSecurityUpdates: "false"
-  artifacthub.io/changes: "- kind: added\n  description: \"configure hourly index\"\n- kind: added\n  description: \"update values file\"\n- kind: added\n  description: \"upgrade to most recent camunda-platform helm chart\"\n- kind: fixed\n  description: \"set a low min_age for operate\"\n- kind: fixed\n  description: \"use lower value for min-age\"\n- kind: fixed\n  description: \"use correct ES uri\"\n- kind: fixed\n  description: \"use correct values for ES chart\"\n- kind: changed\n  description: \"remove curator deployments\"\n- kind: changed\n  description: \"remove additional retention policy cfg\"\n- kind: changed\n  description: \"remove retention policy cfg\"\n"
+  artifacthub.io/changes: "- kind: fixed\n  description: \"reduce elastic sts name\"\n"
