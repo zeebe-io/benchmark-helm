@@ -6,7 +6,7 @@ version: 0.2.1
 appVersion: "8.2.5"
 sources:
   - https://github.com/zeebe-io/benchmark-helm
-  - https://github.com/camunda/zeebe
+  - https://github.com/camunda/camunda
 dependencies:
   - name: camunda-platform
     repository: "https://helm.camunda.io"
@@ -22,7 +22,7 @@ maintainers:
 annotations:
   artifacthub.io/links: |
     - name: Zeebe Repo
-      url: https://github.com/camunda/zeebe
+      url: https://github.com/camunda/camunda
     - name: Zeebe Docs
       url: https://docs.camunda.io/docs/components/zeebe/zeebe-overview/
   artifacthub.io/containsSecurityUpdates: "false"
