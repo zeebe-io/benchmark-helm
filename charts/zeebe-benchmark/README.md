@@ -156,7 +156,7 @@ Allows to configure the elasticsearch index retention policies, which are much m
 
 ### Worker
 
-Allows to configure the workers which can be deployed along the Zeebe Cluster. The worker code can be found [here](https://github.com/camunda/zeebe/blob/main/benchmarks/project/src/main/java/io/camunda/zeebe/Worker.java).
+Allows to configure the workers which can be deployed along the Zeebe Cluster. The worker code can be found [here](https://github.com/camunda/camunda/blob/main/benchmarks/project/src/main/java/io/camunda/zeebe/Worker.java).
 
 | Section | Parameter | Description | Default |
 |-|-|-|-|
@@ -167,7 +167,7 @@ Allows to configure the workers which can be deployed along the Zeebe Cluster. T
 
 ### Starter
 
-Allows to configure the starter which can be deployed along the Zeebe Cluster. The start code can be found [here](https://github.com/camunda/zeebe/blob/main/benchmarks/project/src/main/java/io/camunda/zeebe/Starter.java).
+Allows to configure the starter which can be deployed along the Zeebe Cluster. The start code can be found [here](https://github.com/camunda/camunda/blob/main/benchmarks/project/src/main/java/io/camunda/zeebe/Starter.java).
 
 | Section | Parameter | Description | Default |
 |-|-|-|-|
@@ -178,7 +178,7 @@ Allows to configure the starter which can be deployed along the Zeebe Cluster. T
 
 ### Publisher
 
-Allows to configure the publisher which can be deployed along the Zeebe Cluster. The start code can be found [here](https://github.com/camunda/zeebe/blob/main/benchmarks/project/src/main/java/io/camunda/zeebe/Starter.java).
+Allows to configure the publisher which can be deployed along the Zeebe Cluster. The start code can be found [here](https://github.com/camunda/camunda/blob/main/benchmarks/project/src/main/java/io/camunda/zeebe/Starter.java).
 
 | Section | Parameter | Description | Default |
 |-|-|-|-|
@@ -188,7 +188,7 @@ Allows to configure the publisher which can be deployed along the Zeebe Cluster.
 
 ### Timer
 
-Allows to configure the timer which can be deployed along the Zeebe Cluster. The start code can be found [here](https://github.com/camunda/zeebe/blob/main/benchmarks/project/src/main/java/io/camunda/zeebe/Starter.java).
+Allows to configure the timer which can be deployed along the Zeebe Cluster. The start code can be found [here](https://github.com/camunda/camunda/blob/main/benchmarks/project/src/main/java/io/camunda/zeebe/Starter.java).
 
 | Section | Parameter | Description | Default |
 |-|-|-|-|
