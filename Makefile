@@ -6,7 +6,7 @@ chartPath=charts/zeebe-benchmark
 chartVersion=$(shell grep -Po '(?<=^version: ).+' $(chartPath)/Chart.yaml)
 releaseName=zeebe-benchmark-test
 gitChglog=quay.io/git-chglog/git-chglog:0.15.1
-
+goBin=go
 #########################################################
 ######### Go.
 #########################################################
@@ -17,30 +17,30 @@ gitChglog=quay.io/git-chglog/git-chglog:0.15.1
 # go.test: runs the tests without updating the golden files (runs checks against golden files)
 .PHONY: go.test
 go.test: helm.dependency-update
-	go test ./...
+	$(goBin) test ./...
 
 # go.test-golden-updated: runs the tests with updating the golden files
 .PHONY: go.test-golden-updated
 go.test-golden-updated: helm.dependency-update
-	go test ./... -args -update-golden 
+	$(goBin) test ./... -args -update-golden 
 
 # go.test-it: runs the integration tests against the current kube context
 .PHONY: go.test-it
 go.test-it: helm.dependency-update
-	go test -p 1 -timeout 1h -tags integration ./.../integration $(value GO_TEST_IT_ARGS)
+	$(goBin) test -p 1 -timeout 1h -tags integration ./.../integration $(value GO_TEST_IT_ARGS)
 
 # go.it-os: runs a subset of the integration tests against the current Openshift cluster
 .PHONY: go.test-it-os
 go.test-it-os: helm.dependency-update
-	go test -p 1 -timeout 1h -tags integration,openshift ./.../integration $(value GO_TEST_IT_OS_ARGS)
+	$(goBin) test -p 1 -timeout 1h -tags integration,openshift ./.../integration $(value GO_TEST_IT_OS_ARGS)
 
-# go.fmt: runs the gofmt in order to format all go files
+# go.fmt: runs the gofmt in order to format all $(goBin) files
 .PHONY: go.fmt
 go.fmt:
-	go fmt ./...
+	$(goBin) fmt ./...
 	@diff=$$(git status --porcelain | grep -F ".go" || true)
 	@if [ -n "$${diff}" ]; then\
-		echo "Some files are not following the go format ($${diff}), run gofmt and fix your files.";\
+		echo "Some files are not following the $(goBin) format ($${diff}), run gofmt and fix your files.";\
 		exit 1;\
 	fi
 
@@ -50,14 +50,14 @@ go.fmt:
 # go.addlicense-install: installs the addlicense tool
 .PHONY: go.addlicense-install
 go.addlicense-install:
-	go install github.com/google/addlicense@v1.0.0
+	$(goBin) install github.com/google/addlicense@v1.0.0
 
-# go.addlicense-run: adds license headers to go files
+# go.addlicense-run: adds license headers to $(goBin) files
 .PHONY: go.addlicense-run
 go.addlicense-run:
 	addlicense -c 'Camunda Services GmbH' -l apache charts/zeebe-benchmark/test/**/*.go
 
-# go.addlicense-check: checks that the go files contain license header
+# go.addlicense-check: checks that the $(goBin) files contain license header
 .PHONY: go.addlicense-check
 go.addlicense-check:
 	addlicense -check -l apache charts/zeebe-benchmark/test/**/*.go
