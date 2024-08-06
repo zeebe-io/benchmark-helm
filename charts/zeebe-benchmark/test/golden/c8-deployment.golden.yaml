@@ -1,0 +1,194 @@
+---
+# Source: zeebe-benchmark/charts/camunda-platform/templates/zeebe-gateway/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: benchmark-test-zeebe-gateway
+  labels:
+    app: camunda-platform
+    app.kubernetes.io/name: camunda-platform
+    app.kubernetes.io/instance: benchmark-test
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: camunda-platform
+    app.kubernetes.io/component: zeebe-gateway
+    app.kubernetes.io/version: "SNAPSHOT"
+  annotations:
+    {}
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: camunda-platform
+      app.kubernetes.io/name: camunda-platform
+      app.kubernetes.io/instance: benchmark-test
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/part-of: camunda-platform
+      app.kubernetes.io/component: zeebe-gateway
+  template:
+    metadata:
+      labels:
+        app: camunda-platform
+        app.kubernetes.io/name: camunda-platform
+        app.kubernetes.io/instance: benchmark-test
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/part-of: camunda-platform
+        app.kubernetes.io/component: zeebe-gateway
+        app.kubernetes.io/version: "SNAPSHOT"
+      annotations:
+        checksum/config: 097f011c56a9c3d0128c753acfcb770ea4cde9b9463b24a69dace77a61c49eb5
+    spec:
+      imagePullSecrets:
+        []
+      initContainers:
+        - command:
+          - wget
+          - https://github.com/pyroscope-io/pyroscope-java/releases/latest/download/pyroscope.jar
+          - -O
+          - /pyroscope/pyroscope.jar
+          image: alpine
+          name: pyroscope
+          securityContext:
+            allowPrivilegeEscalation: false
+            privileged: false
+            readOnlyRootFilesystem: true
+            runAsUser: 1000
+          volumeMounts:
+          - mountPath: /pyroscope
+            name: pyroscope
+      containers:
+        - name: zeebe-gateway
+          image: camunda/zeebe:SNAPSHOT
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 9600
+              name: http
+            - containerPort: 26500
+              name: gateway
+            - containerPort: 26502
+              name: internal
+            - containerPort: 8080
+              name: rest
+          env:
+            - name: ZEEBE_STANDALONE_GATEWAY
+              value: "true"
+            - name: ZEEBE_GATEWAY_CLUSTER_MEMBERID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: ZEEBE_LOG_LEVEL
+              value: "debug"
+            - name: JAVA_TOOL_OPTIONS
+              value: "-XX:+ExitOnOutOfMemoryError"
+            - name: ZEEBE_GATEWAY_CLUSTER_INITIALCONTACTPOINTS
+              value: benchmark-test-zeebe:26502
+            - name: ZEEBE_GATEWAY_NETWORK_HOST
+              value: 0.0.0.0
+            - name: ZEEBE_GATEWAY_NETWORK_PORT
+              value: "26500"
+            - name: ZEEBE_GATEWAY_CLUSTER_HOST
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: ZEEBE_LOG_APPENDER
+              value: Stackdriver
+            - name: ZEEBE_LOG_STACKDRIVER_SERVICENAME
+              value: zeebe
+            - name: ZEEBE_LOG_STACKDRIVER_SERVICEVERSION
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: ATOMIX_LOG_LEVEL
+              value: INFO
+            - name: ZEEBE_LOG_LEVEL
+              value: DEBUG
+            - name: PYROSCOPE_SERVER_ADDRESS
+              value: http://pyroscope.pyroscope.svc.cluster.local:4040
+            - name: PYROSCOPE_APPLICATION_NAME
+              value: io.camunda.zeebe.gateway
+            - name: PYROSCOPE_LOG_LEVEL
+              value: debug
+            - name: PYROSCOPE_FORMAT
+              value: jfr
+            - name: PYROSCOPE_PROFILER_EVENT
+              value: cpu
+            - name: PYROSCOPE_PROFILER_ALLOC
+              value: "0"
+            - name: PYROSCOPE_PROFILER_LOCK
+              value: "0"
+            - name: PYROSCOPE_LABELS
+              value: namespace=$(K8S_NAMESPACE), pod=$(K8S_NAME)
+            - name: JAVA_OPTS
+              valueFrom:
+                configMapKeyRef:
+                  key: java-opts
+                  name: zeebe-config
+                  optional: true
+          envFrom:
+          volumeMounts:
+            - mountPath: /tmp
+              name: tmp
+            - name: config
+              mountPath: /usr/local/zeebe/config/application.yaml
+              subPath: application.yaml
+            
+            - mountPath: /pyroscope
+              name: pyroscope
+            - mountPath: /usr/local/zeebe/config/application.yaml
+              name: zeebe-config
+              subPath: application.yml
+          securityContext:
+            allowPrivilegeEscalation: false
+            privileged: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 1001
+            seccompProfile:
+              type: RuntimeDefault
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              scheme: HTTP
+              port: 9600
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            successThreshold: 1
+            failureThreshold: 5
+            timeoutSeconds: 1
+          resources:
+            limits:
+              cpu: 450m
+              memory: 1Gi
+            requests:
+              cpu: 450m
+              memory: 1Gi
+      volumes:
+        - name: tmp
+          emptyDir: {}
+        - name: config
+          configMap:
+            name: benchmark-test-zeebe-gateway-configuration
+            defaultMode: 484
+        - configMap:
+            defaultMode: 492
+            name: zeebe-config
+          name: zeebe-config
+        - emptyDir: {}
+          name: pyroscope
+      serviceAccountName: benchmark-test-zeebe-gateway
+      securityContext:
+        fsGroup: 1001
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+  # yamllint disable
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app.kubernetes.io/component
+                operator: In
+                values:
+                - zeebe-gateway
+            topologyKey: kubernetes.io/hostname
+  # yamllint enable
