@@ -249,7 +249,7 @@ camunda-platform:
     # PvcStorageClassName can be used to set the storage class name which should be used by the persistent volume claim. It is recommended to use a storage class, which is backed with a SSD.
     pvcStorageClassName: ssd
 
-  zeebe-gateway:
+  zeebeGateway:
     # Replicas defines how many standalone gateways are deployed
     replicas: 2
 
