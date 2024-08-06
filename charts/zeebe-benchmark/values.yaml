@@ -378,6 +378,9 @@ camunda-platform:
   identity:
     enabled: false
 
+  identityKeycloak:
+    enabled: false
+
   optimize:
     enabled: false
 
