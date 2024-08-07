@@ -120,7 +120,7 @@ camunda-platform:
     # CpuThreadCount defines how many threads can be used for the processing on each broker pod
     cpuThreadCount: 3
     # IoThreadCount defines how many threads can be used for the exporting on each broker pod
-    ioThreadCount: 3  
+    ioThreadCount: 3
 
     # ContainerSecurityContext defines the security options the Zeebe broker container should be run with
     containerSecurityContext:
@@ -146,17 +146,17 @@ camunda-platform:
 
     # Zeebe config
     extraVolumes:
-      - name: zeebe-config
+      - name: benchmark-config
         configMap:
-          name: zeebe-config
+          name: benchmark-config
           defaultMode: 0754
       - name: pyroscope
         emptyDir: {}
 
     extraVolumeMounts:
-      - name: zeebe-config
-        mountPath: /usr/local/zeebe/config/application.yaml
-        subPath: application.yml
+      - name: benchmark-config
+        mountPath: /usr/local/zeebe/config/benchmark-config.yaml
+        subPath: benchmark-config.yaml
       - name: pyroscope
         mountPath: /pyroscope
 
@@ -224,6 +224,8 @@ camunda-platform:
         value: "0"
       - name: PYROSCOPE_LABELS
         value: "namespace=$(K8S_NAMESPACE), pod=$(K8S_NAME)"
+      - name: SPRING_CONFIG_ADDITIONALLOCATION
+        value: "/usr/local/zeebe/config/benchmark-config.yaml"
       - name: JAVA_OPTS
         valueFrom:
           configMapKeyRef:
@@ -263,9 +265,9 @@ camunda-platform:
     logLevel: debug
 
     extraVolumes:
-      - name: zeebe-config
+      - name: benchmark-config
         configMap:
-          name: zeebe-config
+          name: benchmark-config
           defaultMode: 0754
       - name: pyroscope
         emptyDir: {}
@@ -273,9 +275,9 @@ camunda-platform:
     extraVolumeMounts:
       - name: pyroscope
         mountPath: /pyroscope
-      - name: zeebe-config
-        mountPath: /usr/local/zeebe/config/application.yaml
-        subPath: application.yml
+      - name: benchmark-config
+        mountPath: /usr/local/zeebe/config/benchmark-config.yaml
+        subPath: benchmark-config.yaml
 
     extraInitContainers:
       - name: pyroscope
@@ -324,6 +326,8 @@ camunda-platform:
         value: "0"
       - name: PYROSCOPE_LABELS
         value: "namespace=$(K8S_NAMESPACE), pod=$(K8S_NAME)"
+      - name: SPRING_CONFIG_ADDITIONALLOCATION
+        value: "/usr/local/zeebe/config/benchmark-config.yaml"
       - name: JAVA_OPTS
         valueFrom:
           configMapKeyRef:
