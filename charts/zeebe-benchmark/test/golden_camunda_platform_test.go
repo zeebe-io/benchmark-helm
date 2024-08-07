@@ -46,7 +46,7 @@ func TestGoldenCamundaPlatformZeebeDefaults(t *testing.T) {
 			ChartPath:      chartPath,
 			Release:        "benchmark-test",
 			Namespace:      "benchmark-" + strings.ToLower(random.UniqueId()),
-			GoldenFileName: "c8-" + name,
+			GoldenFileName: "c8-zeebe-" + name,
 			Templates:      []string{"charts/camunda-platform/templates/zeebe/" + name + ".yaml"},
 			SetValues:      map[string]string{"camunda-platform.operate.enabled": "true"},
 		})
@@ -67,7 +67,7 @@ func TestGoldenCamundaPlatformZeebeGatewayDefaults(t *testing.T) {
 			ChartPath:      chartPath,
 			Release:        "benchmark-test",
 			Namespace:      "benchmark-" + strings.ToLower(random.UniqueId()),
-			GoldenFileName: "c8-" + name,
+			GoldenFileName: "c8-zeebe-gateway-" + name,
 			Templates:      []string{"charts/camunda-platform/templates/zeebe-gateway/" + name + ".yaml"},
 			SetValues:      map[string]string{"camunda-platform.operate.enabled": "true"},
 		})
