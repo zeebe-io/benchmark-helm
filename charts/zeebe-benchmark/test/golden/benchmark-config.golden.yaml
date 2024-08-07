@@ -1,0 +1,21 @@
+---
+# Source: zeebe-benchmark/templates/benchmark-config.yaml
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: benchmark-config
+  labels:
+    app.kubernetes.io/name: zeebe-benchmark
+    app.kubernetes.io/instance: benchmark-test
+    app.kubernetes.io/version: "8.2.5"
+    app.kubernetes.io/managed-by: Helm
+data: 
+  benchmark-config.yaml: | 
+    zeebe.broker.data.diskUsageCommandWatermark: "0.8"
+    zeebe.broker.data.diskUsageReplicationWatermark: "0.9"
+    zeebe.broker.executionMetricsExporterEnabled: "true"
+    zeebe.broker.experimental.consistencyChecks.enableForeignKeyChecks: "true"
+    zeebe.broker.experimental.consistencyChecks.enablePreconditions: "true"
+    zeebe.broker.exporters.elasticsearch.args.index.indexSuffixDatePattern: yyyy-MM-dd_HH
+    zeebe.gateway.monitoring.enabled: "true"
+    zeebe.gateway.threads.managementThreads: "1"

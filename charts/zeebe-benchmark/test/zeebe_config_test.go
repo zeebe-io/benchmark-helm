@@ -30,7 +30,7 @@ func TestConfigMapTemplate(t *testing.T) {
 		chartPath: chartPath,
 		release:   "benchmark-test",
 		namespace: "benchmark-" + strings.ToLower(random.UniqueId()),
-		templates: []string{"templates/zeebe-config.yaml"},
+		templates: []string{"templates/benchmark-config.yaml"},
 	})
 }
 
@@ -69,7 +69,7 @@ func (s *configMapTemplateTest) TestSetZeebeConfig() {
 	var configmap corev1.ConfigMap
 	var zeebeConfig map[string]interface{}
 	helm.UnmarshalK8SYaml(s.T(), output, &configmap)
-	helm.UnmarshalK8SYaml(s.T(), configmap.Data["application.yml"], &zeebeConfig)
+	helm.UnmarshalK8SYaml(s.T(), configmap.Data["benchmark-config.yaml"], &zeebeConfig)
 
 	brokerConfig := zeebeConfig["zeebe"].(map[string]interface{})["broker"]
 	replicationFactor := brokerConfig.(map[string]interface{})["cluster"].(map[string]interface{})["replicationFactor"]

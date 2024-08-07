@@ -145,6 +145,8 @@ spec:
               value: "0"
             - name: PYROSCOPE_LABELS
               value: namespace=$(K8S_NAMESPACE), pod=$(K8S_NAME)
+            - name: SPRING_CONFIG_ADDITIONALLOCATION
+              value: /usr/local/zeebe/config/benchmark-config.yaml
             - name: JAVA_OPTS
               valueFrom:
                 configMapKeyRef:
@@ -189,9 +191,9 @@ spec:
               mountPath: /usr/local/zeebe/config/application.yaml
               subPath: application.yaml
             
-            - mountPath: /usr/local/zeebe/config/application.yaml
-              name: zeebe-config
-              subPath: application.yml
+            - mountPath: /usr/local/zeebe/config/benchmark-config.yaml
+              name: benchmark-config
+              subPath: benchmark-config.yaml
             - mountPath: /pyroscope
               name: pyroscope
       volumes:
@@ -206,8 +208,8 @@ spec:
           
         - configMap:
             defaultMode: 492
-            name: zeebe-config
-          name: zeebe-config
+            name: benchmark-config
+          name: benchmark-config
         - emptyDir: {}
           name: pyroscope
       serviceAccountName: benchmark-test-zeebe
