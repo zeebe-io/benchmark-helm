@@ -224,6 +224,8 @@ camunda-platform:
         value: "0"
       - name: PYROSCOPE_LABELS
         value: "namespace=$(K8S_NAMESPACE), pod=$(K8S_NAME)"
+      # To be able to load a separate/additional configuration
+      # See https://github.com/camunda/camunda-platform-helm/issues/2197
       - name: SPRING_CONFIG_ADDITIONALLOCATION
         value: "/usr/local/zeebe/config/benchmark-config.yaml"
       - name: JAVA_OPTS
@@ -326,6 +328,8 @@ camunda-platform:
         value: "0"
       - name: PYROSCOPE_LABELS
         value: "namespace=$(K8S_NAMESPACE), pod=$(K8S_NAME)"
+      # To be able to load a separate/additional configuration
+      # See https://github.com/camunda/camunda-platform-helm/issues/2197
       - name: SPRING_CONFIG_ADDITIONALLOCATION
         value: "/usr/local/zeebe/config/benchmark-config.yaml"
       - name: JAVA_OPTS
