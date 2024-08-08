@@ -3,19 +3,24 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: benchmark-test-operate
+  name: benchmark-test-operate-configuration
   labels:
     app: camunda-platform
     app.kubernetes.io/name: camunda-platform
     app.kubernetes.io/instance: benchmark-test
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/part-of: camunda-platform
-    app.kubernetes.io/version: "SNAPSHOT"
     app.kubernetes.io/component: operate
+    app.kubernetes.io/version: "8.5.4"
 data:
   application.yml: |
+    spring:
+      profiles:
+        active: "auth"
+    
     # Operate configuration file
     camunda.operate:
+    
       # ELS instance to store Operate data
       elasticsearch:
         # Cluster name
@@ -24,10 +29,8 @@ data:
         host: benchmark-test-elasticsearch
         # Transport port
         port: 9200
-      # Zeebe instance
-      zeebe:
-        # Broker contact point
-        brokerContactPoint: "benchmark-test-zeebe-gateway:26500"
+        # Elasticsearch full url
+        url: "http://benchmark-test-elasticsearch:9200"
       # ELS instance to export Zeebe data to
       zeebeElasticsearch:
         # Cluster name
@@ -38,6 +41,12 @@ data:
         port: 9200
         # Index prefix, configured in Zeebe Elasticsearch exporter
         prefix: zeebe-record
+        # Elasticsearch full url
+        url: "http://benchmark-test-elasticsearch:9200"
+      # Zeebe instance
+      zeebe:
+        # Broker contact point
+        brokerContactPoint: "benchmark-test-zeebe-gateway:26500"
       archiver:
         ilmEnabled: true
         ilmMinAgeForDeleteArchivedIndices: 30m

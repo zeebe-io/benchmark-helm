@@ -1,16 +1,16 @@
 ---
-# Source: zeebe-benchmark/templates/zeebe-config.yaml
+# Source: zeebe-benchmark/templates/benchmark-config.yaml
 kind: ConfigMap
 apiVersion: v1
 metadata:
-  name: zeebe-config
+  name: benchmark-config
   labels:
     app.kubernetes.io/name: zeebe-benchmark
     app.kubernetes.io/instance: benchmark-test
     app.kubernetes.io/version: "8.2.5"
     app.kubernetes.io/managed-by: Helm
 data: 
-  application.yml: | 
+  benchmark-config.yaml: | 
     zeebe.broker.data.diskUsageCommandWatermark: "0.8"
     zeebe.broker.data.diskUsageReplicationWatermark: "0.9"
     zeebe.broker.executionMetricsExporterEnabled: "true"

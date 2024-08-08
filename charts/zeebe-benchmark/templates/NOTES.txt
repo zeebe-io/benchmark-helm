@@ -3,7 +3,7 @@
 Installed Zeebe cluster with:
 
  * {{  index .Values "camunda-platform" "zeebe" "clusterSize" }} Brokers
- * {{  index .Values "camunda-platform" "zeebe-gateway" "replicas" }} Gateways
+ * {{  index .Values "camunda-platform" "zeebeGateway" "replicas" }} Gateways
 
 The benchmark is running with:
 

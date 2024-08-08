@@ -10,7 +10,6 @@ metadata:
     app.kubernetes.io/instance: benchmark-test
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/part-of: camunda-platform
-    app.kubernetes.io/version: "SNAPSHOT"
     release: monitoring
 spec:
   selector:

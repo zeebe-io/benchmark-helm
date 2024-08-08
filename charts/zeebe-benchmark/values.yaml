@@ -109,6 +109,7 @@ camunda-platform:
     image:
       # Image.repository defines which image repository to use
       repository: camunda/zeebe
+      tag: SNAPSHOT
     # ClusterSize defines the amount of brokers (=replicas), which are deployed via helm
     clusterSize: "3"
     # PartitionCount defines how many zeebe partitions are set up in the cluster
@@ -119,7 +120,7 @@ camunda-platform:
     # CpuThreadCount defines how many threads can be used for the processing on each broker pod
     cpuThreadCount: 3
     # IoThreadCount defines how many threads can be used for the exporting on each broker pod
-    ioThreadCount: 3  
+    ioThreadCount: 3
 
     # ContainerSecurityContext defines the security options the Zeebe broker container should be run with
     containerSecurityContext:
@@ -145,17 +146,17 @@ camunda-platform:
 
     # Zeebe config
     extraVolumes:
-      - name: zeebe-config
+      - name: benchmark-config
         configMap:
-          name: zeebe-config
+          name: benchmark-config
           defaultMode: 0754
       - name: pyroscope
         emptyDir: {}
 
     extraVolumeMounts:
-      - name: zeebe-config
-        mountPath: /usr/local/zeebe/config/application.yaml
-        subPath: application.yml
+      - name: benchmark-config
+        mountPath: /usr/local/zeebe/config/benchmark-config.yaml
+        subPath: benchmark-config.yaml
       - name: pyroscope
         mountPath: /pyroscope
 
@@ -223,6 +224,10 @@ camunda-platform:
         value: "0"
       - name: PYROSCOPE_LABELS
         value: "namespace=$(K8S_NAMESPACE), pod=$(K8S_NAME)"
+      # To be able to load a separate/additional configuration
+      # See https://github.com/camunda/camunda-platform-helm/issues/2197
+      - name: SPRING_CONFIG_ADDITIONALLOCATION
+        value: "/usr/local/zeebe/config/benchmark-config.yaml"
       - name: JAVA_OPTS
         valueFrom:
           configMapKeyRef:
@@ -249,7 +254,7 @@ camunda-platform:
     # PvcStorageClassName can be used to set the storage class name which should be used by the persistent volume claim. It is recommended to use a storage class, which is backed with a SSD.
     pvcStorageClassName: ssd
 
-  zeebe-gateway:
+  zeebeGateway:
     # Replicas defines how many standalone gateways are deployed
     replicas: 2
 
@@ -257,13 +262,14 @@ camunda-platform:
     image:
       # Image.repository defines which image repository to use
       repository: camunda/zeebe
+      tag: SNAPSHOT
     # LogLevel defines the log level which is used by the gateway
     logLevel: debug
 
     extraVolumes:
-      - name: zeebe-config
+      - name: benchmark-config
         configMap:
-          name: zeebe-config
+          name: benchmark-config
           defaultMode: 0754
       - name: pyroscope
         emptyDir: {}
@@ -271,9 +277,9 @@ camunda-platform:
     extraVolumeMounts:
       - name: pyroscope
         mountPath: /pyroscope
-      - name: zeebe-config
-        mountPath: /usr/local/zeebe/config/application.yaml
-        subPath: application.yml
+      - name: benchmark-config
+        mountPath: /usr/local/zeebe/config/benchmark-config.yaml
+        subPath: benchmark-config.yaml
 
     extraInitContainers:
       - name: pyroscope
@@ -322,6 +328,10 @@ camunda-platform:
         value: "0"
       - name: PYROSCOPE_LABELS
         value: "namespace=$(K8S_NAMESPACE), pod=$(K8S_NAME)"
+      # To be able to load a separate/additional configuration
+      # See https://github.com/camunda/camunda-platform-helm/issues/2197
+      - name: SPRING_CONFIG_ADDITIONALLOCATION
+        value: "/usr/local/zeebe/config/benchmark-config.yaml"
       - name: JAVA_OPTS
         valueFrom:
           configMapKeyRef:
@@ -341,7 +351,7 @@ camunda-platform:
   operate:
     enabled: false
     image:
-      tag: 8.2.8
+      tag: SNAPSHOT
     # Resources configuration to set request and limit configuration for the container https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#requests-and-limits
     resources:
       requests:
@@ -376,6 +386,9 @@ camunda-platform:
     enabled: false
 
   identity:
+    enabled: false
+
+  identityKeycloak:
     enabled: false
 
   optimize:

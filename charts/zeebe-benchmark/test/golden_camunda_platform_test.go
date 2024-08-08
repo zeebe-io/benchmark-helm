@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
-func TestGoldenCamundaPlatformDefaults(t *testing.T) {
+func TestGoldenCamundaPlatformServiceMonitorDefaults(t *testing.T) {
 	// Test which allows to verify also parent chart templates
 	// This makes sure that properties are correctly set
 	// OR configurations have been changed
@@ -27,6 +27,48 @@ func TestGoldenCamundaPlatformDefaults(t *testing.T) {
 			Namespace:      "benchmark-" + strings.ToLower(random.UniqueId()),
 			GoldenFileName: "c8-" + name,
 			Templates:      []string{"charts/camunda-platform/templates/service-monitor/" + name + ".yaml"},
+			SetValues:      map[string]string{"camunda-platform.operate.enabled": "true"},
+		})
+	}
+}
+
+func TestGoldenCamundaPlatformZeebeDefaults(t *testing.T) {
+	// Test which allows to verify also parent chart templates
+	// This makes sure that properties are correctly set
+	// OR configurations have been changed
+
+	chartPath, err := filepath.Abs("../")
+	require.NoError(t, err)
+	templateNames := []string{"service", "statefulset", "configmap"}
+
+	for _, name := range templateNames {
+		suite.Run(t, &golden.TemplateGoldenTest{
+			ChartPath:      chartPath,
+			Release:        "benchmark-test",
+			Namespace:      "benchmark-" + strings.ToLower(random.UniqueId()),
+			GoldenFileName: "c8-zeebe-" + name,
+			Templates:      []string{"charts/camunda-platform/templates/zeebe/" + name + ".yaml"},
+			SetValues:      map[string]string{"camunda-platform.operate.enabled": "true"},
+		})
+	}
+}
+
+func TestGoldenCamundaPlatformZeebeGatewayDefaults(t *testing.T) {
+	// Test which allows to verify also parent chart templates
+	// This makes sure that properties are correctly set
+	// OR configurations have been changed
+
+	chartPath, err := filepath.Abs("../")
+	require.NoError(t, err)
+	templateNames := []string{"service", "deployment", "configmap"}
+
+	for _, name := range templateNames {
+		suite.Run(t, &golden.TemplateGoldenTest{
+			ChartPath:      chartPath,
+			Release:        "benchmark-test",
+			Namespace:      "benchmark-" + strings.ToLower(random.UniqueId()),
+			GoldenFileName: "c8-zeebe-gateway-" + name,
+			Templates:      []string{"charts/camunda-platform/templates/zeebe-gateway/" + name + ".yaml"},
 			SetValues:      map[string]string{"camunda-platform.operate.enabled": "true"},
 		})
 	}

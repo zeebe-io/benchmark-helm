@@ -10,11 +10,13 @@ metadata:
     app.kubernetes.io/instance: benchmark-test
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/part-of: camunda-platform
-    app.kubernetes.io/version: "SNAPSHOT"
     app.kubernetes.io/component: operate
+    app.kubernetes.io/version: "8.5.4"
   annotations:
     {}
 spec:
+  strategy:
+    type: Recreate
   replicas: 1
   selector:
     matchLabels:
@@ -32,10 +34,10 @@ spec:
         app.kubernetes.io/instance: benchmark-test
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/part-of: camunda-platform
-        app.kubernetes.io/version: "SNAPSHOT"
         app.kubernetes.io/component: operate
+        app.kubernetes.io/version: "8.5.4"
       annotations:
-        checksum/config: cbb005f59886979ea6ca5a94e8a05a67c712f3ff81800e08383d9ad368206293
+        checksum/config: 1cfe01b812571d8f3a237c6dc3832c47d12b5e0d7f33cca794baee7f279d8137
     spec:
       imagePullSecrets:
         []
@@ -43,16 +45,17 @@ spec:
         []
       containers:
         - name: operate
-          image: camunda/operate:8.2.8
+          image: camunda/operate:SNAPSHOT
           imagePullPolicy: Always
           securityContext:
             allowPrivilegeEscalation: false
             privileged: false
             readOnlyRootFilesystem: true
-            runAsUser: 1004
+            runAsNonRoot: true
+            runAsUser: 1001
+            seccompProfile:
+              type: RuntimeDefault
           env:
-            - name: SPRING_PROFILES_ACTIVE
-              value: "auth"
             - name: ZEEBE_CLIENT_CONFIG_PATH
               value: /tmp/zeebe_auth_cache
             - name: OPERATE_LOG_APPENDER
@@ -63,6 +66,7 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
+          envFrom:
           resources:
             limits:
               cpu: 2000m
@@ -95,12 +99,15 @@ spec:
       volumes:
         - name: config
           configMap:
-            name: benchmark-test-operate
+            name: benchmark-test-operate-configuration
             defaultMode: 484
         - name: tmp
           emptyDir: {}
         - name: camunda
           emptyDir: {}
+      serviceAccountName: benchmark-test-operate
       securityContext:
-        fsGroup: 1000
+        fsGroup: 1001
         runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault

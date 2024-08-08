@@ -15,7 +15,7 @@ func TestGoldenCuratorDefaults(t *testing.T) {
 
 	chartPath, err := filepath.Abs("../")
 	require.NoError(t, err)
-	templateNames := []string{"clients-service", "leader-balancing-cron", "publisher", "starter", "timer", "worker", "zeebe-config"}
+	templateNames := []string{"clients-service", "leader-balancing-cron", "publisher", "starter", "timer", "worker", "benchmark-config"}
 
 	for _, name := range templateNames {
 		suite.Run(t, &golden.TemplateGoldenTest{
