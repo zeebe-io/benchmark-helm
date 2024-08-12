@@ -107,7 +107,7 @@ helm.dependency-update:
 # helm.install: install the local chart into the current kubernetes cluster/namespace
 .PHONY: helm.install
 helm.install: helm.dependency-update
-	helm install $(releaseName) $(chartPath)
+	helm install $(releaseName) $(chartPath) --render-subchart-notes
 
 # helm.uninstall: uninstall the chart and removes all related pvc's
 .PHONY: helm.uninstall
@@ -119,12 +119,12 @@ helm.uninstall:
 # helm.dry-run: run an install dry-run with the local chart
 .PHONY: helm.dry-run
 helm.dry-run: helm.dependency-update
-	helm install $(releaseName) $(chartPath) --dry-run
+	helm install $(releaseName) $(chartPath) --dry-run --render-subchart-notes
 
 # helm.template: show all rendered templates for the local chart
 .PHONY: helm.template
 helm.template: helm.dependency-update
-	helm template $(releaseName) $(chartPath)
+	helm template $(releaseName) $(chartPath) --render-subchart-notes
 
 #########################################################
 ######### Release
