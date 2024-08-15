@@ -15,6 +15,8 @@ metadata:
   annotations:
     {}
 spec:
+  strategy:
+    type: RollingUpdate
   replicas: 2
   selector:
     matchLabels:
@@ -35,7 +37,7 @@ spec:
         app.kubernetes.io/component: zeebe-gateway
         app.kubernetes.io/version: "SNAPSHOT"
       annotations:
-        checksum/config: 097f011c56a9c3d0128c753acfcb770ea4cde9b9463b24a69dace77a61c49eb5
+        checksum/config: abff6fd01d361fd30b47a05f3d11a59b0faffc911dbd3da2ef3e5d02854d8810
     spec:
       imagePullSecrets:
         []
@@ -69,6 +71,11 @@ spec:
             - containerPort: 8080
               name: rest
           env:
+            - name: CAMUNDA_LICENSE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: benchmark-test-camunda-platform-license
+                  key: CAMUNDA_LICENSE_KEY
             - name: ZEEBE_STANDALONE_GATEWAY
               value: "true"
             - name: ZEEBE_GATEWAY_CLUSTER_MEMBERID
@@ -81,10 +88,6 @@ spec:
               value: "-XX:+ExitOnOutOfMemoryError"
             - name: ZEEBE_GATEWAY_CLUSTER_INITIALCONTACTPOINTS
               value: benchmark-test-zeebe:26502
-            - name: ZEEBE_GATEWAY_NETWORK_HOST
-              value: 0.0.0.0
-            - name: ZEEBE_GATEWAY_NETWORK_PORT
-              value: "26500"
             - name: ZEEBE_GATEWAY_CLUSTER_HOST
               valueFrom:
                 fieldRef:

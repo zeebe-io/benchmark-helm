@@ -11,7 +11,7 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/part-of: camunda-platform
     app.kubernetes.io/component: operate
-    app.kubernetes.io/version: "8.5.4"
+    app.kubernetes.io/version: "SNAPSHOT"
   annotations:
     {}
 spec:
@@ -35,14 +35,40 @@ spec:
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/part-of: camunda-platform
         app.kubernetes.io/component: operate
-        app.kubernetes.io/version: "8.5.4"
+        app.kubernetes.io/version: "SNAPSHOT"
       annotations:
-        checksum/config: 1cfe01b812571d8f3a237c6dc3832c47d12b5e0d7f33cca794baee7f279d8137
+        checksum/config: f0836a0e6c8d3e8f2132c68c20ed4ca2e95d97a467dc72c6e6121bdcc3cfdd11
     spec:
       imagePullSecrets:
         []
       initContainers:
-        []
+        - name: migration
+          image: camunda/operate:SNAPSHOT
+          command: ['/bin/sh', '/usr/local/operate/bin/migrate']
+          securityContext:
+            allowPrivilegeEscalation: false
+            privileged: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 1001
+            seccompProfile:
+              type: RuntimeDefault
+          env:
+          resources:
+            limits:
+              cpu: 2000m
+              memory: 2Gi
+            requests:
+              cpu: 600m
+              memory: 1Gi
+          volumeMounts:
+            - name: config
+              mountPath: /usr/local/operate/config/application.yaml
+              subPath: application.yaml
+            - name: tmp
+              mountPath: /tmp
+            - name: camunda
+              mountPath: /camunda
       containers:
         - name: operate
           image: camunda/operate:SNAPSHOT
@@ -56,8 +82,35 @@ spec:
             seccompProfile:
               type: RuntimeDefault
           env:
+            - name: CAMUNDA_LICENSE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: benchmark-test-camunda-platform-license
+                  key: CAMUNDA_LICENSE_KEY
             - name: ZEEBE_CLIENT_CONFIG_PATH
               value: /tmp/zeebe_auth_cache
+            # the host name of Operate that is used when connecting with the Zeebe cluster
+            # via atomix-cluster (SWIM)
+            - name: ZEEBE_GATEWAY_CLUSTER_HOST
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: status.podIP
+            # the unique member id (in this case the pod name) that is used as identifier inside the SWIM cluster
+            - name: ZEEBE_GATEWAY_CLUSTER_MEMBERID
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.name
+            # the name of the atomix cluster (SWIM) to connect to (must be the same as for the Zeebe cluster)
+            - name: ZEEBE_GATEWAY_CLUSTER_CLUSTERNAME
+              value: benchmark-test-zeebe
+            # the port the service expects requests/messages from the atomix cluster (must be exposed internally)
+            - name: ZEEBE_GATEWAY_CLUSTER_PORT
+              value: "26502"
+            # the initial contact point to join the SWIM (atomix) cluster
+            - name: ZEEBE_GATEWAY_CLUSTER_INITIALCONTACTPOINTS
+              value: benchmark-test-zeebe:26502
             - name: OPERATE_LOG_APPENDER
               value: Stackdriver
             - name: OPERATE_LOG_STACKDRIVER_SERVICENAME
@@ -78,11 +131,16 @@ spec:
             - containerPort: 8080
               name: http
               protocol: TCP
+            - containerPort: 9600
+              name: management
+            - containerPort: 26502
+              name: internal
+              protocol: TCP
           readinessProbe:
             httpGet:
               path: /actuator/health/readiness
               scheme: HTTP
-              port: http
+              port: management
             initialDelaySeconds: 30
             periodSeconds: 30
             successThreshold: 1
@@ -90,8 +148,8 @@ spec:
             timeoutSeconds: 1
           volumeMounts:
             - name: config
-              mountPath: /usr/local/operate/config/application.yml
-              subPath: application.yml
+              mountPath: /usr/local/operate/config/application.yaml
+              subPath: application.yaml
             - name: tmp
               mountPath: /tmp
             - name: camunda

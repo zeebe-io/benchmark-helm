@@ -38,7 +38,7 @@ spec:
         app.kubernetes.io/component: zeebe-broker
         app.kubernetes.io/version: "SNAPSHOT"
       annotations:
-        checksum/config: 6776a5924f028d3417742af59ee3d8754fe420cf0dc83e4370d1700fb08ea638
+        checksum/config: 99e2f60769668f254fe17c8e36f9a93ad520532142d153c99bdbf6aa1ff0cddf
     spec:
       imagePullSecrets:
         []
@@ -74,6 +74,11 @@ spec:
             seccompProfile:
               type: RuntimeDefault
           env:
+            - name: CAMUNDA_LICENSE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: benchmark-test-camunda-platform-license
+                  key: CAMUNDA_LICENSE_KEY
             - name: LC_ALL
               value: C.UTF-8
             - name: K8S_NAME
@@ -87,12 +92,12 @@ spec:
                 fieldRef:
                   fieldPath: metadata.namespace
             - name: ZEEBE_BROKER_NETWORK_ADVERTISEDHOST
-              value: "$(K8S_NAME).$(K8S_SERVICE_NAME).$(K8S_NAMESPACE).svc"
+              value: "$(K8S_NAME).$(K8S_SERVICE_NAME)"
             - name: ZEEBE_BROKER_CLUSTER_INITIALCONTACTPOINTS
               value:
-                $(K8S_SERVICE_NAME)-0.$(K8S_SERVICE_NAME).$(K8S_NAMESPACE).svc:26502,
-                $(K8S_SERVICE_NAME)-1.$(K8S_SERVICE_NAME).$(K8S_NAMESPACE).svc:26502,
-                $(K8S_SERVICE_NAME)-2.$(K8S_SERVICE_NAME).$(K8S_NAMESPACE).svc:26502,
+                $(K8S_SERVICE_NAME)-0.$(K8S_SERVICE_NAME):26502,
+                $(K8S_SERVICE_NAME)-1.$(K8S_SERVICE_NAME):26502,
+                $(K8S_SERVICE_NAME)-2.$(K8S_SERVICE_NAME):26502,
             - name: ZEEBE_LOG_LEVEL
               value: "info"
             - name: ZEEBE_BROKER_GATEWAY_ENABLE
