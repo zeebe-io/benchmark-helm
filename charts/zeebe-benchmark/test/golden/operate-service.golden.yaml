@@ -11,7 +11,7 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/part-of: camunda-platform
     app.kubernetes.io/component: operate
-    app.kubernetes.io/version: "8.5.4"
+    app.kubernetes.io/version: "SNAPSHOT"
   annotations:
 spec:
   type: ClusterIP
@@ -19,6 +19,10 @@ spec:
     - port: 80
       name: http
       targetPort: 8080
+      protocol: TCP
+    - port: 9600
+      name: management
+      targetPort: 9600
       protocol: TCP
   selector:
     app: camunda-platform
