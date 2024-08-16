@@ -2,7 +2,7 @@ apiVersion: v2
 name: zeebe-benchmark
 description: A Helm chart for Zeebe benchmarks
 type: application
-version: 0.2.2
+version: 0.2.3
 appVersion: "8.2.5"
 sources:
   - https://github.com/zeebe-io/benchmark-helm
@@ -26,4 +26,4 @@ annotations:
     - name: Zeebe Docs
       url: https://docs.camunda.io/docs/components/zeebe/zeebe-overview/
   artifacthub.io/containsSecurityUpdates: "false"
-  artifacthub.io/changes: "- kind: changed\n  description: \"load config as additional spring config\"\n- kind: changed\n  description: \"set tag on all components\"\n- kind: changed\n  description: \"change zeebe-gateway to zeebeGateway\"\n- kind: changed\n  description: \"disable identityKeycloak\"\n- kind: changed\n  description: \"rename camunda/zeebe repo\"\n"
+  artifacthub.io/changes: "- kind: added\n  description: \"add more details to NOTES\"\n"
