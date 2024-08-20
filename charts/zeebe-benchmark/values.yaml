@@ -68,7 +68,7 @@ timer:
   # Timer.rate defines with which rate process instances with timers should be created
   rate: 25
 
-# LeaderBalanacing configuration for the auto rebalancing feature, which allows to rebalance periodically the zeebe cluster
+# LeaderBalancing configuration for the auto rebalancing feature, which allows to rebalance periodically the zeebe cluster
 # For more details see https://docs.camunda.io/docs/self-managed/zeebe-deployment/operations/rebalancing/
 leaderBalancing:
   # LeaderBalancing.enabled if true, enables the auto leader rebalancing
@@ -92,6 +92,9 @@ zeebe:
     # Configure index suffix with hour pattern, so we create every hour a new index
     # such that ILM can clean it up quickly
     zeebe.broker.exporters.elasticsearch.args.index.indexSuffixDatePattern: "yyyy-MM-dd_HH"
+    # Configure a rate limit for all writes, so that we can visualize flow control metrics.
+    zeebe.broker.flowControl.write.enabled: "true"
+    zeebe.broker.flowControl.write.limit: 4000
   # Zeebe.profiling configuration for pyroscope profiling
   profiling:
     # Zeebe.profiling.enabled if true, enables the pyroscope profiling
