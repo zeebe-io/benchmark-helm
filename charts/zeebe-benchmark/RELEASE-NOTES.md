@@ -2,18 +2,14 @@ The changelog is automatically generated using [git-chglog](https://github.com/g
 and it follows [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) format.
 
 
-<a name="zeebe-benchmark-0.2.3"></a>
-## [zeebe-benchmark-0.2.3](https://github.com/camunda/camunda-platform-helm/compare/zeebe-benchmark-0.2.2...zeebe-benchmark-0.2.3) (2024-08-16)
+<a name="zeebe-benchmark-0.2.4"></a>
+## [zeebe-benchmark-0.2.4](https://github.com/camunda/camunda-platform-helm/compare/zeebe-benchmark-0.2.3...zeebe-benchmark-0.2.4) (2024-08-22)
 
 ### Feat
 
-* add more details to NOTES
+* enable write rate limits for the benchmarks.
 
 ### Test
 
-* regenerate golden files
-
-### Pull Requests
-
-* Merge pull request [#172](https://github.com/camunda/camunda-platform-helm/issues/172) from zeebe-io/release
+* add same config to test file which gets compared with the original.
 
