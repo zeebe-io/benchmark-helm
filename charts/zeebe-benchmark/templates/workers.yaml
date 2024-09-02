@@ -1,0 +1,57 @@
+{{- range $workerName, $worker := .Values.workers }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $workerName }}-worker
+  labels:
+    app: {{ $workerName }}-worker
+spec:
+  selector:
+    matchLabels:
+      app: {{ $workerName }}-worker
+  replicas: {{ $worker.replicas | default 3}}
+  template:
+    metadata:
+      labels:
+        app: {{ $workerName }}-worker
+        app.kubernetes.io/component: zeebe-client
+    spec:
+      containers:
+        - name: {{ $workerName }}-worker
+          image: "{{ $.Values.global.image.repository }}/worker:{{ $.Values.global.image.tag }}"
+          imagePullPolicy: {{ $.Values.global.image.pullPolicy }}
+          env:
+            - name: JDK_JAVA_OPTIONS
+              value: >-
+                -Dconfig.override_with_env_vars=true
+                -Dapp.brokerUrl={{ $.Release.Name }}-zeebe-gateway:26500
+                -Dzeebe.client.requestTimeout=62000
+                {{- if $worker.capacity }}
+                -Dapp.worker.capacity={{ $worker.capacity }}
+                {{- end }}
+                -Dapp.worker.pollingDelay=1ms
+                -Dapp.worker.completionDelay=50ms
+                -Dapp.worker.workerName={{ $workerName | quote }}
+                {{- if $worker.jobType }}
+                -Dapp.worker.jobType={{ $worker.jobType | quote }}
+                {{- end }}
+                {{- if $worker.payloadPath }}
+                -Dapp.worker.payloadPath={{ $worker.payloadPath | quote }}
+                {{- end}}
+                {{- if $worker.completionDelay }}
+                -Dapp.worker.completionDelay={{ $worker.completionDelay }}
+                {{- end}}
+                -XX:+HeapDumpOnOutOfMemoryError
+            {{- if $worker.logLevel }}
+            - name: LOG_LEVEL
+              value: {{ $worker.logLevel | quote }}
+            {{- end }}
+          {{- if $worker.resources }}
+          resources:
+            {{- toYaml $worker.resources | nindent 12 }}
+          {{- end }}
+          ports:
+            - containerPort: 9600
+              name: "http"
+---
+{{- end }}

@@ -10,7 +10,7 @@ spec:
   selector:
     matchLabels:
       app: worker
-  replicas: 3
+  replicas: 0
   template:
     metadata:
       labels:

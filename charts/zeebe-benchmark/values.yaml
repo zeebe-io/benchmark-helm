@@ -40,12 +40,60 @@ global:
     auth:
       enabled: false
 
-# Worker configuration for the to be deployed worker application
+# DEPRECATED worker configuration for the to be deployed worker application
 worker:
-  # Worker.replicas defines how many replicas of the worker application should be deployed
-  replicas: 3
-  # Worker.capacity defines how many jobs the worker should activate and work on
+  # Worker.benchmark.replicas defines how many replicas of the benchmark worker should be deployed
+  replicas: 0 # disabled per default as it is deprecated
+  # Worker.benchmark.capacity defines how many jobs the worker should activate and work on
   capacity: 60
+
+# Workers configuration for the to be deployed worker application
+#        => New way to deploy workers <=
+workers:
+  # Workers.benchmark defines the configuration for the default benchmark worker
+  # See below if you want additional workers
+  benchmark:
+    # Workers.benchmark.replicas defines how many replicas of the benchmark worker should be deployed
+    replicas: 3
+    # Workers.benchmark.capacity defines how many jobs the worker should activate and work on
+    capacity: 60
+    # Workers.benchmark.jobType defines the job type which should be used by the worker
+    jobType: "benchmark-task"
+    # Workers.benchmark.payloadPath defines the path (inside the worker app) to the payload resource
+    # that should be used to complete the corresponding jobs
+    payloadPath: "bpmn/big_payload.json"
+    # Workers.benchmark.payloadPath defines the delay of the worker before completing a job
+    completionDelay: 300ms
+    # Workers.benchmark.logLevel defines the logging level for the benchmark worker
+    logLevel: "WARN"
+    # Workers.benchmark.resources defines the resources for the benchmark worker
+    resources:
+      limits:
+        cpu: 500m
+        memory: 256Mi
+      requests:
+        cpu: 500m
+        memory: 256Mi
+
+  # Workers.benchmark defines the configuration for the default benchmark worker
+  # Adding more and different worker can be done via adding a new map like:
+  #  benchmark-2:
+  #    # Workers.benchmark.replicas defines how many replicas of the benchmark worker should be deployed
+  #    replicas: 3
+  #    # Workers.benchmark.capacity defines how many jobs the worker should activate and work on
+  #    capacity: 60
+  #    # Workers.benchmark.jobType defines the job type which should be used by the worker
+  #    jobType: "benchmark-2-task"
+  #    # Workers.benchmark.logLevel defines the logging level for the benchmark worker
+  #    logLevel: "WARN"
+  #    # Workers.benchmark.resources defines the resources for the benchmark worker
+  #    resources:
+  #      limits:
+  #        cpu: 500m
+  #        memory: 256Mi
+  #      requests:
+  #        cpu: 500m
+  #        memory: 256Mi
 
 # Starter configuration for the to be deployed starter application
 starter:
