@@ -52,3 +52,29 @@ func TestGoldenWorkers(t *testing.T) {
 		})
 	}
 }
+
+func TestGoldenExtendedStarter(t *testing.T) {
+	chartPath, err := filepath.Abs("../")
+	require.NoError(t, err)
+	templateNames := []string{"starter"}
+
+	values := map[string]string{
+		"starter.logLevel":          "INFO",
+		"starter.payloadPath":       "empty.json",
+		"starter.bpmnXmlPath":       "bpmn/real.bpmn",
+		"starter.extraResources[0]": "bpmn/extra.bpmn",
+		"starter.extraResources[1]": "bpmn/extra.dmn",
+		"starter.businessKey":       "customerId",
+	}
+
+	for _, name := range templateNames {
+		suite.Run(t, &golden.TemplateGoldenTest{
+			ChartPath:      chartPath,
+			Release:        "benchmark-test",
+			Namespace:      "benchmark-" + strings.ToLower(random.UniqueId()),
+			GoldenFileName: name + "-extended",
+			Templates:      []string{"templates/" + name + ".yaml"},
+			SetValues:      values,
+		})
+	}
+}
