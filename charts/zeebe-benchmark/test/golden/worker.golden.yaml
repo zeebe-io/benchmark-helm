@@ -3,22 +3,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: worker
+  name: benchmark-worker
   labels:
-    app: worker
+    app: benchmark-worker
 spec:
   selector:
     matchLabels:
-      app: worker
+      app: benchmark-worker
   replicas: 3
   template:
     metadata:
       labels:
-        app: worker
+        app: benchmark-worker
         app.kubernetes.io/component: zeebe-client
     spec:
       containers:
-        - name: worker
+        - name: benchmark-worker
           image: "gcr.io/zeebe-io/worker:SNAPSHOT"
           imagePullPolicy: Always
           env:
@@ -30,13 +30,11 @@ spec:
                 -Dapp.worker.capacity=60
                 -Dapp.worker.pollingDelay=1ms
                 -Dapp.worker.completionDelay=50ms
+                -Dapp.worker.workerName="benchmark"
+                -Dapp.worker.jobType="benchmark-task"
                 -XX:+HeapDumpOnOutOfMemoryError
             - name: LOG_LEVEL
-              value: "warn"
-          envFrom:
-            - configMapRef:
-                name: worker-config
-                optional: true
+              value: "WARN"
           resources:
             limits:
               cpu: 500m
