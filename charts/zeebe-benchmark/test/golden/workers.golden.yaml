@@ -32,6 +32,8 @@ spec:
                 -Dapp.worker.completionDelay=50ms
                 -Dapp.worker.workerName="benchmark"
                 -Dapp.worker.jobType="benchmark-task"
+                -Dapp.worker.payloadPath="bpmn/big_payload.json"
+                -Dapp.worker.completionDelay=300ms
                 -XX:+HeapDumpOnOutOfMemoryError
             - name: LOG_LEVEL
               value: "WARN"

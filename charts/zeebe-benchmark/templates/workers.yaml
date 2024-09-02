@@ -35,6 +35,12 @@ spec:
                 {{- if $worker.jobType }}
                 -Dapp.worker.jobType={{ $worker.jobType | quote }}
                 {{- end }}
+                {{- if $worker.payloadPath }}
+                -Dapp.worker.payloadPath={{ $worker.payloadPath | quote }}
+                {{- end}}
+                {{- if $worker.completionDelay }}
+                -Dapp.worker.completionDelay={{ $worker.completionDelay }}
+                {{- end}}
                 -XX:+HeapDumpOnOutOfMemoryError
             {{- if $worker.logLevel }}
             - name: LOG_LEVEL
