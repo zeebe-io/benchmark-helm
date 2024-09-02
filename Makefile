@@ -6,7 +6,7 @@ chartPath=charts/zeebe-benchmark
 chartVersion=$(shell grep -Po '(?<=^version: ).+' $(chartPath)/Chart.yaml)
 releaseName=zeebe-benchmark-test
 gitChglog=quay.io/git-chglog/git-chglog:0.15.1
-goBin=go1.22.2
+goBin=go
 #########################################################
 ######### Go.
 #########################################################
