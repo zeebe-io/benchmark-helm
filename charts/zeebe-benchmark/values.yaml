@@ -42,10 +42,33 @@ global:
 
 # Worker configuration for the to be deployed worker application
 worker:
-  # Worker.replicas defines how many replicas of the worker application should be deployed
-  replicas: 3
-  # Worker.capacity defines how many jobs the worker should activate and work on
-  capacity: 60
+  # Worker.benchmark defines the configuration for the default benchmark worker
+  # Adding more and different worker can be done via adding a new map
+  benchmark:
+    # Worker.benchmark.replicas defines how many replicas of the benchmark worker should be deployed, defaults to 3
+    replicas: 3
+    # Worker.benchmark.capacity defines how many jobs the worker should activate and work on, defaults to 30.
+    capacity: 60
+    # Worker.benchmark.jobType defines the job type which should be used by the worker, defaults to "benchmark-task"
+    jobType: "benchmark-task"
+    # Worker.benchmark.logLevel defines the logging level for the benchmark worker, defaults to "INFO"
+    logLevel: "WARN"
+    # Worker.benchmark.resources defines the resources for the benchmark worker
+    resources:
+      limits:
+        cpu: 500m
+        memory: 256Mi
+      requests:
+        cpu: 500m
+        memory: 256Mi
+
+  # Adding more and different worker can be done via adding a new map like:
+  # Worker.benchmark-2 defines the configuration for the benchmark-2 worker
+  # benchmark-2:
+    # Worker.benchmark-2.replicas defines how many replicas of the benchmark-2 worker should be deployed
+    # replicas: 3
+    # Worker.benchmark-2.capacity defines how many jobs the worker should activate and work on
+    # capacity: 60
 
 # Starter configuration for the to be deployed starter application
 starter:

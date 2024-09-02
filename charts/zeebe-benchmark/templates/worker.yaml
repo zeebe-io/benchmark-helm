@@ -1,47 +1,42 @@
+{{- range $workerName, $worker := .Values.worker }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: worker
+  name: {{ $workerName }}-worker
   labels:
-    app: worker
+    app: {{ $workerName }}-worker
 spec:
   selector:
     matchLabels:
-      app: worker
-  replicas: {{ .Values.worker.replicas }}
+      app: {{ $workerName }}-worker
+  replicas: {{ $worker.replicas | default 3}}
   template:
     metadata:
       labels:
-        app: worker
+        app: {{ $workerName }}-worker
         app.kubernetes.io/component: zeebe-client
     spec:
       containers:
-        - name: worker
-          image: "{{ .Values.global.image.repository }}/worker:{{ .Values.global.image.tag }}"
-          imagePullPolicy: {{ .Values.global.image.pullPolicy }}
+        - name: {{ $workerName }}-worker
+          image: "{{ $.Values.global.image.repository }}/worker:{{ $.Values.global.image.tag }}"
+          imagePullPolicy: {{ $.Values.global.image.pullPolicy }}
           env:
             - name: JDK_JAVA_OPTIONS
               value: >-
                 -Dconfig.override_with_env_vars=true
-                -Dapp.brokerUrl={{ .Release.Name }}-zeebe-gateway:26500
+                -Dapp.brokerUrl={{ $.Release.Name }}-zeebe-gateway:26500
                 -Dzeebe.client.requestTimeout=62000
-                -Dapp.worker.capacity={{ .Values.worker.capacity }}
+                -Dapp.worker.capacity={{ $worker.capacity | default 30 }}
                 -Dapp.worker.pollingDelay=1ms
                 -Dapp.worker.completionDelay=50ms
+                -Dapp.worker.workerName={{ $workerName | quote }}
+                -Dapp.worker.jobType={{ $worker.jobType | quote | default "benchmark-task" }}
                 -XX:+HeapDumpOnOutOfMemoryError
             - name: LOG_LEVEL
-              value: "warn"
-          envFrom:
-            - configMapRef:
-                name: worker-config
-                optional: true
+              value: {{ $worker.logLevel | quote | default "INFO" }}
           resources:
-            limits:
-              cpu: 500m
-              memory: 256Mi
-            requests:
-              cpu: 500m
-              memory: 256Mi
+            {{- toYaml $worker.resources | nindent 12 }}
           ports:
             - containerPort: 9600
               name: "http"
+{{- end }}
