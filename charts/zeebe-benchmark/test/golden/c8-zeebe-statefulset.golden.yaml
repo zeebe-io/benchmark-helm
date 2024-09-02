@@ -64,9 +64,6 @@ spec:
           imagePullPolicy: Always
           securityContext:
             allowPrivilegeEscalation: true
-            capabilities:
-              add:
-              - NET_ADMIN
             privileged: true
             readOnlyRootFilesystem: true
             runAsNonRoot: true
