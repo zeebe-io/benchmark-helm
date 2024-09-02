@@ -29,12 +29,13 @@ spec:
                 -Dapp.starter.rate=150
                 -Dapp.starter.durationLimit=0
                 -Dzeebe.client.requestTimeout=62000
-                -Dapp.starter.bpmnXmlPath= "bpmn/one_task.bpmn"
-                -Dapp.starter.businessKey="businessKey"
-                -Dapp.starter.payloadPath="bpmn/big_payload.json"
+                -Dapp.starter.bpmnXmlPath= "bpmn/real.bpmn"
+                -Dapp.starter.extraBpmnModels=[bpmn/extra.bpmn,bpmn/extra.dmn]
+                -Dapp.starter.businessKey="customerId"
+                -Dapp.starter.payloadPath="empty.json"
                 -XX:+HeapDumpOnOutOfMemoryError
             - name: LOG_LEVEL
-              value: "WARN"
+              value: "INFO"
           envFrom:
             - configMapRef:
                 name: starter-config
