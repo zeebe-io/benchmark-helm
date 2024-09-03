@@ -198,19 +198,19 @@ starter:
   # Starter.replicas defines how many replicas of the application should be deployed
   replicas: 1
   # Starter.rate defines with which rate process instances should be created by the starter
-  rate: 150
+  rate: 1
   # Starter.logLevel defines the logging level for the benchmark starter
-  logLevel: "WARN"
+  logLevel: "INFO"
   # Starter.payloadPath defines the path (inside the starter app) to the payload resource
   # that should be used to create the corresponding process instance
-  payloadPath: "bpmn/big_payload.json"
+  payloadPath: "bpmn/realistic/realisticPayload.json"
   # Starter.bpmnXmlPath defines the path (inside the starter app) to the main bpmn XML resource that should be deployed
-  bpmnXmlPath: "bpmn/one_task.bpmn"
+  bpmnXmlPath: "bpmn/realistic/bankCustomerComplaintDisputeHandling.bpmn"
   # Starter.extraBpmnModels can be used to specify paths (inside the starter app) to extra resources that should be deployed
-  extraResources: []
+  extraResources: ["bpmn/realistic/refundingProcess.bpmn", "bpmn/realistic/determineFraudRatingConfidence.dmn"]
   # Starter.businessKey can be used to specify a businessKey variable, inside a unique identifier is stored for
   # each created process instance
-  businessKey: "businessKey"
+  businessKey: "customerId"
 
 # Publisher configuration for the to be deployed publisher application
 publisher:
