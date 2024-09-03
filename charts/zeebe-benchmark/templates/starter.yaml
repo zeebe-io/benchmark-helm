@@ -30,8 +30,8 @@ spec:
                 {{- if .Values.starter.bpmnXmlPath }}
                 -Dapp.starter.bpmnXmlPath= {{ .Values.starter.bpmnXmlPath | quote }}
                 {{- end }}
-                {{- if .Values.starter.extraResources }}
-                -Dapp.starter.extraBpmnModels=[{{ join "," .Values.starter.extraResources }}]
+                {{- range $index, $value := .Values.starter.extraResources }}
+                -Dapp.starter.extraBpmnModels.{{ $index }}={{ $value | quote }}
                 {{- end }}
                 {{- if .Values.starter.businessKey }}
                 -Dapp.starter.businessKey={{ .Values.starter.businessKey | quote }}
