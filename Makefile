@@ -107,16 +107,16 @@ helm.dependency-update:
 # helm.install: install the local chart into the current kubernetes cluster/namespace
 .PHONY: helm.install
 helm.install: helm.dependency-update
-	helm install $(releaseName) $(chartPath) --render-subchart-notes
-	--set global.image.tag=ck-platform-benchmark  
-	--set camunda-platform.zeebe.image.repository=gcr.io/zeebe-io/zeebe 
-	--set camunda-platform.zeebe.image.tag=ck-platform-benchmark 
-	--set camunda-platform.zeebeGateway.image.repository=gcr.io/zeebe-io/zeebe 
-	--set camunda-platform.zeebeGateway.image.tag=ck-platform-benchmark 
-	--set camunda-platform.operate.enabled=true 
-	--set camunda-platform.operate.image.repository=gcr.io/zeebe-io/operate 
-	--set camunda-platform.operate.image.tag=ck-platform-benchmark 
-	--set camunda-platform.elasticsearch.master.persistence.size=128Gi 
+	helm install $(releaseName) $(chartPath) --render-subchart-notes \
+	--set global.image.tag=ck-platform-benchmark-7d13de8e  \
+	--set camunda-platform.zeebe.image.repository=gcr.io/zeebe-io/zeebe \
+	--set camunda-platform.zeebe.image.tag=ck-platform-benchmark-7d13de8e \
+	--set camunda-platform.zeebeGateway.image.repository=gcr.io/zeebe-io/zeebe \
+	--set camunda-platform.zeebeGateway.image.tag=ck-platform-benchmark-7d13de8e \
+	--set camunda-platform.operate.enabled=true \
+	--set camunda-platform.operate.image.repository=gcr.io/zeebe-io/operate \
+	--set camunda-platform.operate.image.tag=ck-platform-benchmark \
+	--set camunda-platform.elasticsearch.master.persistence.size=128Gi \
 	--set camunda-platform.zeebe.retention.minimumAge=1d
 # helm.uninstall: uninstall the chart and removes all related pvc's
 .PHONY: helm.uninstall
