@@ -108,11 +108,11 @@ helm.dependency-update:
 .PHONY: helm.install
 helm.install: helm.dependency-update
 	helm install $(releaseName) $(chartPath) --render-subchart-notes \
-	--set global.image.tag=ck-platform-benchmark-7d13de8e  \
+	--set global.image.tag=ck-worker-publish-message-benchmark-8f0ab0d8  \
 	--set camunda-platform.zeebe.image.repository=gcr.io/zeebe-io/zeebe \
-	--set camunda-platform.zeebe.image.tag=ck-platform-benchmark-7d13de8e \
+	--set camunda-platform.zeebe.image.tag=ck-worker-publish-message-benchmark-8f0ab0d8 \
 	--set camunda-platform.zeebeGateway.image.repository=gcr.io/zeebe-io/zeebe \
-	--set camunda-platform.zeebeGateway.image.tag=ck-platform-benchmark-7d13de8e \
+	--set camunda-platform.zeebeGateway.image.tag=ck-worker-publish-message-benchmark-8f0ab0d8 \
 	--set camunda-platform.operate.enabled=true \
 	--set camunda-platform.operate.image.repository=gcr.io/zeebe-io/operate \
 	--set camunda-platform.operate.image.tag=ck-platform-benchmark \
