@@ -52,7 +52,7 @@ worker:
 workers:
   # Workers.benchmark defines the configuration for the default benchmark worker
   # See below if you want additional workers
-  disputeRequestDocuments:
+  dispute-request-documents:
     # Workers.benchmark.replicas defines how many replicas of the benchmark worker should be deployed
     replicas: 1
     # Workers.benchmark.capacity defines how many jobs the worker should activate and work on
@@ -61,7 +61,7 @@ workers:
     jobType: "dispute_request_documents"
     # Workers.benchmark.payloadPath defines the path (inside the worker app) to the payload resource
     # that should be used to complete the corresponding jobs
-    payloadPath: "bpmn/empty_payload.json"
+    payloadPath: "bpmn/emptyPayload.json"
     # Workers.benchmark.payloadPath defines the delay of the worker before completing a job
     completionDelay: 300ms
     # Workers.benchmark.logLevel defines the logging level for the benchmark worker
@@ -76,7 +76,7 @@ workers:
         memory: 256Mi
 
   #####
-  extractDataFromDocument:
+  extract-data-from-document:
     # Workers.benchmark.replicas defines how many replicas of the benchmark worker should be deployed
     replicas: 1
     # Workers.benchmark.capacity defines how many jobs the worker should activate and work on
@@ -85,7 +85,7 @@ workers:
     jobType: "extract_data_from_document"
     # Workers.benchmark.payloadPath defines the path (inside the worker app) to the payload resource
     # that should be used to complete the corresponding jobs
-    payloadPath: "bpmn/empty_payload.json"
+    payloadPath: "bpmn/emptyPayload.json"
     # Workers.benchmark.payloadPath defines the delay of the worker before completing a job
     completionDelay: 300ms
     # Workers.benchmark.logLevel defines the logging level for the benchmark worker
@@ -102,76 +102,103 @@ workers:
 
     ##### - seems to be referenced twice
     #### - here we need to send a message from the worker -
-    disputeProcessRequestProofFromVendor:
-      # Workers.benchmark.replicas defines how many replicas of the benchmark worker should be deployed
-      replicas: 3
-      # Workers.benchmark.capacity defines how many jobs the worker should activate and work on
-      capacity: 60
-      # Workers.benchmark.jobType defines the job type which should be used by the worker
-      jobType: "dispute_process_request_proof_from_vendor"
-      # Workers.benchmark.payloadPath defines the path (inside the worker app) to the payload resource
-      # that should be used to complete the corresponding jobs
-      payloadPath: "bpmn/empty_payload.json"
-      # Workers.benchmark.payloadPath defines the delay of the worker before completing a job
-      completionDelay: 300ms
-      # Workers.benchmark.logLevel defines the logging level for the benchmark worker
-      logLevel: "WARN"
-      # Workers.benchmark.resources defines the resources for the benchmark worker
-      resources:
-        limits:
-          cpu: 500m
-          memory: 256Mi
-        requests:
-          cpu: 500m
-          memory: 256Mi
+  dispute-process-request-proof-from-vendor:
+    # Workers.benchmark.replicas defines how many replicas of the benchmark worker should be deployed
+    replicas: 3
+    # Workers.benchmark.capacity defines how many jobs the worker should activate and work on
+    capacity: 60
+    # Workers.benchmark.jobType defines the job type which should be used by the worker
+    jobType: "dispute_process_request_proof_from_vendor"
+    # Workers.benchmark.payloadPath defines the path (inside the worker app) to the payload resource
+    # that should be used to complete the corresponding jobs
+    payloadPath: "bpmn/emptyPayload.json"
+    # Workers.benchmark.payloadPath defines the delay of the worker before completing a job
+    completionDelay: 300ms
+    # Workers.benchmark.logLevel defines the logging level for the benchmark worker
+    logLevel: "WARN"
+    # Workers.benchmark.resources defines the resources for the benchmark worker
+    resources:
+      limits:
+        cpu: 500m
+        memory: 256Mi
+      requests:
+        cpu: 500m
+        memory: 256Mi
+
+  #####
+  refunding:
+    # Workers.benchmark.replicas defines how many replicas of the benchmark worker should be deployed
+    replicas: 3
+    # Workers.benchmark.capacity defines how many jobs the worker should activate and work on
+    capacity: 60
+    # Workers.benchmark.jobType defines the job type which should be used by the worker
+    jobType: "refunding"
+    # Workers.benchmark.payloadPath defines the path (inside the worker app) to the payload resource
+    # that should be used to complete the corresponding jobs
+    payloadPath: "bpmn/emptyPayload.json"
+    # Workers.benchmark.payloadPath defines the delay of the worker before completing a job
+    completionDelay: 300ms
+    # Workers.benchmark.logLevel defines the logging level for the benchmark worker
+    logLevel: "WARN"
+    # Workers.benchmark.resources defines the resources for the benchmark worker
+    resources:
+      limits:
+        cpu: 500m
+        memory: 256Mi
+      requests:
+        cpu: 500m
+        memory: 256Mi
 
     #####
-    refunding:
-      # Workers.benchmark.replicas defines how many replicas of the benchmark worker should be deployed
-      replicas: 3
-      # Workers.benchmark.capacity defines how many jobs the worker should activate and work on
-      capacity: 60
-      # Workers.benchmark.jobType defines the job type which should be used by the worker
-      jobType: "refunding"
-      # Workers.benchmark.payloadPath defines the path (inside the worker app) to the payload resource
-      # that should be used to complete the corresponding jobs
-      payloadPath: "bpmn/empty_payload.json"
-      # Workers.benchmark.payloadPath defines the delay of the worker before completing a job
-      completionDelay: 300ms
-      # Workers.benchmark.logLevel defines the logging level for the benchmark worker
-      logLevel: "WARN"
-      # Workers.benchmark.resources defines the resources for the benchmark worker
-      resources:
-        limits:
-          cpu: 500m
-          memory: 256Mi
-        requests:
-          cpu: 500m
-          memory: 256Mi
+  dispute-successful:
+    # Workers.benchmark.replicas defines how many replicas of the benchmark worker should be deployed
+    replicas: 1
+    # Workers.benchmark.capacity defines how many jobs the worker should activate and work on
+    capacity: 60
+    # Workers.benchmark.jobType defines the job type which should be used by the worker
+    jobType: "dispute_successful"
+    # Workers.benchmark.payloadPath defines the path (inside the worker app) to the payload resource
+    # that should be used to complete the corresponding jobs
+    payloadPath: "bpmn/emptyPayload.json"
+    # Workers.benchmark.payloadPath defines the delay of the worker before completing a job
+    completionDelay: 300ms
+    # Workers.benchmark.logLevel defines the logging level for the benchmark worker
+    logLevel: "WARN"
+    # Workers.benchmark.resources defines the resources for the benchmark worker
+    resources:
+      limits:
+        cpu: 500m
+        memory: 256Mi
+      requests:
+        cpu: 500m
+        memory: 256Mi
 
     #####
-    disputeSuccessful:
-      # Workers.benchmark.replicas defines how many replicas of the benchmark worker should be deployed
-      replicas: 1
-      # Workers.benchmark.capacity defines how many jobs the worker should activate and work on
-      capacity: 60
-      # Workers.benchmark.jobType defines the job type which should be used by the worker
-      jobType: "dispute_successful"
-      # Workers.benchmark.payloadPath defines the path (inside the worker app) to the payload resource
-      # that should be used to complete the corresponding jobs
-      payloadPath: "bpmn/empty_payload.json"
-      # Workers.benchmark.payloadPath defines the delay of the worker before completing a job
-      completionDelay: 300ms
-      # Workers.benchmark.logLevel defines the logging level for the benchmark worker
-      logLevel: "WARN"
-      # Workers.benchmark.resources defines the resources for the benchmark worker
-      resources:
-        limits:
-          cpu: 500m
-          memory: 256Mi
-        requests:
-          cpu: 500m
-          memory: 256Mi
+  customer-notification:
+    # Workers.benchmark.replicas defines how many replicas of the benchmark worker should be deployed
+    replicas: 1
+    # Workers.benchmark.capacity defines how many jobs the worker should activate and work on
+    capacity: 60
+    # Workers.benchmark.jobType defines the job type which should be used by the worker
+    jobType: "customer_notification"
+    # Workers.benchmark.payloadPath defines the path (inside the worker app) to the payload resource
+    # that should be used to complete the corresponding jobs
+    payloadPath: "bpmn/emptyPayload.json"
+    # Workers.benchmark.payloadPath defines the delay of the worker before completing a job
+    completionDelay: 300ms
+    # Workers.benchmark.logLevel defines the logging level for the benchmark worker
+    logLevel: "WARN"
+    # Workers.benchmark.resources defines the resources for the benchmark worker
+    resources:
+      limits:
+        cpu: 500m
+        memory: 256Mi
+      requests:
+        cpu: 500m
+        memory: 256Mi
+
+
+
 
   # Workers.benchmark defines the configuration for the default benchmark worker
   # Adding more and different worker can be done via adding a new map like:
@@ -201,6 +228,8 @@ starter:
   rate: 1
   # Starter.logLevel defines the logging level for the benchmark starter
   logLevel: "INFO"
+  # Starter.processId defines the process ID, that should be used for creating new process instances
+  processId: "bankDisputeHandling"
   # Starter.payloadPath defines the path (inside the starter app) to the payload resource
   # that should be used to create the corresponding process instance
   payloadPath: "bpmn/realistic/realisticPayload.json"
