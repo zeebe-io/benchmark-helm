@@ -103,6 +103,8 @@ starter:
   rate: 150
   # Starter.logLevel defines the logging level for the benchmark starter
   logLevel: "WARN"
+  # Starter.processId defines the process ID, that should be used for creating new process instances
+  processId: "benchmark"
   # Starter.payloadPath defines the path (inside the starter app) to the payload resource
   # that should be used to create the corresponding process instance
   payloadPath: "bpmn/big_payload.json"

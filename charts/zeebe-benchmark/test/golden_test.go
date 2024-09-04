@@ -61,6 +61,7 @@ func TestGoldenExtendedStarter(t *testing.T) {
 	values := map[string]string{
 		"starter.logLevel":          "INFO",
 		"starter.payloadPath":       "empty.json",
+		"starter.processId":         "real",
 		"starter.bpmnXmlPath":       "bpmn/real.bpmn",
 		"starter.extraResources[0]": "bpmn/extra.bpmn",
 		"starter.extraResources[1]": "bpmn/extra.dmn",

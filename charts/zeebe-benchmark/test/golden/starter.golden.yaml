@@ -29,7 +29,8 @@ spec:
                 -Dapp.starter.rate=150
                 -Dapp.starter.durationLimit=0
                 -Dzeebe.client.requestTimeout=62000
-                -Dapp.starter.bpmnXmlPath= "bpmn/one_task.bpmn"
+                -Dapp.starter.processId="benchmark"
+                -Dapp.starter.bpmnXmlPath="bpmn/one_task.bpmn"
                 -Dapp.starter.businessKey="businessKey"
                 -Dapp.starter.payloadPath="bpmn/big_payload.json"
                 -XX:+HeapDumpOnOutOfMemoryError
