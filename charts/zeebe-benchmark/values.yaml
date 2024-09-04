@@ -65,7 +65,7 @@ workers:
     # Workers.benchmark.payloadPath defines the delay of the worker before completing a job
     completionDelay: 300ms
     # Workers.benchmark.logLevel defines the logging level for the benchmark worker
-    logLevel: "WARN"
+    logLevel: "INFO"
     # Workers.benchmark.resources defines the resources for the benchmark worker
     resources:
       limits:
@@ -89,7 +89,7 @@ workers:
     # Workers.benchmark.payloadPath defines the delay of the worker before completing a job
     completionDelay: 300ms
     # Workers.benchmark.logLevel defines the logging level for the benchmark worker
-    logLevel: "WARN"
+    logLevel: "INFO"
     # Workers.benchmark.resources defines the resources for the benchmark worker
     resources:
       limits:
@@ -114,8 +114,12 @@ workers:
     payloadPath: "bpmn/emptyPayload.json"
     # Workers.benchmark.payloadPath defines the delay of the worker before completing a job
     completionDelay: 300ms
+    # Workers.dispute-request-documents.message enables sending a message from a worker
+    message:
+      name: "dispute_process_refund_approved"
+      correlationVariable : "correlationKey"
     # Workers.benchmark.logLevel defines the logging level for the benchmark worker
-    logLevel: "WARN"
+    logLevel: "INFO"
     # Workers.benchmark.resources defines the resources for the benchmark worker
     resources:
       limits:
@@ -139,7 +143,7 @@ workers:
     # Workers.benchmark.payloadPath defines the delay of the worker before completing a job
     completionDelay: 300ms
     # Workers.benchmark.logLevel defines the logging level for the benchmark worker
-    logLevel: "WARN"
+    logLevel: "INFO"
     # Workers.benchmark.resources defines the resources for the benchmark worker
     resources:
       limits:
@@ -163,7 +167,7 @@ workers:
     # Workers.benchmark.payloadPath defines the delay of the worker before completing a job
     completionDelay: 300ms
     # Workers.benchmark.logLevel defines the logging level for the benchmark worker
-    logLevel: "WARN"
+    logLevel: "INFO"
     # Workers.benchmark.resources defines the resources for the benchmark worker
     resources:
       limits:
@@ -186,8 +190,11 @@ workers:
     payloadPath: "bpmn/emptyPayload.json"
     # Workers.benchmark.payloadPath defines the delay of the worker before completing a job
     completionDelay: 300ms
+    message:
+      name: "dispute_process_receive_documents"
+      correlationVariable: "correlationKey"
     # Workers.benchmark.logLevel defines the logging level for the benchmark worker
-    logLevel: "WARN"
+    logLevel: "INFO"
     # Workers.benchmark.resources defines the resources for the benchmark worker
     resources:
       limits:
