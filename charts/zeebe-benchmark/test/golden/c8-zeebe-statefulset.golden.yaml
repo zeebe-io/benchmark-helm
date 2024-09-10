@@ -244,4 +244,4 @@ spec:
         storageClassName: ssd
         resources:
           requests:
-            storage: "32Gi"
+            storage: "48Gi"
