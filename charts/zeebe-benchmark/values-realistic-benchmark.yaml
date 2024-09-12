@@ -212,7 +212,7 @@ camunda-platform:
     image:
       # Image.repository defines which image repository to use
       repository: camunda/zeebe
-      tag: SNAPSHOT
+      tag: 8.5.3
 
     # Retention can be used to define the data in Elasticsearch (ILM).
     retention:
@@ -238,7 +238,7 @@ camunda-platform:
     image:
       # Image.repository defines which image repository to use
       repository: camunda/zeebe
-      tag: SNAPSHOT
+      tag: 8.5.3
 
     # Resources configuration to set request and limit configuration for the container https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#requests-and-limits
     resources:
@@ -252,8 +252,8 @@ camunda-platform:
   operate:
     enabled: true
     image:
-      repository: camunda/operate
-      tag: SNAPSHOT
+      repository: gcr.io/zeebe-io/operate
+      tag: ck-operate-test
     # Resources configuration to set request and limit configuration for the container https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#requests-and-limits
     resources:
       requests:
