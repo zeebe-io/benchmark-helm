@@ -8,7 +8,7 @@ global:
     # Image.repository defines the repository from which to fetch the docker images
     repository: "gcr.io/zeebe-io"
     # Image.tag defines the tag / version which should be used in the chart
-    tag: SNAPSHOT
+    tag: ck-worker-retry-benchmark-f1f49f53
     # Image.pullPolicy defines the image pull policy which should be used https://kubernetes.io/docs/concepts/containers/images/#image-pull-policy
     pullPolicy: Always
   # Disable Identity completely; both this flag and `camunda-platform.identity.enabled` are required.
@@ -212,7 +212,7 @@ camunda-platform:
     image:
       # Image.repository defines which image repository to use
       repository: camunda/zeebe
-      tag: 8.5.3
+      tag: 8.5.6
 
     # Retention can be used to define the data in Elasticsearch (ILM).
     retention:
@@ -238,7 +238,7 @@ camunda-platform:
     image:
       # Image.repository defines which image repository to use
       repository: camunda/zeebe
-      tag: 8.5.3
+      tag: 8.5.6
 
     # Resources configuration to set request and limit configuration for the container https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#requests-and-limits
     resources:
@@ -252,8 +252,8 @@ camunda-platform:
   operate:
     enabled: true
     image:
-      repository: gcr.io/zeebe-io/operate
-      tag: ck-operate-test
+      repository: camunda/operate
+      tag: 8.5.6
     # Resources configuration to set request and limit configuration for the container https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#requests-and-limits
     resources:
       requests:
