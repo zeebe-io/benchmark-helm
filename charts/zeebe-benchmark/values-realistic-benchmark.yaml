@@ -26,9 +26,8 @@ worker:
 # Workers configuration for the to be deployed worker application
 #        => New way to deploy workers <=
 workers:
-  benchmark:
+  benchmark: null
     # Workers.benchmark.replicas defines how many replicas of the benchmark worker should be deployed
-    replicas: 0
   # Workers.benchmark defines the configuration for the default benchmark worker
   # See below if you want additional workers
   dispute-request-documents:
