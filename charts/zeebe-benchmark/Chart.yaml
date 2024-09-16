@@ -26,4 +26,4 @@ annotations:
     - name: Zeebe Docs
       url: https://docs.camunda.io/docs/components/zeebe/zeebe-overview/
   artifacthub.io/containsSecurityUpdates: "false"
-  artifacthub.io/changes: "- kind: added\n  description: \"enable write rate limits for the benchmarks.\"\n"
+  artifacthub.io/changes: "- kind: added\n  description: \"add example values file\"\n- kind: added\n  description: \"add publish message configuration\"\n- kind: added\n  description: \"configure starter app\"\n- kind: added\n  description: \"add payloadPath and completionDelay as config\"\n- kind: added\n  description: \"extend worker configuration\"\n- kind: fixed\n  description: \"correctly reset benchmark app\"\n- kind: fixed\n  description: \"configure starter correctly\"\n- kind: fixed\n  description: \"set extraBpmnModels correct in starter app\"\n- kind: fixed\n  description: \"scrape correct endpoint\"\n- kind: fixed\n  description: \"separate deployments\"\n- kind: changed\n  description: \"remove worker\"\n- kind: changed\n  description: \"introduce workers values\"\n- kind: changed\n  description: \"replace defaults\"\n"
