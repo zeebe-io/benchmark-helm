@@ -19,7 +19,7 @@ Starter:
 
 Workers:
 {{- range $worker, $v := .Values.workers }}
- - $worker
+ - {{ $worker }}
 {{- end }}
 
 
