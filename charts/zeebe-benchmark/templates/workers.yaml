@@ -41,6 +41,11 @@ spec:
                 {{- if $worker.completionDelay }}
                 -Dapp.worker.completionDelay={{ $worker.completionDelay }}
                 {{- end}}
+                {{- if $worker.message }}
+                -Dapp.worker.sendMessage=true
+                -Dapp.worker.messageName={{ $worker.message.name | quote }}
+                -Dapp.worker.correlationKeyVariableName={{ $worker.message.correlationVariable | quote }}
+                {{- end }}
                 -XX:+HeapDumpOnOutOfMemoryError
             {{- if $worker.logLevel }}
             - name: LOG_LEVEL

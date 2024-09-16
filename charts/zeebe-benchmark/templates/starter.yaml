@@ -27,11 +27,14 @@ spec:
                 -Dapp.starter.rate={{ .Values.starter.rate }}
                 -Dapp.starter.durationLimit=0
                 -Dzeebe.client.requestTimeout=62000
-                {{- if .Values.starter.bpmnXmlPath }}
-                -Dapp.starter.bpmnXmlPath= {{ .Values.starter.bpmnXmlPath | quote }}
+                {{- if .Values.starter.processId }}
+                -Dapp.starter.processId={{ .Values.starter.processId | quote }}
                 {{- end }}
-                {{- if .Values.starter.extraResources }}
-                -Dapp.starter.extraBpmnModels=[{{ join "," .Values.starter.extraResources }}]
+                {{- if .Values.starter.bpmnXmlPath }}
+                -Dapp.starter.bpmnXmlPath={{ .Values.starter.bpmnXmlPath | quote }}
+                {{- end }}
+                {{- range $index, $value := .Values.starter.extraResources }}
+                -Dapp.starter.extraBpmnModels.{{ $index }}={{ $value | quote }}
                 {{- end }}
                 {{- if .Values.starter.businessKey }}
                 -Dapp.starter.businessKey={{ .Values.starter.businessKey | quote }}

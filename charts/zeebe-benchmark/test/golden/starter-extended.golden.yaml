@@ -29,8 +29,10 @@ spec:
                 -Dapp.starter.rate=150
                 -Dapp.starter.durationLimit=0
                 -Dzeebe.client.requestTimeout=62000
-                -Dapp.starter.bpmnXmlPath= "bpmn/real.bpmn"
-                -Dapp.starter.extraBpmnModels=[bpmn/extra.bpmn,bpmn/extra.dmn]
+                -Dapp.starter.processId="real"
+                -Dapp.starter.bpmnXmlPath="bpmn/real.bpmn"
+                -Dapp.starter.extraBpmnModels.0="bpmn/extra.bpmn"
+                -Dapp.starter.extraBpmnModels.1="bpmn/extra.dmn"
                 -Dapp.starter.businessKey="customerId"
                 -Dapp.starter.payloadPath="empty.json"
                 -XX:+HeapDumpOnOutOfMemoryError

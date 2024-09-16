@@ -15,7 +15,7 @@ func TestGoldenDefaults(t *testing.T) {
 
 	chartPath, err := filepath.Abs("../")
 	require.NoError(t, err)
-	templateNames := []string{"clients-service", "leader-balancing-cron", "publisher", "starter", "timer", "worker", "benchmark-config"}
+	templateNames := []string{"clients-service", "leader-balancing-cron", "publisher", "starter", "timer", "benchmark-config"}
 
 	for _, name := range templateNames {
 		suite.Run(t, &golden.TemplateGoldenTest{
@@ -61,6 +61,7 @@ func TestGoldenExtendedStarter(t *testing.T) {
 	values := map[string]string{
 		"starter.logLevel":          "INFO",
 		"starter.payloadPath":       "empty.json",
+		"starter.processId":         "real",
 		"starter.bpmnXmlPath":       "bpmn/real.bpmn",
 		"starter.extraResources[0]": "bpmn/extra.bpmn",
 		"starter.extraResources[1]": "bpmn/extra.dmn",
