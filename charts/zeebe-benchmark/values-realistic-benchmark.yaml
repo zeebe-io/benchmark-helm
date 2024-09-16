@@ -210,7 +210,7 @@ workers:
     # Workers.benchmark.replicas defines how many replicas of the benchmark worker should be deployed
     replicas: 1
     # Workers.benchmark.capacity defines how many jobs the worker should activate and work on
-    capacity: 30
+    capacity: 60
     # Workers.benchmark.jobType defines the job type which should be used by the worker
     jobType: "customer_notification"
     # Workers.benchmark.payloadPath defines the path (inside the worker app) to the payload resource
