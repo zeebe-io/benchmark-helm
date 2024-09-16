@@ -40,13 +40,6 @@ global:
     auth:
       enabled: false
 
-# DEPRECATED worker configuration for the to be deployed worker application
-worker:
-  # Worker.benchmark.replicas defines how many replicas of the benchmark worker should be deployed
-  replicas: 0 # disabled per default as it is deprecated
-  # Worker.benchmark.capacity defines how many jobs the worker should activate and work on
-  capacity: 60
-
 # Workers configuration for the to be deployed worker application
 #        => New way to deploy workers <=
 workers:
