@@ -54,6 +54,30 @@ workers:
         memory: 256Mi
 
   #####
+  inform-about-successful-claim:
+    # Workers.benchmark.replicas defines how many replicas of the benchmark worker should be deployed
+    replicas: 1
+    # Workers.benchmark.capacity defines how many jobs the worker should activate and work on
+    capacity: 60
+    # Workers.benchmark.jobType defines the job type which should be used by the worker
+    jobType: "inform_about_successful_claim"
+    # Workers.benchmark.payloadPath defines the path (inside the worker app) to the payload resource
+    # that should be used to complete the corresponding jobs
+    payloadPath: "bpmn/emptyPayload.json"
+    # Workers.benchmark.payloadPath defines the delay of the worker before completing a job
+    completionDelay: 300ms
+    # Workers.benchmark.logLevel defines the logging level for the benchmark worker
+    logLevel: "INFO"
+    # Workers.benchmark.resources defines the resources for the benchmark worker
+    resources:
+      limits:
+        cpu: 500m
+        memory: 256Mi
+      requests:
+        cpu: 500m
+        memory: 256Mi
+
+  #####
   extract-data-from-document:
     # Workers.benchmark.replicas defines how many replicas of the benchmark worker should be deployed
     replicas: 1
@@ -96,6 +120,32 @@ workers:
     message:
       name: "dispute_process_refund_approved"
       correlationVariable : "correlationKey"
+    # Workers.benchmark.logLevel defines the logging level for the benchmark worker
+    logLevel: "INFO"
+    # Workers.benchmark.resources defines the resources for the benchmark worker
+    resources:
+      limits:
+        cpu: 500m
+        memory: 256Mi
+      requests:
+        cpu: 500m
+        memory: 256Mi
+
+    ##### - seems to be referenced twice
+    #### - here we need to send a message from the worker -
+  dispute-process-request-get-vendor-info:
+    # Workers.benchmark.replicas defines how many replicas of the benchmark worker should be deployed
+    replicas: 1
+    # Workers.benchmark.capacity defines how many jobs the worker should activate and work on
+    capacity: 60
+    # Workers.benchmark.jobType defines the job type which should be used by the worker
+    jobType: "dispute_process_request_get_vendor_info"
+    # Workers.benchmark.payloadPath defines the path (inside the worker app) to the payload resource
+    # that should be used to complete the corresponding jobs
+    payloadPath: "bpmn/emptyPayload.json"
+    # Workers.benchmark.payloadPath defines the delay of the worker before completing a job
+    completionDelay: 10ms
+    # Workers.dispute-request-documents.message enables sending a message from a worker
     # Workers.benchmark.logLevel defines the logging level for the benchmark worker
     logLevel: "INFO"
     # Workers.benchmark.resources defines the resources for the benchmark worker
