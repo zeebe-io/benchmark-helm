@@ -26,4 +26,4 @@ annotations:
     - name: Zeebe Docs
       url: https://docs.camunda.io/docs/components/zeebe/zeebe-overview/
   artifacthub.io/containsSecurityUpdates: "false"
-  artifacthub.io/changes: "- kind: fixed\n  description: \"use correct notation for variable templating\"\n- kind: fixed\n  description: \"bring default back\"\n- kind: fixed\n  description: \"inform about success worker\"\n- kind: fixed\n  description: \"use different worker for get-vendor-info\"\n"
+  artifacthub.io/changes: ""
