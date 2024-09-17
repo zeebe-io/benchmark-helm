@@ -5,10 +5,10 @@ kind: ServiceMonitor
 metadata:
   name: benchmark-test-prometheus-elasticsearch-exporter
   labels:
-    chart: prometheus-elasticsearch-exporter-5.9.0
-    app: prometheus-elasticsearch-exporter
-    release: "benchmark-test"
-    heritage: "Helm"
+    app.kubernetes.io/name: prometheus-elasticsearch-exporter
+    app.kubernetes.io/instance: benchmark-test
+    app.kubernetes.io/version: "v1.7.0"
+    app.kubernetes.io/managed-by: Helm
     release: monitoring
 spec:
   endpoints:
@@ -21,8 +21,8 @@ spec:
   jobLabel: benchmark-test
   selector:
     matchLabels:
-      app: prometheus-elasticsearch-exporter
-      release: "benchmark-test"
+      app.kubernetes.io/name: prometheus-elasticsearch-exporter
+      app.kubernetes.io/instance: benchmark-test
   namespaceSelector:
     matchNames:
       - benchmark-test
