@@ -27,21 +27,24 @@ worker:
 #        => New way to deploy workers <=
 workers:
   benchmark: null
-    # Workers.benchmark.replicas defines how many replicas of the benchmark worker should be deployed
-  # Workers.benchmark defines the configuration for the default benchmark worker
-  # See below if you want additional workers
-  dispute-request-documents:
+
+  #####
+  # Request documents from customer
+  customer-notification:
     # Workers.benchmark.replicas defines how many replicas of the benchmark worker should be deployed
     replicas: 1
     # Workers.benchmark.capacity defines how many jobs the worker should activate and work on
     capacity: 60
     # Workers.benchmark.jobType defines the job type which should be used by the worker
-    jobType: "dispute_request_documents"
+    jobType: "customer_notification"
     # Workers.benchmark.payloadPath defines the path (inside the worker app) to the payload resource
     # that should be used to complete the corresponding jobs
     payloadPath: "bpmn/emptyPayload.json"
     # Workers.benchmark.payloadPath defines the delay of the worker before completing a job
     completionDelay: 300ms
+    message:
+      name: "dispute_process_receive_documents"
+      correlationVariable: "correlationKey"
     # Workers.benchmark.logLevel defines the logging level for the benchmark worker
     logLevel: "INFO"
     # Workers.benchmark.resources defines the resources for the benchmark worker
@@ -54,30 +57,7 @@ workers:
         memory: 256Mi
 
   #####
-  inform-about-successful-claim:
-    # Workers.benchmark.replicas defines how many replicas of the benchmark worker should be deployed
-    replicas: 1
-    # Workers.benchmark.capacity defines how many jobs the worker should activate and work on
-    capacity: 60
-    # Workers.benchmark.jobType defines the job type which should be used by the worker
-    jobType: "inform_about_successful_claim"
-    # Workers.benchmark.payloadPath defines the path (inside the worker app) to the payload resource
-    # that should be used to complete the corresponding jobs
-    payloadPath: "bpmn/emptyPayload.json"
-    # Workers.benchmark.payloadPath defines the delay of the worker before completing a job
-    completionDelay: 300ms
-    # Workers.benchmark.logLevel defines the logging level for the benchmark worker
-    logLevel: "INFO"
-    # Workers.benchmark.resources defines the resources for the benchmark worker
-    resources:
-      limits:
-        cpu: 500m
-        memory: 256Mi
-      requests:
-        cpu: 500m
-        memory: 256Mi
-
-  #####
+  # Store information and get customer info
   extract-data-from-document:
     # Workers.benchmark.replicas defines how many replicas of the benchmark worker should be deployed
     replicas: 1
@@ -101,9 +81,8 @@ workers:
         cpu: 500m
         memory: 256Mi
 
-
-    ##### - seems to be referenced twice
-    #### - here we need to send a message from the worker -
+  ##### 
+  # Request proof from vendor
   dispute-process-request-proof-from-vendor:
     # Workers.benchmark.replicas defines how many replicas of the benchmark worker should be deployed
     replicas: 3
@@ -131,8 +110,8 @@ workers:
         cpu: 500m
         memory: 256Mi
 
-    ##### - seems to be referenced twice
-    #### - here we need to send a message from the worker -
+  ######
+  # Get vendor info
   dispute-process-request-get-vendor-info:
     # Workers.benchmark.replicas defines how many replicas of the benchmark worker should be deployed
     replicas: 1
@@ -158,6 +137,7 @@ workers:
         memory: 256Mi
 
   #####
+  # Refund payment
   refunding:
     # Workers.benchmark.replicas defines how many replicas of the benchmark worker should be deployed
     replicas: 3
@@ -181,14 +161,15 @@ workers:
         cpu: 500m
         memory: 256Mi
 
-    #####
-  dispute-successful:
+  #####
+  # Inform customer about successful claim
+  inform-about-successful-claim:
     # Workers.benchmark.replicas defines how many replicas of the benchmark worker should be deployed
     replicas: 1
     # Workers.benchmark.capacity defines how many jobs the worker should activate and work on
     capacity: 60
     # Workers.benchmark.jobType defines the job type which should be used by the worker
-    jobType: "dispute_successful"
+    jobType: "inform_about_successful_claim"
     # Workers.benchmark.payloadPath defines the path (inside the worker app) to the payload resource
     # that should be used to complete the corresponding jobs
     payloadPath: "bpmn/emptyPayload.json"
@@ -205,32 +186,11 @@ workers:
         cpu: 500m
         memory: 256Mi
 
-    #####
-  customer-notification:
-    # Workers.benchmark.replicas defines how many replicas of the benchmark worker should be deployed
-    replicas: 1
-    # Workers.benchmark.capacity defines how many jobs the worker should activate and work on
-    capacity: 60
-    # Workers.benchmark.jobType defines the job type which should be used by the worker
-    jobType: "customer_notification"
-    # Workers.benchmark.payloadPath defines the path (inside the worker app) to the payload resource
-    # that should be used to complete the corresponding jobs
-    payloadPath: "bpmn/emptyPayload.json"
-    # Workers.benchmark.payloadPath defines the delay of the worker before completing a job
-    completionDelay: 300ms
-    message:
-      name: "dispute_process_receive_documents"
-      correlationVariable: "correlationKey"
-    # Workers.benchmark.logLevel defines the logging level for the benchmark worker
-    logLevel: "INFO"
-    # Workers.benchmark.resources defines the resources for the benchmark worker
-    resources:
-      limits:
-        cpu: 500m
-        memory: 256Mi
-      requests:
-        cpu: 500m
-        memory: 256Mi
+
+#################################################################################################
+#################################################################################################
+#################################################################################################
+
 
 # Starter configuration for the to be deployed starter application
 starter:
