@@ -56,7 +56,7 @@ workers:
     # that should be used to complete the corresponding jobs
     payloadPath: "bpmn/big_payload.json"
     # Workers.benchmark.payloadPath defines the delay of the worker before completing a job
-    completionDelay: 300ms
+    completionDelay: 50ms
     # Workers.benchmark.logLevel defines the logging level for the benchmark worker
     logLevel: "WARN"
     # Workers.benchmark.resources defines the resources for the benchmark worker
