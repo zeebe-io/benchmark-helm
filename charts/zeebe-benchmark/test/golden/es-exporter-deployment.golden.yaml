@@ -5,12 +5,13 @@ kind: Deployment
 metadata:
   name: benchmark-test-prometheus-elasticsearch-exporter
   labels:
-    chart: prometheus-elasticsearch-exporter-5.2.0
+    chart: prometheus-elasticsearch-exporter-5.9.0
     app: prometheus-elasticsearch-exporter
     release: "benchmark-test"
     heritage: "Helm"
 spec:
   replicas: 1
+  revisionHistoryLimit: 10
   selector:
     matchLabels:
       app: prometheus-elasticsearch-exporter
@@ -27,7 +28,6 @@ spec:
         release: "benchmark-test"
     spec:
       serviceAccountName: default
-      
       restartPolicy: Always
       securityContext:
         runAsNonRoot: true
@@ -37,7 +37,7 @@ spec:
       containers:
         - name: exporter
           env:
-          image: "quay.io/prometheuscommunity/elasticsearch-exporter:v1.5.0"
+          image: "quay.io/prometheuscommunity/elasticsearch-exporter:v1.7.0"
           imagePullPolicy: IfNotPresent
           command: ["elasticsearch_exporter",
                     "--log.format=logfmt",
@@ -48,7 +48,7 @@ spec:
                     "--es.indices_settings",
                     "--es.indices_mappings",
                     "--es.shards",
-                    "--es.snapshots",
+                    "--collector.snapshots",
                     "--es.timeout=30s",
                     "--web.listen-address=:9108",
                     "--web.telemetry-path=/metrics"]
@@ -78,6 +78,6 @@ spec:
           lifecycle:
             preStop:
               exec:
-                command: ["/bin/bash", "-c", "sleep 20"]
+                command: ["/bin/sleep", "20"]
           volumeMounts:
       volumes:

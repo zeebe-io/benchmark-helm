@@ -5,7 +5,7 @@ kind: ServiceMonitor
 metadata:
   name: benchmark-test-prometheus-elasticsearch-exporter
   labels:
-    chart: prometheus-elasticsearch-exporter-5.2.0
+    chart: prometheus-elasticsearch-exporter-5.9.0
     app: prometheus-elasticsearch-exporter
     release: "benchmark-test"
     heritage: "Helm"
