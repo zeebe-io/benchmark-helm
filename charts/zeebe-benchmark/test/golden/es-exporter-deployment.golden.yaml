@@ -5,17 +5,17 @@ kind: Deployment
 metadata:
   name: benchmark-test-prometheus-elasticsearch-exporter
   labels:
-    chart: prometheus-elasticsearch-exporter-5.9.0
-    app: prometheus-elasticsearch-exporter
-    release: "benchmark-test"
-    heritage: "Helm"
+    app.kubernetes.io/name: prometheus-elasticsearch-exporter
+    app.kubernetes.io/instance: benchmark-test
+    app.kubernetes.io/version: "v1.7.0"
+    app.kubernetes.io/managed-by: Helm
 spec:
   replicas: 1
   revisionHistoryLimit: 10
   selector:
     matchLabels:
-      app: prometheus-elasticsearch-exporter
-      release: "benchmark-test"
+      app.kubernetes.io/name: prometheus-elasticsearch-exporter
+      app.kubernetes.io/instance: benchmark-test
   strategy:
     rollingUpdate:
       maxSurge: 1
@@ -24,8 +24,8 @@ spec:
   template:
     metadata:
       labels:
-        app: prometheus-elasticsearch-exporter
-        release: "benchmark-test"
+        app.kubernetes.io/name: prometheus-elasticsearch-exporter
+        app.kubernetes.io/instance: benchmark-test
     spec:
       serviceAccountName: default
       restartPolicy: Always
