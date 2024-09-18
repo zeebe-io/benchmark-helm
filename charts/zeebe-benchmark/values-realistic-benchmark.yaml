@@ -85,7 +85,7 @@ workers:
   # Request proof from vendor
   dispute-process-request-proof-from-vendor:
     # Workers.benchmark.replicas defines how many replicas of the benchmark worker should be deployed
-    replicas: 3
+    replicas: 1
     # Workers.benchmark.capacity defines how many jobs the worker should activate and work on
     capacity: 30
     # Workers.benchmark.jobType defines the job type which should be used by the worker
@@ -140,7 +140,7 @@ workers:
   # Refund payment
   refunding:
     # Workers.benchmark.replicas defines how many replicas of the benchmark worker should be deployed
-    replicas: 3
+    replicas: 1
     # Workers.benchmark.capacity defines how many jobs the worker should activate and work on
     capacity: 30
     # Workers.benchmark.jobType defines the job type which should be used by the worker
