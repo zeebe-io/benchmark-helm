@@ -34,7 +34,7 @@ workers:
     # Workers.benchmark.replicas defines how many replicas of the benchmark worker should be deployed
     replicas: 1
     # Workers.benchmark.capacity defines how many jobs the worker should activate and work on
-    capacity: 60
+    capacity: 30
     # Workers.benchmark.jobType defines the job type which should be used by the worker
     jobType: "customer_notification"
     # Workers.benchmark.payloadPath defines the path (inside the worker app) to the payload resource
@@ -62,7 +62,7 @@ workers:
     # Workers.benchmark.replicas defines how many replicas of the benchmark worker should be deployed
     replicas: 1
     # Workers.benchmark.capacity defines how many jobs the worker should activate and work on
-    capacity: 60
+    capacity: 30
     # Workers.benchmark.jobType defines the job type which should be used by the worker
     jobType: "extract_data_from_document"
     # Workers.benchmark.payloadPath defines the path (inside the worker app) to the payload resource
@@ -85,9 +85,9 @@ workers:
   # Request proof from vendor
   dispute-process-request-proof-from-vendor:
     # Workers.benchmark.replicas defines how many replicas of the benchmark worker should be deployed
-    replicas: 3
+    replicas: 1
     # Workers.benchmark.capacity defines how many jobs the worker should activate and work on
-    capacity: 60
+    capacity: 30
     # Workers.benchmark.jobType defines the job type which should be used by the worker
     jobType: "dispute_process_request_proof_from_vendor"
     # Workers.benchmark.payloadPath defines the path (inside the worker app) to the payload resource
@@ -116,7 +116,7 @@ workers:
     # Workers.benchmark.replicas defines how many replicas of the benchmark worker should be deployed
     replicas: 1
     # Workers.benchmark.capacity defines how many jobs the worker should activate and work on
-    capacity: 60
+    capacity: 30
     # Workers.benchmark.jobType defines the job type which should be used by the worker
     jobType: "dispute_process_request_get_vendor_info"
     # Workers.benchmark.payloadPath defines the path (inside the worker app) to the payload resource
@@ -140,9 +140,9 @@ workers:
   # Refund payment
   refunding:
     # Workers.benchmark.replicas defines how many replicas of the benchmark worker should be deployed
-    replicas: 3
+    replicas: 1
     # Workers.benchmark.capacity defines how many jobs the worker should activate and work on
-    capacity: 60
+    capacity: 30
     # Workers.benchmark.jobType defines the job type which should be used by the worker
     jobType: "refunding"
     # Workers.benchmark.payloadPath defines the path (inside the worker app) to the payload resource
@@ -167,7 +167,7 @@ workers:
     # Workers.benchmark.replicas defines how many replicas of the benchmark worker should be deployed
     replicas: 1
     # Workers.benchmark.capacity defines how many jobs the worker should activate and work on
-    capacity: 60
+    capacity: 30
     # Workers.benchmark.jobType defines the job type which should be used by the worker
     jobType: "inform_about_successful_claim"
     # Workers.benchmark.payloadPath defines the path (inside the worker app) to the payload resource
