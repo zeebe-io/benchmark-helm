@@ -23,7 +23,11 @@ spec:
             - name: JDK_JAVA_OPTIONS
               value: >-
                 -Dconfig.override_with_env_vars=true
-                -Dapp.brokerUrl={{ .Release.Name }}-zeebe-gateway:26500
+                {{- if $.Values.saas.enabled }}
+                -Dapp.tls=true
+                {{- else }}
+                -Dapp.brokerUrl={{ $.Release.Name }}-zeebe-gateway:26500
+                {{- end }}
                 -Dapp.starter.rate={{ .Values.starter.rate }}
                 -Dapp.starter.durationLimit=0
                 -Dzeebe.client.requestTimeout=62000
@@ -46,6 +50,28 @@ spec:
             {{- if .Values.starter.logLevel }}
             - name: LOG_LEVEL
               value: {{ .Values.starter.logLevel | quote }}
+            {{- end }}
+            {{- if $.Values.saas.enabled }}
+            - name: ZEEBE_ADDRESS
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "zeebe-benchmark.credentials-name" $ }}
+                  key: zeebeAddress
+            - name: ZEEBE_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "zeebe-benchmark.credentials-name" $ }}
+                  key: clientId
+            - name: ZEEBE_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "zeebe-benchmark.credentials-name" $ }}
+                  key: clientSecret
+            - name: ZEEBE_AUTHORIZATION_SERVER_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "zeebe-benchmark.credentials-name" $ }}
+                  key: authServer
             {{- end }}
           envFrom:
             - configMapRef:

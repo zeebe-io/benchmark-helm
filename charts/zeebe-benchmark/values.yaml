@@ -40,6 +40,41 @@ global:
     auth:
       enabled: false
 
+# Saas configuration to run benchmarks against Camunda SaaS environment
+saas:
+  # Saas.enabled if true enables the benchmark to run against Camunda SaaS
+  enabled: false
+
+  # Saas.credentials configuration to connect to a Camunda SaaS cluster
+  credentials:
+    # Saas.existingSecret can be used to configure the secret name that should be referenced by the benchmark
+    # applications to retrieve credential information.
+    #
+    # If this value is set, other credentials are not used.
+    #
+    # Credentials Secret need to follow the following format:
+    #
+    # apiVersion: v1
+    # kind: Secret
+    # metadata:
+    #   name: cloud-credentials
+    # type: Opaque
+    # stringData:
+    #   clientId: hH55UFivfw-bbHAuPwN545oyv8tTdW0z
+    #   clientSecret: xtHQB.zBLcQrw4GaP0k_ci~ePjbD8qVlYaFKNo__2a7ZJxL-DAVVHepq~X9elPRb
+    #   zeebeAddress: e314a337-a462-4988-a3be-d1f2e153e034.zeebe.ultrawombat.com:443
+    #   authServer: https://login.cloud.ultrawombat.com/oauth/token
+    existingSecret:
+
+    # Saas.credentials.clientId to define the clientId to connect
+    clientId: ""
+    # Saas.credentials.clientSecret to define the clientSecret to connect
+    clientSecret: ""
+    # Saas.credentials.zeebeAddress to define the address of the cluster (including port)
+    zeebeAddress:
+    # SaaS.credentials.authServer to define the authentication server to retrieve JWT tokens
+    authServer: "https://login.cloud.ultrawombat.com/oauth/token"
+
 # Workers configuration for the to be deployed worker application
 #        => New way to deploy workers <=
 workers:
