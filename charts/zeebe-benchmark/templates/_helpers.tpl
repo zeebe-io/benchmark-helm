@@ -24,6 +24,19 @@ If release name contains chart name it will be used as a full name.
 {{- end }}
 
 {{/*
+Create a default fully qualified credentials name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+*/}}
+{{- define "zeebe-benchmark.credentials-name" -}}
+{{- if .Values.saas.credentials.existingSecret }}
+{{- .Values.saas.credentials.existingSecret }}
+{{- else }}
+{{- printf "%s-credentials" .Release.Name | trunc 63 | trimSuffix "-" }}
+{{- end }}
+{{- end }}
+
+
+{{/*
 Create chart name and version as used by the chart label.
 */}}
 {{- define "zeebe-benchmark.chart" -}}
