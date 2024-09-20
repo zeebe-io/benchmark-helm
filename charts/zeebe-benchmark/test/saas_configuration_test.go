@@ -18,7 +18,7 @@ func TestGoldenCredentials(t *testing.T) {
 
 	chartPath, err := filepath.Abs("../")
 	require.NoError(t, err)
-	templateNames := []string{"credentials"}
+	templateNames := []string{"credentials", "workers"}
 
 	for _, name := range templateNames {
 		suite.Run(t, &golden.TemplateGoldenTest{
