@@ -37,3 +37,27 @@ func TestGoldenCredentials(t *testing.T) {
 		})
 	}
 }
+
+func TestGoldenCredentialsExistingSecret(t *testing.T) {
+	// Test which allows to verify also parent chart templates
+	// This makes sure that properties are correctly set
+	// OR configurations have been changed
+
+	chartPath, err := filepath.Abs("../")
+	require.NoError(t, err)
+	templateNames := []string{"workers", "starter"}
+
+	for _, name := range templateNames {
+		suite.Run(t, &golden.TemplateGoldenTest{
+			ChartPath:      chartPath,
+			Release:        "benchmark-test",
+			Namespace:      "benchmark-" + strings.ToLower(random.UniqueId()),
+			GoldenFileName: "golden-existing-credential-secret-" + name,
+			Templates:      []string{"templates/" + name + ".yaml"},
+			SetValues: map[string]string{
+				"saas.enabled":                    "true",
+				"saas.credentials.existingSecret": "secret-name",
+			},
+		})
+	}
+}
