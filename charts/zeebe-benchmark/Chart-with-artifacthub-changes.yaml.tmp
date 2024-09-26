@@ -2,7 +2,7 @@ apiVersion: v2
 name: zeebe-benchmark
 description: A Helm chart for Zeebe benchmarks
 type: application
-version: 0.3.2
+version: 0.3.3
 appVersion: "8.2.5"
 sources:
   - https://github.com/zeebe-io/benchmark-helm
@@ -26,4 +26,4 @@ annotations:
     - name: Zeebe Docs
       url: https://docs.camunda.io/docs/components/zeebe/zeebe-overview/
   artifacthub.io/containsSecurityUpdates: "false"
-  artifacthub.io/changes: ""
+  artifacthub.io/changes: "- kind: added\n  description: \"support credentials on starter\"\n- kind: added\n  description: \"support credentials on Workers\"\n- kind: added\n  description: \"define credentials secret\"\n- kind: added\n  description: \"add helper to find correct secret name\"\n- kind: added\n  description: \"define new values for SaaS credentials\"\n- kind: fixed\n  description: \"scale workers down\"\n- kind: fixed\n  description: \"reduce capacity of workers\"\n- kind: fixed\n  description: \"use previously completionDelay default\"\n- kind: changed\n  description: \"optimize workers\"\n"
