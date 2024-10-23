@@ -34,16 +34,17 @@ spec:
                 -Dapp.worker.capacity={{ $worker.capacity }}
                 {{- end }}
                 -Dapp.worker.pollingDelay=1ms
+                {{- if $worker.completionDelay }}
+                -Dapp.worker.completionDelay={{ $worker.completionDelay }}
+                {{- else }}
                 -Dapp.worker.completionDelay=50ms
+                {{- end }}
                 -Dapp.worker.workerName={{ $workerName | quote }}
                 {{- if $worker.jobType }}
                 -Dapp.worker.jobType={{ $worker.jobType | quote }}
                 {{- end }}
                 {{- if $worker.payloadPath }}
                 -Dapp.worker.payloadPath={{ $worker.payloadPath | quote }}
-                {{- end}}
-                {{- if $worker.completionDelay }}
-                -Dapp.worker.completionDelay={{ $worker.completionDelay }}
                 {{- end}}
                 {{- if $worker.message }}
                 -Dapp.worker.sendMessage=true
