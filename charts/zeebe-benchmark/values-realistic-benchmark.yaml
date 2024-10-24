@@ -275,6 +275,9 @@ camunda-platform:
       limits:
         cpu: 2000m
         memory: 2Gi
+    env:
+      - name: CAMUNDA_OPERATE_IMPORTERENABLED
+        value: "false"
 
   # ELASTIC
   elasticsearch:
