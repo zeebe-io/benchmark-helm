@@ -4,6 +4,49 @@ entries:
   - annotations:
       artifacthub.io/changes: |
         - kind: added
+          description: "introduce worker threads"
+        - kind: added
+          description: "remove repeated completion delay, and only add this if not set."
+        - kind: fixed
+          description: "regen threads"
+        - kind: fixed
+          description: "increase worker threads"
+        - kind: fixed
+          description: "use larger disks to avoid throttling"
+      artifacthub.io/containsSecurityUpdates: "false"
+      artifacthub.io/links: |
+        - name: Zeebe Repo
+          url: https://github.com/camunda/camunda
+        - name: Zeebe Docs
+          url: https://docs.camunda.io/docs/components/zeebe/zeebe-overview/
+    apiVersion: v2
+    appVersion: 8.2.5
+    created: "2024-10-29T07:56:23.565985002Z"
+    dependencies:
+    - condition: camunda.enabled
+      name: camunda-platform
+      repository: oci://ghcr.io/camunda/helm
+      version: 0.0.0-rc-8.6
+    - condition: prometheus-elasticsearch-exporter.enabled
+      name: prometheus-elasticsearch-exporter
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 6.4.0
+    description: A Helm chart for Zeebe benchmarks
+    digest: 4519d08f5092c6e1393c7bff2586f140fd0824f6860c73e75cce4dc4e3b653ae
+    maintainers:
+    - email: christopher.zell@camunda.com
+      name: Zelldon
+    name: zeebe-benchmark
+    sources:
+    - https://github.com/zeebe-io/benchmark-helm
+    - https://github.com/camunda/camunda
+    type: application
+    urls:
+    - https://github.com/zeebe-io/benchmark-helm/releases/download/zeebe-benchmark-0.3.4/zeebe-benchmark-0.3.4.tgz
+    version: 0.3.4
+  - annotations:
+      artifacthub.io/changes: |
+        - kind: added
           description: "support credentials on starter"
         - kind: added
           description: "support credentials on Workers"
@@ -1099,4 +1142,4 @@ entries:
     urls:
     - https://github.com/zeebe-io/benchmark-helm/releases/download/zeebe-benchmark-0.1.2/zeebe-benchmark-0.1.2.tgz
     version: 0.1.2
-generated: "2024-09-26T09:16:15.598424658Z"
+generated: "2024-10-29T07:56:23.566312079Z"
