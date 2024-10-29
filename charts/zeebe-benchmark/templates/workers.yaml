@@ -33,6 +33,9 @@ spec:
                 {{- if $worker.capacity }}
                 -Dapp.worker.capacity={{ $worker.capacity }}
                 {{- end }}
+                {{- if $worker.threads }}
+                -Dapp.worker.threads={{ $worker.threads }}
+                {{- end }}
                 -Dapp.worker.pollingDelay=1ms
                 {{- if $worker.completionDelay }}
                 -Dapp.worker.completionDelay={{ $worker.completionDelay }}

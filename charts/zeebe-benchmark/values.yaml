@@ -85,6 +85,8 @@ workers:
     replicas: 3
     # Workers.benchmark.capacity defines how many jobs the worker should activate and work on
     capacity: 60
+    # Workers.benchmark.threads defines how many threads the worker can use to work on jobs
+    threads: 10
     # Workers.benchmark.jobType defines the job type which should be used by the worker
     jobType: "benchmark-task"
     # Workers.benchmark.payloadPath defines the path (inside the worker app) to the payload resource
