@@ -3,6 +3,41 @@ entries:
   zeebe-benchmark:
   - annotations:
       artifacthub.io/changes: |
+        - kind: fixed
+          description: "increase cpu zeebe limit to 1.7 while keeping cpu-request at 1.35"
+      artifacthub.io/containsSecurityUpdates: "false"
+      artifacthub.io/links: |
+        - name: Zeebe Repo
+          url: https://github.com/camunda/camunda
+        - name: Zeebe Docs
+          url: https://docs.camunda.io/docs/components/zeebe/zeebe-overview/
+    apiVersion: v2
+    appVersion: 8.2.5
+    created: "2024-11-06T08:15:41.86109832Z"
+    dependencies:
+    - condition: camunda.enabled
+      name: camunda-platform
+      repository: oci://ghcr.io/camunda/helm
+      version: 0.0.0-rc-8.6
+    - condition: prometheus-elasticsearch-exporter.enabled
+      name: prometheus-elasticsearch-exporter
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 6.4.0
+    description: A Helm chart for Zeebe benchmarks
+    digest: e55f7d52da807403604486ffda12292579237eba35a0e66654aa8d7ce786feaa
+    maintainers:
+    - email: christopher.zell@camunda.com
+      name: Zelldon
+    name: zeebe-benchmark
+    sources:
+    - https://github.com/zeebe-io/benchmark-helm
+    - https://github.com/camunda/camunda
+    type: application
+    urls:
+    - https://github.com/zeebe-io/benchmark-helm/releases/download/zeebe-benchmark-0.3.5/zeebe-benchmark-0.3.5.tgz
+    version: 0.3.5
+  - annotations:
+      artifacthub.io/changes: |
         - kind: added
           description: "introduce worker threads"
         - kind: added
@@ -1142,4 +1177,4 @@ entries:
     urls:
     - https://github.com/zeebe-io/benchmark-helm/releases/download/zeebe-benchmark-0.1.2/zeebe-benchmark-0.1.2.tgz
     version: 0.1.2
-generated: "2024-10-29T07:56:23.566312079Z"
+generated: "2024-11-06T08:15:41.86140385Z"
