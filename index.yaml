@@ -4,6 +4,41 @@ entries:
   - annotations:
       artifacthub.io/changes: |
         - kind: fixed
+          description: "cpu request & limits were inverted in default benchmark"
+      artifacthub.io/containsSecurityUpdates: "false"
+      artifacthub.io/links: |
+        - name: Zeebe Repo
+          url: https://github.com/camunda/camunda
+        - name: Zeebe Docs
+          url: https://docs.camunda.io/docs/components/zeebe/zeebe-overview/
+    apiVersion: v2
+    appVersion: 8.2.5
+    created: "2024-11-08T15:53:44.361935473Z"
+    dependencies:
+    - condition: camunda.enabled
+      name: camunda-platform
+      repository: oci://ghcr.io/camunda/helm
+      version: 0.0.0-rc-8.6
+    - condition: prometheus-elasticsearch-exporter.enabled
+      name: prometheus-elasticsearch-exporter
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 6.4.0
+    description: A Helm chart for Zeebe benchmarks
+    digest: 661d3415624beb3f4efb6c759d8ece2a46c4db89cf42279aaba529179fad414f
+    maintainers:
+    - email: christopher.zell@camunda.com
+      name: Zelldon
+    name: zeebe-benchmark
+    sources:
+    - https://github.com/zeebe-io/benchmark-helm
+    - https://github.com/camunda/camunda
+    type: application
+    urls:
+    - https://github.com/zeebe-io/benchmark-helm/releases/download/zeebe-benchmark-0.3.7/zeebe-benchmark-0.3.7.tgz
+    version: 0.3.7
+  - annotations:
+      artifacthub.io/changes: |
+        - kind: fixed
           description: "increase zeebe cpu limit to 1.7 in default benchmark"
       artifacthub.io/containsSecurityUpdates: "false"
       artifacthub.io/links: |
@@ -1212,4 +1247,4 @@ entries:
     urls:
     - https://github.com/zeebe-io/benchmark-helm/releases/download/zeebe-benchmark-0.1.2/zeebe-benchmark-0.1.2.tgz
     version: 0.1.2
-generated: "2024-11-08T14:07:05.009205565Z"
+generated: "2024-11-08T15:53:44.362208574Z"
