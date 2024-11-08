@@ -336,7 +336,7 @@ camunda-platform:
         cpu: 1350m
         memory: 4Gi
       requests:
-        cpu: 1350m
+        cpu: 1700m
         memory: 4Gi
 
     nodeSelector:
