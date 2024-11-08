@@ -26,4 +26,4 @@ annotations:
     - name: Zeebe Docs
       url: https://docs.camunda.io/docs/components/zeebe/zeebe-overview/
   artifacthub.io/containsSecurityUpdates: "false"
-  artifacthub.io/changes: "- kind: fixed\n  description: \"increase zeebe cpu limit to 1.7 in default benchmark\"\n"
+  artifacthub.io/changes: "- kind: fixed\n  description: \"cpu request & limits were inverted in default benchmark\"\n"
