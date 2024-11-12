@@ -38,7 +38,7 @@ spec:
         app.kubernetes.io/component: zeebe-broker
         app.kubernetes.io/version: "SNAPSHOT"
       annotations:
-        checksum/config: 499bbd401adeb5d710e43685f146335086024a4b748c87d9256618b1423f97b1
+        checksum/config: 4e7d66ef2c5cc5b5153ce41dd3b77c26d1ebea04c443bb81cbb8ec00a96462b1
     spec:
       imagePullSecrets:
         []

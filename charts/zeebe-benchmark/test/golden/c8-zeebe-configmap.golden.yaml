@@ -27,6 +27,17 @@ data:
                 enabled: true
                 minimumAge: "10m"
                 policyName: "zeebe-record-retention-policy"
+          CamundaExporter:
+            className: "io.camunda.exporter.CamundaExporter"
+            args:
+              connect:
+                type: elasticsearch
+                url: "http://benchmark-test-elasticsearch:9200"
+              retention:
+                enabled: true
+                minimumAge: "10m"
+                policyName: "zeebe-record-retention-policy"
+              createSchema: true
         gateway:
           enable: true
           network:
