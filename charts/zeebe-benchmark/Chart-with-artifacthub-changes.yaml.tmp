@@ -2,7 +2,7 @@ apiVersion: v2
 name: zeebe-benchmark
 description: A Helm chart for Zeebe benchmarks
 type: application
-version: 0.3.7
+version: 0.3.8
 appVersion: "8.2.5"
 sources:
   - https://github.com/zeebe-io/benchmark-helm
@@ -10,7 +10,7 @@ sources:
 dependencies:
   - name: camunda-platform
     repository: "oci://ghcr.io/camunda/helm"
-    version: "0.0.0-rc-8.6"
+    version: "0.0.0-12.0.0-alpha1"
     condition: "camunda.enabled"
   - name: prometheus-elasticsearch-exporter
     repository: "https://prometheus-community.github.io/helm-charts"
@@ -26,4 +26,4 @@ annotations:
     - name: Zeebe Docs
       url: https://docs.camunda.io/docs/components/zeebe/zeebe-overview/
   artifacthub.io/containsSecurityUpdates: "false"
-  artifacthub.io/changes: "- kind: fixed\n  description: \"cpu request & limits were inverted in default benchmark\"\n"
+  artifacthub.io/changes: "- kind: changed\n  description: \"disable importer\"\n"
