@@ -1,0 +1,27 @@
+---
+# Source: zeebe-benchmark/templates/leader-balancing-cron.yaml
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: leader-balancer
+  labels:
+    helm.sh/chart: zeebe-benchmark-0.3.7
+    app.kubernetes.io/name: zeebe-benchmark
+    app.kubernetes.io/instance: zeebe-benchmark-test
+    app.kubernetes.io/version: "8.2.5"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  schedule: "*/15 * * * *"
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  concurrencyPolicy: Forbid
+  startingDeadlineSeconds: 120
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - image: "curlimages/curl:7.87.0"
+              name: curl
+              args: ["-L", "-v", "-X", "POST", "http://zeebe-benchmark-test-zeebe-gateway:9600/actuator/rebalance"]
+          restartPolicy: OnFailure

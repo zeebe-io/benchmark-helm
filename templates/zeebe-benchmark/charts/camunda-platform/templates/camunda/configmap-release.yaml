@@ -1,0 +1,44 @@
+---
+# Source: zeebe-benchmark/charts/camunda-platform/templates/camunda/configmap-release.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: zeebe-benchmark-test-camunda-platform-release
+  labels:
+    app: camunda-platform
+    app.kubernetes.io/name: camunda-platform
+    app.kubernetes.io/instance: zeebe-benchmark-test
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: camunda-platform
+    helm.sh/chart: camunda-platform-0.0.0-12.0.0-alpha1
+  annotations:
+    {}
+data:
+  info: |-
+    - name: zeebe-benchmark-test
+      namespace: ck-main-exporter-without-es-exporter
+      version: 0.0.0-12.0.0-alpha1
+      tags:
+      - dev
+      custom-properties: []
+      components:
+      
+      - name: Operate
+        id: operate
+        version: SNAPSHOT
+        url: http://localhost:8081
+        readiness: http://zeebe-benchmark-test-operate.ck-main-exporter-without-es-exporter:9600/actuator/health/readiness
+        metrics: http://zeebe-benchmark-test-operate.ck-main-exporter-without-es-exporter:9600/actuator/prometheus
+      - name: Zeebe Gateway
+        id: zeebeGateway
+        version: ck-main-exporter-8611f3dc
+        urls:
+          grpc: http://localhost:26500
+          http: http://localhost:8088
+        readiness: http://zeebe-benchmark-test-zeebe-gateway.ck-main-exporter-without-es-exporter:9600/actuator/health/readiness
+        metrics: http://zeebe-benchmark-test-zeebe-gateway.ck-main-exporter-without-es-exporter:9600/actuator/prometheus
+      - name: Zeebe
+        id: zeebe
+        version: ck-main-exporter-8611f3dc
+        readiness: http://zeebe-benchmark-test-zeebe.ck-main-exporter-without-es-exporter:9600/actuator/health/readiness
+        metrics: http://zeebe-benchmark-test-zeebe.ck-main-exporter-without-es-exporter:9600/actuator/prometheus

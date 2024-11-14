@@ -1,0 +1,296 @@
+---
+# Source: zeebe-benchmark/templates/workers.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: customer-notification-worker
+  labels:
+    app: customer-notification-worker
+spec:
+  selector:
+    matchLabels:
+      app: customer-notification-worker
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: customer-notification-worker
+        app.kubernetes.io/component: zeebe-client
+    spec:
+      containers:
+        - name: customer-notification-worker
+          image: "gcr.io/zeebe-io/worker:ck-main-exporter-8611f3dc"
+          imagePullPolicy: Always
+          env:
+            - name: JDK_JAVA_OPTIONS
+              value: >-
+                -Dconfig.override_with_env_vars=true
+                -Dapp.brokerUrl=zeebe-benchmark-test-zeebe-gateway:26500
+                -Dzeebe.client.requestTimeout=62000
+                -Dapp.worker.capacity=30
+                -Dapp.worker.pollingDelay=1ms
+                -Dapp.worker.completionDelay=300ms
+                -Dapp.worker.workerName="customer-notification"
+                -Dapp.worker.jobType="customer_notification"
+                -Dapp.worker.payloadPath="bpmn/emptyPayload.json"
+                -Dapp.worker.sendMessage=true
+                -Dapp.worker.messageName="dispute_process_receive_documents"
+                -Dapp.worker.correlationKeyVariableName="correlationKey"
+                -XX:+HeapDumpOnOutOfMemoryError
+            - name: LOG_LEVEL
+              value: "INFO"
+          resources:
+            limits:
+              cpu: 500m
+              memory: 256Mi
+            requests:
+              cpu: 500m
+              memory: 256Mi
+          ports:
+            - containerPort: 9600
+              name: "http"
+---
+# Source: zeebe-benchmark/templates/workers.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dispute-process-request-get-vendor-info-worker
+  labels:
+    app: dispute-process-request-get-vendor-info-worker
+spec:
+  selector:
+    matchLabels:
+      app: dispute-process-request-get-vendor-info-worker
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: dispute-process-request-get-vendor-info-worker
+        app.kubernetes.io/component: zeebe-client
+    spec:
+      containers:
+        - name: dispute-process-request-get-vendor-info-worker
+          image: "gcr.io/zeebe-io/worker:ck-main-exporter-8611f3dc"
+          imagePullPolicy: Always
+          env:
+            - name: JDK_JAVA_OPTIONS
+              value: >-
+                -Dconfig.override_with_env_vars=true
+                -Dapp.brokerUrl=zeebe-benchmark-test-zeebe-gateway:26500
+                -Dzeebe.client.requestTimeout=62000
+                -Dapp.worker.capacity=30
+                -Dapp.worker.pollingDelay=1ms
+                -Dapp.worker.completionDelay=10ms
+                -Dapp.worker.workerName="dispute-process-request-get-vendor-info"
+                -Dapp.worker.jobType="dispute_process_request_get_vendor_info"
+                -Dapp.worker.payloadPath="bpmn/emptyPayload.json"
+                -XX:+HeapDumpOnOutOfMemoryError
+            - name: LOG_LEVEL
+              value: "INFO"
+          resources:
+            limits:
+              cpu: 500m
+              memory: 256Mi
+            requests:
+              cpu: 500m
+              memory: 256Mi
+          ports:
+            - containerPort: 9600
+              name: "http"
+---
+# Source: zeebe-benchmark/templates/workers.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dispute-process-request-proof-from-vendor-worker
+  labels:
+    app: dispute-process-request-proof-from-vendor-worker
+spec:
+  selector:
+    matchLabels:
+      app: dispute-process-request-proof-from-vendor-worker
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: dispute-process-request-proof-from-vendor-worker
+        app.kubernetes.io/component: zeebe-client
+    spec:
+      containers:
+        - name: dispute-process-request-proof-from-vendor-worker
+          image: "gcr.io/zeebe-io/worker:ck-main-exporter-8611f3dc"
+          imagePullPolicy: Always
+          env:
+            - name: JDK_JAVA_OPTIONS
+              value: >-
+                -Dconfig.override_with_env_vars=true
+                -Dapp.brokerUrl=zeebe-benchmark-test-zeebe-gateway:26500
+                -Dzeebe.client.requestTimeout=62000
+                -Dapp.worker.capacity=60
+                -Dapp.worker.threads=30
+                -Dapp.worker.pollingDelay=1ms
+                -Dapp.worker.completionDelay=300ms
+                -Dapp.worker.workerName="dispute-process-request-proof-from-vendor"
+                -Dapp.worker.jobType="dispute_process_request_proof_from_vendor"
+                -Dapp.worker.payloadPath="bpmn/emptyPayload.json"
+                -Dapp.worker.sendMessage=true
+                -Dapp.worker.messageName="dispute_process_refund_approved"
+                -Dapp.worker.correlationKeyVariableName="correlationKey"
+                -XX:+HeapDumpOnOutOfMemoryError
+            - name: LOG_LEVEL
+              value: "INFO"
+          resources:
+            limits:
+              cpu: 500m
+              memory: 256Mi
+            requests:
+              cpu: 500m
+              memory: 256Mi
+          ports:
+            - containerPort: 9600
+              name: "http"
+---
+# Source: zeebe-benchmark/templates/workers.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: extract-data-from-document-worker
+  labels:
+    app: extract-data-from-document-worker
+spec:
+  selector:
+    matchLabels:
+      app: extract-data-from-document-worker
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: extract-data-from-document-worker
+        app.kubernetes.io/component: zeebe-client
+    spec:
+      containers:
+        - name: extract-data-from-document-worker
+          image: "gcr.io/zeebe-io/worker:ck-main-exporter-8611f3dc"
+          imagePullPolicy: Always
+          env:
+            - name: JDK_JAVA_OPTIONS
+              value: >-
+                -Dconfig.override_with_env_vars=true
+                -Dapp.brokerUrl=zeebe-benchmark-test-zeebe-gateway:26500
+                -Dzeebe.client.requestTimeout=62000
+                -Dapp.worker.capacity=30
+                -Dapp.worker.pollingDelay=1ms
+                -Dapp.worker.completionDelay=300ms
+                -Dapp.worker.workerName="extract-data-from-document"
+                -Dapp.worker.jobType="extract_data_from_document"
+                -Dapp.worker.payloadPath="bpmn/emptyPayload.json"
+                -XX:+HeapDumpOnOutOfMemoryError
+            - name: LOG_LEVEL
+              value: "INFO"
+          resources:
+            limits:
+              cpu: 500m
+              memory: 256Mi
+            requests:
+              cpu: 500m
+              memory: 256Mi
+          ports:
+            - containerPort: 9600
+              name: "http"
+---
+# Source: zeebe-benchmark/templates/workers.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: inform-about-successful-claim-worker
+  labels:
+    app: inform-about-successful-claim-worker
+spec:
+  selector:
+    matchLabels:
+      app: inform-about-successful-claim-worker
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: inform-about-successful-claim-worker
+        app.kubernetes.io/component: zeebe-client
+    spec:
+      containers:
+        - name: inform-about-successful-claim-worker
+          image: "gcr.io/zeebe-io/worker:ck-main-exporter-8611f3dc"
+          imagePullPolicy: Always
+          env:
+            - name: JDK_JAVA_OPTIONS
+              value: >-
+                -Dconfig.override_with_env_vars=true
+                -Dapp.brokerUrl=zeebe-benchmark-test-zeebe-gateway:26500
+                -Dzeebe.client.requestTimeout=62000
+                -Dapp.worker.capacity=30
+                -Dapp.worker.pollingDelay=1ms
+                -Dapp.worker.completionDelay=300ms
+                -Dapp.worker.workerName="inform-about-successful-claim"
+                -Dapp.worker.jobType="inform_about_successful_claim"
+                -Dapp.worker.payloadPath="bpmn/emptyPayload.json"
+                -XX:+HeapDumpOnOutOfMemoryError
+            - name: LOG_LEVEL
+              value: "INFO"
+          resources:
+            limits:
+              cpu: 500m
+              memory: 256Mi
+            requests:
+              cpu: 500m
+              memory: 256Mi
+          ports:
+            - containerPort: 9600
+              name: "http"
+---
+# Source: zeebe-benchmark/templates/workers.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: refunding-worker
+  labels:
+    app: refunding-worker
+spec:
+  selector:
+    matchLabels:
+      app: refunding-worker
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: refunding-worker
+        app.kubernetes.io/component: zeebe-client
+    spec:
+      containers:
+        - name: refunding-worker
+          image: "gcr.io/zeebe-io/worker:ck-main-exporter-8611f3dc"
+          imagePullPolicy: Always
+          env:
+            - name: JDK_JAVA_OPTIONS
+              value: >-
+                -Dconfig.override_with_env_vars=true
+                -Dapp.brokerUrl=zeebe-benchmark-test-zeebe-gateway:26500
+                -Dzeebe.client.requestTimeout=62000
+                -Dapp.worker.capacity=30
+                -Dapp.worker.threads=30
+                -Dapp.worker.pollingDelay=1ms
+                -Dapp.worker.completionDelay=300ms
+                -Dapp.worker.workerName="refunding"
+                -Dapp.worker.jobType="refunding"
+                -Dapp.worker.payloadPath="bpmn/emptyPayload.json"
+                -XX:+HeapDumpOnOutOfMemoryError
+            - name: LOG_LEVEL
+              value: "INFO"
+          resources:
+            limits:
+              cpu: 500m
+              memory: 256Mi
+            requests:
+              cpu: 500m
+              memory: 256Mi
+          ports:
+            - containerPort: 9600
+              name: "http"

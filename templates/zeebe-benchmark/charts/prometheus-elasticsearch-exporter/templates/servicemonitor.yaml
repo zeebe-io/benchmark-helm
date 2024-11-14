@@ -1,0 +1,30 @@
+---
+# Source: zeebe-benchmark/charts/prometheus-elasticsearch-exporter/templates/servicemonitor.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: zeebe-benchmark-test-prometheus-elasticsearch-exporter
+  labels:
+    helm.sh/chart: prometheus-elasticsearch-exporter-6.4.0
+    app.kubernetes.io/name: prometheus-elasticsearch-exporter
+    app.kubernetes.io/instance: zeebe-benchmark-test
+    app.kubernetes.io/version: "v1.7.0"
+    app.kubernetes.io/managed-by: Helm
+    release: monitoring
+spec:
+  endpoints:
+  - interval: 10s
+    scrapeTimeout: 10s
+    honorLabels: true
+    port: http
+    path: /metrics
+    scheme: http
+  jobLabel: zeebe-benchmark-test
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: prometheus-elasticsearch-exporter
+      app.kubernetes.io/instance: zeebe-benchmark-test
+  namespaceSelector:
+    matchNames:
+      - ck-main-exporter-without-es-exporter
+  sampleLimit: 0

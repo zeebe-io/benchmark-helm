@@ -1,0 +1,167 @@
+---
+# Source: zeebe-benchmark/charts/camunda-platform/templates/operate/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zeebe-benchmark-test-operate
+  labels:
+    app: camunda-platform
+    app.kubernetes.io/name: camunda-platform
+    app.kubernetes.io/instance: zeebe-benchmark-test
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: camunda-platform
+    helm.sh/chart: camunda-platform-0.0.0-12.0.0-alpha1
+    app.kubernetes.io/component: operate
+    app.kubernetes.io/version: "SNAPSHOT"
+  annotations:
+    {}
+spec:
+  strategy:
+    type: Recreate
+  replicas: 1
+  selector:
+    matchLabels:
+      app: camunda-platform
+      app.kubernetes.io/name: camunda-platform
+      app.kubernetes.io/instance: zeebe-benchmark-test
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/part-of: camunda-platform
+      app.kubernetes.io/component: operate
+  template:
+    metadata:
+      labels:
+        app: camunda-platform
+        app.kubernetes.io/name: camunda-platform
+        app.kubernetes.io/instance: zeebe-benchmark-test
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/part-of: camunda-platform
+        helm.sh/chart: camunda-platform-0.0.0-12.0.0-alpha1
+        app.kubernetes.io/component: operate
+        app.kubernetes.io/version: "SNAPSHOT"
+      annotations:
+        checksum/config: 3a9f557aeafa228277d1e0b671f1b35b49dd831b7a966cb25b6d3977e7f50a56
+    spec:
+      imagePullSecrets:
+        []
+      initContainers:
+        - name: migration
+          image: camunda/operate:SNAPSHOT
+          command: ['/bin/sh', '/usr/local/operate/bin/migrate']
+          securityContext:
+            allowPrivilegeEscalation: false
+            privileged: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 1001
+            seccompProfile:
+              type: RuntimeDefault
+          env:
+          resources:
+            limits:
+              cpu: 2000m
+              memory: 2Gi
+            requests:
+              cpu: 600m
+              memory: 1Gi
+          volumeMounts:
+            - name: config
+              mountPath: /usr/local/operate/config/application.yaml
+              subPath: application.yaml
+            - name: tmp
+              mountPath: /tmp
+            - name: camunda
+              mountPath: /camunda
+      containers:
+        - name: operate
+          image: camunda/operate:SNAPSHOT
+          imagePullPolicy: Always
+          securityContext:
+            allowPrivilegeEscalation: false
+            privileged: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 1001
+            seccompProfile:
+              type: RuntimeDefault
+          env:
+            - name: CAMUNDA_LICENSE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: zeebe-benchmark-test-camunda-platform-license
+                  key: CAMUNDA_LICENSE_KEY
+            - name: ZEEBE_CLIENT_CONFIG_PATH
+              value: /tmp/zeebe_auth_cache
+            # the host name of Operate that is used when connecting with the Zeebe cluster
+            # via atomix-cluster (SWIM)
+            - name: ZEEBE_GATEWAY_CLUSTER_HOST
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: status.podIP
+            # the unique member id (in this case the pod name) that is used as identifier inside the SWIM cluster
+            - name: ZEEBE_GATEWAY_CLUSTER_MEMBERID
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.name
+            # the name of the atomix cluster (SWIM) to connect to (must be the same as for the Zeebe cluster)
+            - name: ZEEBE_GATEWAY_CLUSTER_CLUSTERNAME
+              value: zeebe-benchmark-test-zeebe
+            # the port the service expects requests/messages from the atomix cluster (must be exposed internally)
+            - name: ZEEBE_GATEWAY_CLUSTER_PORT
+              value: "26502"
+            # the initial contact point to join the SWIM (atomix) cluster
+            - name: ZEEBE_GATEWAY_CLUSTER_INITIALCONTACTPOINTS
+              value: zeebe-benchmark-test-zeebe:26502
+            - name: CAMUNDA_OPERATE_IMPORTERENABLED
+              value: "false"
+          envFrom:
+          resources:
+            limits:
+              cpu: 2000m
+              memory: 2Gi
+            requests:
+              cpu: 600m
+              memory: 400Mi
+          ports:
+            - containerPort: 8080
+              name: http
+              protocol: TCP
+            - containerPort: 9600
+              name: management
+            - containerPort: 26502
+              name: internal
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              scheme: HTTP
+              port: management
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            successThreshold: 1
+            failureThreshold: 5
+            timeoutSeconds: 1
+          volumeMounts:
+            - name: config
+              mountPath: /usr/local/operate/config/application.yaml
+              subPath: application.yaml
+            - name: tmp
+              mountPath: /tmp
+            - name: camunda
+              mountPath: /camunda
+      volumes:
+        - name: config
+          configMap:
+            name: zeebe-benchmark-test-operate-configuration
+            defaultMode: 484
+        - name: tmp
+          emptyDir: {}
+        - name: camunda
+          emptyDir: {}
+      serviceAccountName: zeebe-benchmark-test-operate
+      securityContext:
+        fsGroup: 1001
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault

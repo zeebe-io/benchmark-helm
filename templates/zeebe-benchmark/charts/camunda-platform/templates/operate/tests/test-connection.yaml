@@ -1,0 +1,24 @@
+---
+# Source: zeebe-benchmark/charts/camunda-platform/templates/operate/tests/test-connection.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "zeebe-benchmark-test-operate-test-connection"
+  labels:
+    app: camunda-platform
+    app.kubernetes.io/name: camunda-platform
+    app.kubernetes.io/instance: zeebe-benchmark-test
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: camunda-platform
+    helm.sh/chart: camunda-platform-0.0.0-12.0.0-alpha1
+    app.kubernetes.io/component: operate
+    app.kubernetes.io/version: "SNAPSHOT"
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args:  ['zeebe-benchmark-test-operate:80']
+  restartPolicy: Never
