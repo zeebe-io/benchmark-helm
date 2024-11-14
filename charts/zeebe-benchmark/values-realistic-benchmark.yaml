@@ -237,10 +237,10 @@ camunda-platform:
     # Resources configuration to set request and limit configuration for the container https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#requests-and-limitsS
     resources:
       limits:
-        cpu: 1700m
+        cpu: 3000m
         memory: 4Gi
       requests:
-        cpu: 1350m
+        cpu: 1450m
         memory: 4Gi
 
   zeebeGateway:
@@ -270,10 +270,10 @@ camunda-platform:
     # Resources configuration to set request and limit configuration for the container https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#requests-and-limits
     resources:
       requests:
-        cpu: 600m
+        cpu: 200m
         memory: 400Mi
       limits:
-        cpu: 2000m
+        cpu: 600m
         memory: 2Gi
     env:
       - name: CAMUNDA_OPERATE_IMPORTERENABLED
