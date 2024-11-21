@@ -46,7 +46,7 @@ func TestGoldenCamundaPlatformCoreDefaults(t *testing.T) {
 			ChartPath:      chartPath,
 			Release:        "benchmark-test",
 			Namespace:      "benchmark-" + strings.ToLower(random.UniqueId()),
-			GoldenFileName: "c8-zeebe-" + name,
+			GoldenFileName: "c8-core-" + name,
 			Templates:      []string{"charts/camunda-platform/templates/core/" + name + ".yaml"},
 			SetValues:      map[string]string{"camunda-platform.operate.enabled": "true"},
 		})
