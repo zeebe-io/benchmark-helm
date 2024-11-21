@@ -1,21 +1,91 @@
 ---
-# Source: zeebe-benchmark/charts/camunda-platform/templates/zeebe/configmap.yaml
+# Source: zeebe-benchmark/charts/camunda-platform/templates/core/configmap.yaml
 kind: ConfigMap
 metadata:
-  name: benchmark-test-zeebe-configuration
+  name: benchmark-test-core-configuration
   labels:
     app: camunda-platform
     app.kubernetes.io/name: camunda-platform
     app.kubernetes.io/instance: benchmark-test
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/part-of: camunda-platform
-    app.kubernetes.io/component: zeebe-broker
-    app.kubernetes.io/version: "SNAPSHOT"
+    app.kubernetes.io/component: core
+    app.kubernetes.io/version: "8.7.0-alpha1"
 apiVersion: v1
 data:
+  startup.sh: |
+    # The Node ID depends on the Pod name so it cannot be templated in the StatefulSet level.
+    export ZEEBE_BROKER_CLUSTER_NODEID="${ZEEBE_BROKER_CLUSTER_NODEID:-$[${K8S_NAME##*-} * 1 + 0]}"
+    echo "export ZEEBE_BROKER_CLUSTER_NODEID=${ZEEBE_BROKER_CLUSTER_NODEID}" >> ~/.bashrc
+
+    exec /usr/local/camunda/bin/camunda
   application.yaml: |
+    
+    spring:
+      profiles:
+        active: auth
+
+    management:
+      server:
+        port: 9600
+
+    server:
+      forward-headers-strategy: framework
+      address: 0.0.0.0
+      port: 8080
+
     zeebe:
+      host: 0.0.0.0
+      log:
+        level: "info"
+
       broker:
+        # zeebe.broker.experimental
+        experimental:
+          engine:
+            authorization:
+              enableAuthorization: true
+
+        # zeebe.broker.gateway
+        gateway:
+          enable: true
+          network:
+            host: 0.0.0.0
+            port: 26500
+
+        # zeebe.broker.network
+        network:
+          advertisedHost: "${K8S_NAME}.${K8S_SERVICE_NAME}"
+          host: 0.0.0.0
+          commandApi:
+            port: 26501
+          internalApi:
+            port: 26502
+
+        # zeebe.broker.cluster
+        cluster:
+          initialContactPoints:
+            - ${K8S_SERVICE_NAME}-0.${K8S_SERVICE_NAME}:26502
+            - ${K8S_SERVICE_NAME}-1.${K8S_SERVICE_NAME}:26502
+            - ${K8S_SERVICE_NAME}-2.${K8S_SERVICE_NAME}:26502
+          clusterSize: "3"
+          replicationFactor: "3"
+          partitionsCount: "3"
+          clusterName: benchmark-test-zeebe
+
+        # zeebe.broker.data
+        data:
+          snapshotPeriod: 5m
+          freeSpace:
+            processing: 2GB
+            replication: 3GB
+
+        # zeebe.broker.threads
+        threads:
+          cpuThreadCount: "3"
+          ioThreadCount: "3"
+
+        # zeebe.broker.exporters
         exporters:
           elasticsearch:
             className: "io.camunda.zeebe.exporter.ElasticsearchExporter"
@@ -23,65 +93,100 @@ data:
               url: "http://benchmark-test-elasticsearch:9200"
               index:
                 prefix: "zeebe-record"
-              retention:
-                enabled: true
-                minimumAge: "10m"
-                policyName: "zeebe-record-retention-policy"
           CamundaExporter:
             className: "io.camunda.exporter.CamundaExporter"
             args:
               connect:
                 type: elasticsearch
                 url: "http://benchmark-test-elasticsearch:9200"
-              retention:
-                enabled: true
-                minimumAge: "10m"
-                policyName: "zeebe-record-retention-policy"
               createSchema: true
-        gateway:
-          enable: true
-          network:
-            port: 26500
-          security:
-            enabled: false
-            authentication:
-              mode: none
-        network:
-          host: 0.0.0.0
-          commandApi:
-            port: 26501
-          internalApi:
-            port: 26502
-          monitoringApi:
-            port: "9600"
-        cluster:
-          clusterSize: "3"
-          replicationFactor: "3"
-          partitionsCount: "3"
-          clusterName: benchmark-test-zeebe
-        threads:
-          cpuThreadCount: "3"
-          ioThreadCount: "3"
 
-    # Camunda Database configuration
-    camunda.database:
-      type: elasticsearch
-      # Cluster name
-      clusterName: elasticsearch
-      # Elasticsearch full url
-      url: "http://benchmark-test-elasticsearch:9200"
+    camunda:
+      rest:
+        query:
+          enabled: true
 
-  startup.sh: |
-    #!/usr/bin/env bash
-    set -eux -o pipefail
-    export ZEEBE_BROKER_CLUSTER_NODEID=${ZEEBE_BROKER_CLUSTER_NODEID:-$[${K8S_NAME##*-} * 1 + 0]}
+      #
+      # Camunda Database Configuration.
+      #
+      database:
+        type: elasticsearch
+        # Cluster name
+        clusterName: elasticsearch
+        # Elasticsearch full url
+        url: "http://benchmark-test-elasticsearch:9200"
 
-    if [ "$(ls -A /exporters/)" ]; then
-      mkdir -p /usr/local/zeebe/exporters/
-      cp -a /exporters/*.jar /usr/local/zeebe/exporters/
-    else
-      echo "No exporters available."
-    fi
-    exec /usr/local/zeebe/bin/broker
+      #
+      # Camunda Operate Configuration.
+      #
+      operate:
+      
+        # ELS instance to store Operate data
+        elasticsearch:
+          # Cluster name
+          clusterName: elasticsearch
+          # Host
+          host: benchmark-test-elasticsearch
+          # Transport port
+          port: 9200
+          # Elasticsearch full url
+          url: "http://benchmark-test-elasticsearch:9200"
+        # ELS instance to export Zeebe data to
+        zeebeElasticsearch:
+          # Cluster name
+          clusterName: elasticsearch
+          # Host
+          host: benchmark-test-elasticsearch
+          # Transport port
+          port: 9200
+          # Index prefix, configured in Zeebe Elasticsearch exporter
+          prefix: zeebe-record
+          # Elasticsearch full url
+          url: "http://benchmark-test-elasticsearch:9200"
+        # Zeebe instance
+        zeebe:
+          # Gateway address
+          gatewayAddress: "benchmark-test-core:26500"
 
-  broker-log4j2.xml: |
+      #
+      # Camunda Tasklist Configuration.
+      #
+      tasklist:
+
+        identity:
+          redirectRootUrl: "http://localhost:8082/tasklist"
+
+        # Set Tasklist username and password.
+        # If user with <username> does not exists it will be created.
+        # Default: demo/demo
+        #username:
+        #password:
+        # ELS instance to store Tasklist data
+        elasticsearch:
+          # Cluster name
+          clusterName: elasticsearch
+          # Host
+          host: benchmark-test-elasticsearch
+          # Transport port
+          port: 9200
+          # Elasticsearch full url
+          url: "http://benchmark-test-elasticsearch:9200"
+        # ELS instance to export Zeebe data to
+        zeebeElasticsearch:
+          # Cluster name
+          clusterName: elasticsearch
+          # Host
+          host: benchmark-test-elasticsearch
+          # Transport port
+          port: 9200
+          # Index prefix, configured in Zeebe Elasticsearch exporter
+          prefix: zeebe-record
+          # Elasticsearch full url
+          url: "http://benchmark-test-elasticsearch:9200"
+        # Zeebe instance
+        zeebe:
+          # Gateway address
+          gatewayAddress: benchmark-test-core:26500
+          restAddress: "http://benchmark-test-core:8080"
+
+  log4j2.xml: |
