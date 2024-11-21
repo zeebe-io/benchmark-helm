@@ -17,7 +17,7 @@ dependencies:
     version: 6.4.0
     condition: "prometheus-elasticsearch-exporter.enabled"
 maintainers:
-  - name: Zelldon
+  - name: ChrisKujawa
     email: christopher.zell@camunda.com
 annotations:
   artifacthub.io/links: |
