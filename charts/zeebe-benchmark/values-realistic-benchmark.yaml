@@ -11,10 +11,6 @@ global:
     tag: SNAPSHOT
     # Image.pullPolicy defines the image pull policy which should be used https://kubernetes.io/docs/concepts/containers/images/#image-pull-policy
     pullPolicy: Always
-  # Disable Identity completely; both this flag and `camunda-platform.identity.enabled` are required.
-  identity:
-    auth:
-      enabled: false
 
 # DEPRECATED worker configuration for the to be deployed worker application
 worker:
@@ -217,69 +213,49 @@ starter:
   # each created process instance
   businessKey: "customerId"
 
+## @section Orchestration Core Parameters
+## @extra core configuration for the Orchestration Core.
 camunda-platform:
-  enabled: true
+  core:
+    ## @param core.enabled if true, all related resources are deployed via the helm release
+    enabled: true
 
-  zeebe:
-    # Image configuration to configure the zeebe image specifics
+    ## @param core.debug if true, extra info is printed.
+    debug: false
+
+    ## @extra core.image configuration to configure the image specifics
     image:
-      # Image.repository defines which image repository to use
-      repository: camunda/zeebe
+      ## @param core.image.repository defines which image repository to use
+      repository: camunda/camunda
+      ## @param core.image.tag can be set to overwrite the global tag, which should be used in that chart
       tag: SNAPSHOT
 
-    # Retention can be used to define the data in Elasticsearch (ILM).
-    retention:
-      ## @param zeebe.retention.enabled if true, the ILM Policy is created and applied to the index templates.
-      enabled: true
-      ## @param zeebe.retention.minimumAge defines how old the data must be, before the data is deleted as a duration.
-      minimumAge: 1d # set it to a higher value if we run with operate, so operate has enough time to consume the data
 
-    # Resources configuration to set request and limit configuration for the container https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#requests-and-limitsS
+    ## @param core.logLevel defines the log level which is used
+    logLevel: info
+
+    ingress:
+      grpc:
+        ## @param core.ingress.grpc.enabled if true, an ingress resource is deployed with the Zeebe gateway deployment. Only useful if an ingress controller is available, like nginx.
+        enabled: true
+      http:
+        ## @param core.ingress.http.enabled if true, an ingress resource is deployed with the Zeebe gateway deployment. Only useful if an ingress controller is available, like nginx.
+        enabled: true
+
+    ## @extra core.resources configuration to set request and limit configuration for the container https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#requests-and-limits
+    ## @extra core.resources.requests
+    ## @param core.resources.requests.cpu
+    ## @param core.resources.requests.memory
+    ## @param core.resources.limits.cpu
+    ## @param core.resources.limits.memory
     resources:
-      limits:
-        cpu: 1700m
-        memory: 4Gi
       requests:
         cpu: 1350m
         memory: 4Gi
-
-  zeebeGateway:
-    # Replicas defines how many standalone gateways are deployed
-    replicas: 2
-
-    # Image configuration to configure the zeebe-gateway image specifics
-    image:
-      # Image.repository defines which image repository to use
-      repository: camunda/zeebe
-      tag: SNAPSHOT
-
-    # Resources configuration to set request and limit configuration for the container https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#requests-and-limits
-    resources:
       limits:
-        cpu: 450m
-        memory: 1Gi
-      requests:
-        cpu: 450m
-        memory: 1Gi
+        cpu: 1700m
+        memory: 4Gi
 
-  operate:
-    enabled: true
-    image:
-      repository: camunda/operate
-      tag: SNAPSHOT
-    # Resources configuration to set request and limit configuration for the container https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#requests-and-limits
-    resources:
-      requests:
-        cpu: 600m
-        memory: 400Mi
-      limits:
-        cpu: 2000m
-        memory: 2Gi
-    env:
-      - name: CAMUNDA_OPERATE_IMPORTERENABLED
-        value: "false"
-
-  # ELASTIC
   elasticsearch:
     enabled: true
     imageTag: 8.9.2
