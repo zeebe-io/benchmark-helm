@@ -3,7 +3,7 @@
 Installed Zeebe cluster with:
 
  * {{  index .Values "camunda-platform" "core" "clusterSize" }} Brokers ({{ index .Values "camunda-platform" "core" "image" "repository" }}:{{ index .Values "camunda-platform" "core" "image" "tag" }})
-{{- if index .Values "camunda-platform" "operate" "enabled" }}
+{{if contains "operate" (index .Values "camunda-platform" "core" "env" 17 "value")}}
  * Operate  ({{ index .Values "camunda-platform" "operate" "image" "repository" }}:{{ index .Values "camunda-platform" "operate" "image" "tag" }})
 {{ end }}
 
