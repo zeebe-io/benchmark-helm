@@ -328,11 +328,11 @@ camunda-platform:
     # Resources configuration to set request and limit configuration for the container https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#requests-and-limitsS
     resources:
       limits:
-        cpu: 1700m
-        memory: 4Gi
+        cpu: 2300m
+        memory: 5Gi
       requests:
-        cpu: 1350m
-        memory: 4Gi
+        cpu: 1850m
+        memory: 5Gi
 
     nodeSelector:
       cloud.google.com/gke-nodepool: n2-standard-2

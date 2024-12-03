@@ -234,14 +234,6 @@ camunda-platform:
     ## @param core.logLevel defines the log level which is used
     logLevel: info
 
-    ingress:
-      grpc:
-        ## @param core.ingress.grpc.enabled if true, an ingress resource is deployed with the Zeebe gateway deployment. Only useful if an ingress controller is available, like nginx.
-        enabled: true
-      http:
-        ## @param core.ingress.http.enabled if true, an ingress resource is deployed with the Zeebe gateway deployment. Only useful if an ingress controller is available, like nginx.
-        enabled: true
-
     ## @extra core.resources configuration to set request and limit configuration for the container https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#requests-and-limits
     ## @extra core.resources.requests
     ## @param core.resources.requests.cpu
@@ -249,12 +241,12 @@ camunda-platform:
     ## @param core.resources.limits.cpu
     ## @param core.resources.limits.memory
     resources:
-      requests:
-        cpu: 1350m
-        memory: 4Gi
       limits:
-        cpu: 1700m
-        memory: 4Gi
+        cpu: 2300m
+        memory: 5Gi
+      requests:
+        cpu: 1850m
+        memory: 5Gi
 
   elasticsearch:
     enabled: true
