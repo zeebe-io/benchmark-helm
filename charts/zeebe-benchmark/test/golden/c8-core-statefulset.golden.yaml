@@ -38,7 +38,7 @@ spec:
         app.kubernetes.io/component: core
         app.kubernetes.io/version: "8.7.0-alpha1"
       annotations:
-        checksum/config: d57a555064a5668dd925af7c3d1e55397fcdb3734f9d3856ff80dcd918ef5ce5
+        checksum/config: 28ed7749e308da1e2470d282d8944bb95bbfa73bd578e42a87b93dc82a298563
     spec:
       imagePullSecrets:
         []
@@ -111,6 +111,14 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
+            - name: OPERATE_LOG_APPENDER
+              value: Stackdriver
+            - name: OPERATE_LOG_STACKDRIVER_SERVICENAME
+              value: operate
+            - name: OPERATE_LOG_STACKDRIVER_SERVICEVERSION
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
             - name: ATOMIX_LOG_LEVEL
               value: INFO
             - name: ZEEBE_LOG_LEVEL
@@ -164,11 +172,11 @@ spec:
             timeoutSeconds: 1
           resources:
             limits:
-              cpu: 1700m
-              memory: 4Gi
+              cpu: 2300m
+              memory: 5Gi
             requests:
-              cpu: 1350m
-              memory: 4Gi
+              cpu: 1850m
+              memory: 5Gi
           volumeMounts:
             - name: config
               mountPath: /usr/local/bin/startup.sh
