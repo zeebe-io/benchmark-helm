@@ -220,6 +220,11 @@ camunda-platform:
     ## @param core.enabled if true, all related resources are deployed via the helm release
     enabled: true
 
+    env:
+      # To run Operate and Tasklist add these to the value of this variable
+      - name: SPRING_PROFILES_ACTIVE
+        value: "auth,broker,operate"
+
     ## @param core.debug if true, extra info is printed.
     debug: false
 
