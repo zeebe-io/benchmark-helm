@@ -44,7 +44,7 @@ data:
         experimental:
           engine:
             authorization:
-              enableAuthorization: true
+              enableAuthorization: false
 
         # zeebe.broker.gateway
         gateway:
@@ -117,6 +117,10 @@ data:
         query:
           enabled: true
 
+      security:
+        authorizations:
+          enabled: false
+
       #
       # Camunda Database Configuration.
       #
@@ -166,9 +170,6 @@ data:
       # Camunda Tasklist Configuration.
       #
       tasklist:
-
-        identity:
-          redirectRootUrl: "http://localhost:8082/tasklist"
 
         # Set Tasklist username and password.
         # If user with <username> does not exists it will be created.
