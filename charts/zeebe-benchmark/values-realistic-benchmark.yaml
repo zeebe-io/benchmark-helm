@@ -277,7 +277,7 @@ camunda-platform:
         memory: 2Gi
     env:
       - name: CAMUNDA_OPERATE_IMPORTERENABLED
-        value: "false"
+        value: "true"
 
   # ELASTIC
   elasticsearch:
