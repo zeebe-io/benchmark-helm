@@ -10,7 +10,7 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/part-of: camunda-platform
     app.kubernetes.io/component: core
-    app.kubernetes.io/version: "8.7.0-alpha1"
+    app.kubernetes.io/version: "8.7.0-alpha2"
 apiVersion: v1
 data:
   startup.sh: |
@@ -30,9 +30,10 @@ data:
         port: 9600
 
     server:
-      forward-headers-strategy: framework
+      forward-headers-strategy: none
       address: 0.0.0.0
       port: 8080
+      servlet:
 
     zeebe:
       host: 0.0.0.0
@@ -40,12 +41,6 @@ data:
         level: "info"
 
       broker:
-        # zeebe.broker.experimental
-        experimental:
-          engine:
-            authorization:
-              enableAuthorization: false
-
         # zeebe.broker.gateway
         gateway:
           enable: true
@@ -113,6 +108,10 @@ data:
               createSchema: true
 
     camunda:
+      persistent:
+        sessions:
+          enabled: true
+
       rest:
         query:
           enabled: true
@@ -135,9 +134,11 @@ data:
       # Camunda Operate Configuration.
       #
       operate:
+        persistentSessionsEnabled: true
       
         # ELS instance to store Operate data
         elasticsearch:
+          # Operate index prefix.
           # Cluster name
           clusterName: elasticsearch
           # Host
@@ -155,7 +156,7 @@ data:
           # Transport port
           port: 9200
           # Index prefix, configured in Zeebe Elasticsearch exporter
-          prefix: zeebe-record
+          prefix: "zeebe-record"
           # Elasticsearch full url
           url: "http://benchmark-test-elasticsearch:9200"
         # Zeebe instance
@@ -178,6 +179,7 @@ data:
         #password:
         # ELS instance to store Tasklist data
         elasticsearch:
+          # Tasklist index prefix.
           # Cluster name
           clusterName: elasticsearch
           # Host
@@ -195,7 +197,7 @@ data:
           # Transport port
           port: 9200
           # Index prefix, configured in Zeebe Elasticsearch exporter
-          prefix: zeebe-record
+          prefix: "zeebe-record"
           # Elasticsearch full url
           url: "http://benchmark-test-elasticsearch:9200"
         # Zeebe instance
