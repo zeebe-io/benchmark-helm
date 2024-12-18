@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: starter
-          image: "{{ .Values.global.image.repository }}/starter:{{ .Values.global.image.tag }}"
+          image: "{{ .Values.starter.image.repository }}/starter:{{ .Values.starter.image.tag }}"
           imagePullPolicy: {{ .Values.global.image.pullPolicy }}
           env:
             - name: JDK_JAVA_OPTIONS
@@ -26,7 +26,7 @@ spec:
                 {{- if $.Values.saas.enabled }}
                 -Dapp.tls=true
                 {{- else }}
-                -Dapp.brokerUrl={{ $.Release.Name }}-zeebe-gateway:26500
+                -Dapp.brokerUrl={{ $.Release.Name }}-core:26500
                 {{- end }}
                 -Dapp.starter.rate={{ .Values.starter.rate }}
                 -Dapp.starter.durationLimit=0

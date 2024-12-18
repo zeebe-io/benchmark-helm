@@ -19,13 +19,13 @@ spec:
     spec:
       containers:
         - name: publisher
-          image: "gcr.io/zeebe-io/starter:SNAPSHOT"
+          image: "/starter:"
           imagePullPolicy: Always
           env:
             - name: JDK_JAVA_OPTIONS
               value: >-
                 -Dconfig.override_with_env_vars=true
-                -Dapp.brokerUrl=benchmark-test-zeebe-gateway:26500
+                -Dapp.brokerUrl=benchmark-test-core:26500
                 -Dapp.starter.rate=25
                 -Dzeebe.client.requestTimeout=62000
                 -XX:+HeapDumpOnOutOfMemoryError
