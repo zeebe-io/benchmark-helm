@@ -3,7 +3,8 @@
 Installed Zeebe cluster with:
 
  * {{  index .Values "camunda-platform" "core" "clusterSize" }} Brokers ({{ index .Values "camunda-platform" "core" "image" "repository" }}:{{ index .Values "camunda-platform" "core" "image" "tag" }})
- * Active profiles: {{ index .Values "camunda-platform" "core" "env" 20 "value" }}
+ * Active profiles: {{- range index .Values "camunda-platform" "core" "env" }}{{- if eq .name "SPRING_PROFILES_ACTIVE" }}{{ .value }}{{- end }}{{- end }}
+
 
 The benchmark is running with:
 
