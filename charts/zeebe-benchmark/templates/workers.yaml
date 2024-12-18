@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: {{ $workerName }}-worker
-          image: "{{ $.Values.global.image.repository }}/worker:{{ $.Values.global.image.tag }}"
+          image: "{{ $.Values.workers.image.repository }}/worker:{{ $.Values.workers.image.tag }}"
           imagePullPolicy: {{ $.Values.global.image.pullPolicy }}
           env:
             - name: JDK_JAVA_OPTIONS
