@@ -27,19 +27,22 @@ global:
   # Disable global ingress
   ingress:
     enabled: false
-  # Image configuration to be used in each sub chart
   image:
-    # Image.repository defines the repository from which to fetch the docker images
-    repository: "gcr.io/zeebe-io"
-    # Image.tag defines the tag / version which should be used in the chart
-    tag: SNAPSHOT
-    # Image.pullPolicy defines the image pull policy which should be used https://kubernetes.io/docs/concepts/containers/images/#image-pull-policy
+    ## @param global.image.registry Can be used to set container image registry.
+    registry: ""
+    ## @param global.image.tag defines the tag / version which should be used in the most of the apps.
+    tag:
+    ## @param global.image.pullPolicy defines the image pull policy which should be used https://kubernetes.io/docs/concepts/containers/images/#image-pull-policy
     pullPolicy: Always
-  # Disable Identity
+    ## @param global.image.pullSecrets can be used to configure image pull secrets https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
+    pullSecrets: [ ]
+  # Identity configuration to configure identity specifics on global level, which can be accessed by other sub-charts
   identity:
     auth:
       enabled: false
 
+identity:
+  enabled: false
 
 # Saas configuration to run benchmarks against Camunda SaaS environment
 saas:
@@ -177,58 +180,65 @@ leaderBalancing:
 
 # Zeebe configuration to configure Zeebe and Gateway
 zeebe:
-  # Zeebe.config can be used to configure Zeebe Broker and Gateway additional without the need of overwriting all
-  # environment variables from the dependency chart.
-  # Allows to set configurations via --set, like --set zeebe.config.zeebe.broker.cluster.replicationFactor=3
-  config:
-    zeebe.gateway.monitoring.enabled: "true"
-    zeebe.gateway.threads.managementThreads: "1"
-    zeebe.broker.experimental.consistencyChecks.enablePreconditions: "true"
-    zeebe.broker.experimental.consistencyChecks.enableForeignKeyChecks: "true"
-    zeebe.broker.executionMetricsExporterEnabled: "true"
-    zeebe.broker.data.diskUsageCommandWatermark: "0.8"
-    zeebe.broker.data.diskUsageReplicationWatermark: "0.9"
-    # Configure index suffix with hour pattern, so we create every hour a new index
-    # such that ILM can clean it up quickly
-    zeebe.broker.exporters.elasticsearch.args.index.indexSuffixDatePattern: "yyyy-MM-dd_HH"
-    # Configure a rate limit for all writes, so that we can visualize flow control metrics.
-    zeebe.broker.flowControl.write.enabled: "true"
-    zeebe.broker.flowControl.write.limit: 4000
-  # Zeebe.profiling configuration for pyroscope profiling
   profiling:
     # Zeebe.profiling.enabled if true, enables the pyroscope profiling
     enabled: false
 
 camunda-platform:
+  identity:
+    enabled: false
+
+  identityKeycloak:
+    enabled: false
+
+  optimize:
+    enabled: false
+
+  connectors:
+    enabled: false
+
+  webModeler:
+    enabled: false
+
+  postgresql:
+    enabled: false
+
   core:
-    enabled: true
-
-    # ClusterSize defines the amount of brokers (=replicas), which are deployed via helm
-    clusterSize: "3"
-    # PartitionCount defines how many zeebe partitions are set up in the cluster
-    partitionCount: "3"
-    # ReplicationFactor defines how each partition is replicated, the value defines the number of nodes
-    replicationFactor: "3"
-
-    # CpuThreadCount defines how many threads can be used for the processing on each broker pod
+    ## @param core.clusterSize defines the amount of brokers (=replicas), which are deployed via helm
+    clusterSize: 3
+    ## @param core.partitionCount defines how many partitions are set up in the cluster
+    partitionCount: 3
+    ## @param core.replicationFactor defines how each partition is replicated, the value defines the number of nodes
+    replicationFactor: 3
+    ## @param core.cpuThreadCount defines how many threads can be used for the processing on each broker pod
     cpuThreadCount: 3
-    # IoThreadCount defines how many threads can be used for the exporting on each broker pod
+    ## @param core.ioThreadCount defines how many threads can be used for the exporting on each broker pod
     ioThreadCount: 3
-
-    # ContainerSecurityContext defines the security options the Zeebe broker container should be run with
+    ## @extra core.resources configuration to set request and limit configuration for the container https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#requests-and-limits
+    ## @extra core.resources.requests
+    ## @param core.resources.requests.cpu
+    ## @param core.resources.requests.memory
+    ## @param core.resources.limits.cpu
+    ## @param core.resources.limits.memory
+    resources:
+      requests:
+        cpu: 2000m
+        memory: 6Gi
+      limits:
+        cpu: 2000m
+        memory: 12Gi
+    ## @param core.pvcSize defines the persistent volume claim size, which is used by each broker pod https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims
+    pvcSize: "64Gi"
+    # @extra core.containerSecurityContext defines the security options the container should be run with
     containerSecurityContext:
-      ## @param securityContext.allowPrivilegeEscalation
+      ## @param core.containerSecurityContext.allowPrivilegeEscalation
       allowPrivilegeEscalation: true
-      ## @param securityContext.privileged
+      ## @param core.containerSecurityContext.privileged
       privileged: true
-      ## @param securityContext.readOnlyRootFilesystem
-      readOnlyRootFilesystem: true
-      ## @param securityContext.runAsUser
+      ## @param core.containerSecurityContext.runAsNonRoot
+      runAsNonRoot: true
+      ## @param core.containerSecurityContext.runAsUser
       runAsUser: 1000
-      capabilities:
-        add: [ "NET_ADMIN" ]
-
-    # JavaOpts can be used to set java options for the zeebe brokers
     javaOpts: >-
       -XX:MaxRAMPercentage=25.0
       -XX:+ExitOnOutOfMemoryError
@@ -244,19 +254,19 @@ camunda-platform:
           name: benchmark-config
           defaultMode: 0754
       - name: pyroscope
-        emptyDir: {}
-
+        emptyDir: { }
+    ## @param core.extraVolumeMounts can be used to mount extra volumes for the broker pods, useful for additional exporters
     extraVolumeMounts:
       - name: benchmark-config
         mountPath: /usr/local/camunda/config/benchmark-config.yaml
         subPath: benchmark-config.yaml
       - name: pyroscope
         mountPath: /pyroscope
-
+    ## @param core.extraInitContainers (Deprecated - use `initContainers` instead) ExtraInitContainers can be used to set up extra init containers for the broker pods, useful for additional exporters
     extraInitContainers:
       - name: pyroscope
         image: alpine
-        command: ['wget', 'https://github.com/pyroscope-io/pyroscope-java/releases/latest/download/pyroscope.jar', '-O', '/pyroscope/pyroscope.jar']
+        command: [ 'wget', 'https://github.com/pyroscope-io/pyroscope-java/releases/latest/download/pyroscope.jar', '-O', '/pyroscope/pyroscope.jar' ]
         volumeMounts:
           - name: pyroscope
             mountPath: /pyroscope
@@ -270,15 +280,12 @@ camunda-platform:
           readOnlyRootFilesystem: true
           ## @param securityContext.runAsUser
           runAsUser: 1000
-
-    # Retention can be used to define the data in Elasticsearch (ILM).
     retention:
-      ## @param zeebe.retention.enabled if true, the ILM Policy is created and applied to the index templates.
+      ## @param core.retention.enabled if true, the ILM Policy is created and applied to the index templates.
       enabled: true
-      ## @param zeebe.retention.minimumAge defines how old the data must be, before the data is deleted as a duration.
-      minimumAge: 10m # set it to a higher value if we run with operate, so operate has enough time to consume the data
-
-    # Environment variables
+      ## @param core.retention.minimumAge defines how old the data must be, before the data is deleted as a duration.
+      minimumAge: 10m
+    # @param core.env can be used to set extra environment variables in each broker container
     env:
       - name: K8S_NAMESPACE
         valueFrom:
@@ -294,14 +301,6 @@ camunda-platform:
       - name: ZEEBE_LOG_STACKDRIVER_SERVICENAME
         value: zeebe
       - name: ZEEBE_LOG_STACKDRIVER_SERVICEVERSION
-        valueFrom:
-          fieldRef:
-            fieldPath: metadata.namespace
-      - name: OPERATE_LOG_APPENDER
-        value: Stackdriver
-      - name: OPERATE_LOG_STACKDRIVER_SERVICENAME
-        value: operate
-      - name: OPERATE_LOG_STACKDRIVER_SERVICEVERSION
         valueFrom:
           fieldRef:
             fieldPath: metadata.namespace
@@ -335,64 +334,45 @@ camunda-platform:
             name: zeebe-config
             key: java-opts
             optional: true
-      # To run Operate and Tasklist add these to the value of this variable
-      - name: SPRING_PROFILES_ACTIVE
-        value: "auth,broker"
 
-    # Resources configuration to set request and limit configuration for the container https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#requests-and-limitsS
-    resources:
-      limits:
-        cpu: 2300m
-        memory: 5Gi
-      requests:
-        cpu: 1850m
-        memory: 5Gi
+    # TODO:  this configuration replaces the default provided in the configmaps in camunda-platform-helm, we should ideally try to add the configuration in the charts for these instead.
+    ## @param core.configuration if specified, contents will be used as the application.yaml
+#    configuration: |
+#      zeebe:
+#        gateway:
+#          monitoring: true
+#          managementThreads: 1
+#        broker:
+#          experimental:
+#            consistencyChecks:
+#              enablePrecondition: true
+#              enableForeignKeyChecks: true
+#          executionMetricsExporterEnabled: true
+#          data:
+#            diskUsageCommandWatermark: 0.8
+#            diskUsageReplicationWatermark: 0.9
+#          exporters:
+#            elasticsearch:
+#              args:
+#                index:
+#                  indexSuffixDatePattern: "yyyy-MM-dd_HH"
+#          flowControl:
+#            write:
+#              enabled: true
+#              limit: 4000
 
-    nodeSelector:
-      cloud.google.com/gke-nodepool: n2-standard-2
-
-    # PvcAccessModes can be used to configure the persistent volume claim access mode https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes
-    pvc:
-     accessModes: [ "ReadWriteOnce" ]
-     # PvcSize defines the persistent volume claim size, which is used by each broker pod https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims
-     size: 48Gi
-    # PvcStorageClassName can be used to set the storage class name which should be used by the persistent volume claim. It is recommended to use a storage class, which is backed with a SSD.
-     storageClassName: ssd
-
-  identity:
-    enabled: false
-
-  identityKeycloak:
-    enabled: false
-
-  optimize:
-    enabled: false
-
-  connectors:
-    enabled: false
-  
-  webModeler:
-    enabled: false
-  
-  postgresql:
-    enabled: false
-
-  # ELASTIC
+  ############################################
+  ## @section Elasticsearch Parameters
+  ## @extra elasticsearch
   elasticsearch:
-    enabled: true
-    imageTag: 8.9.2
-
     master:
-      fullnameOverride: elastic
-      nameOverride: elastic
-      # Number of master-elegible replicas to deploy
+      ## @param elasticsearch.master.replicaCount defines number of master-elegible replicas to deploy
       replicaCount: 3
-      pdb:
-        minAvailable: 2
-      # Elasticsearch master-eligible node heap size.
-      # Will be converted to -Xms3g
+      ## @param elasticsearch.master.heapSize
       heapSize: 3g
-      # The resources configurations for elasticsearch containers
+      persistence:
+        ## @param elasticsearch.master.persistence.size
+        size: 64Gi
       resources:
         requests:
           cpu: 1
@@ -400,13 +380,6 @@ camunda-platform:
         limits:
           cpu: 2
           memory: 6Gi
-      persistence:
-        # Persistent Volume Storage Class
-        storageClass: "ssd"
-        # Persistent Volume Size
-        size: 64Gi
-        # Persistent Volume Access Modes
-        accessModes: [ "ReadWriteOnce" ]
 
   # Change these settings to configure a different way to collect metrics
   prometheusServiceMonitor:
