@@ -81,6 +81,9 @@ saas:
 workers:
   # Workers.benchmark defines the configuration for the default benchmark worker
   # See below if you want additional workers
+  image:
+    repository: "gcr.io/zeebe-io"
+    tag: SNAPSHOT
   benchmark:
     # Workers.benchmark.replicas defines how many replicas of the benchmark worker should be deployed
     replicas: 3
@@ -128,6 +131,9 @@ workers:
 
 # Starter configuration for the to be deployed starter application
 starter:
+  image:
+    repository: "gcr.io/zeebe-io"
+    tag: SNAPSHOT
   # Starter.replicas defines how many replicas of the application should be deployed
   replicas: 1
   # Starter.rate defines with which rate process instances should be created by the starter
