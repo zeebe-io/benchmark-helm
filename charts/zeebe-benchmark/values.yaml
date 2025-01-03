@@ -28,10 +28,10 @@ global:
   ingress:
     enabled: false
   image:
-    ## @param global.image.registry Can be used to set container image registry.
-    registry: ""
-    ## @param global.image.tag defines the tag / version which should be used in the most of the apps.
-    tag:
+    # Image.repository defines the repository from which to fetch the docker images
+    repository: "gcr.io/zeebe-io"
+    # Image.tag defines the tag / version which should be used in the chart
+    tag: SNAPSHOT
     ## @param global.image.pullPolicy defines the image pull policy which should be used https://kubernetes.io/docs/concepts/containers/images/#image-pull-policy
     pullPolicy: Always
     ## @param global.image.pullSecrets can be used to configure image pull secrets https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
@@ -180,6 +180,24 @@ leaderBalancing:
 
 # Zeebe configuration to configure Zeebe and Gateway
 zeebe:
+  # Zeebe.config can be used to configure Zeebe Broker and Gateway additional without the need of overwriting all
+  # environment variables from the dependency chart.
+  # Allows to set configurations via --set, like --set zeebe.config.zeebe.broker.cluster.replicationFactor=3
+  config:
+    zeebe.gateway.monitoring.enabled: "true"
+    zeebe.gateway.threads.managementThreads: "1"
+    zeebe.broker.experimental.consistencyChecks.enablePreconditions: "true"
+    zeebe.broker.experimental.consistencyChecks.enableForeignKeyChecks: "true"
+    zeebe.broker.executionMetricsExporterEnabled: "true"
+    zeebe.broker.data.diskUsageCommandWatermark: "0.8"
+    zeebe.broker.data.diskUsageReplicationWatermark: "0.9"
+    # Configure index suffix with hour pattern, so we create every hour a new index
+    # such that ILM can clean it up quickly
+    zeebe.broker.exporters.elasticsearch.args.index.indexSuffixDatePattern: "yyyy-MM-dd_HH"
+    # Configure a rate limit for all writes, so that we can visualize flow control metrics.
+    zeebe.broker.flowControl.write.enabled: "true"
+    zeebe.broker.flowControl.write.limit: 4000
+  # Zeebe.profiling configuration for pyroscope profiling
   profiling:
     # Zeebe.profiling.enabled if true, enables the pyroscope profiling
     enabled: false
@@ -239,6 +257,8 @@ camunda-platform:
       runAsNonRoot: true
       ## @param core.containerSecurityContext.runAsUser
       runAsUser: 1000
+      capabilities:
+        add: [ "NET_ADMIN" ]
     javaOpts: >-
       -XX:MaxRAMPercentage=25.0
       -XX:+ExitOnOutOfMemoryError
@@ -334,32 +354,6 @@ camunda-platform:
             name: zeebe-config
             key: java-opts
             optional: true
-
-    # TODO:  this configuration replaces the default provided in the configmaps in camunda-platform-helm, we should ideally try to add the configuration in the charts for these instead.
-    ## @param core.configuration if specified, contents will be used as the application.yaml
-#    configuration: |
-#      zeebe:
-#        gateway:
-#          monitoring: true
-#          managementThreads: 1
-#        broker:
-#          experimental:
-#            consistencyChecks:
-#              enablePrecondition: true
-#              enableForeignKeyChecks: true
-#          executionMetricsExporterEnabled: true
-#          data:
-#            diskUsageCommandWatermark: 0.8
-#            diskUsageReplicationWatermark: 0.9
-#          exporters:
-#            elasticsearch:
-#              args:
-#                index:
-#                  indexSuffixDatePattern: "yyyy-MM-dd_HH"
-#          flowControl:
-#            write:
-#              enabled: true
-#              limit: 4000
 
   ############################################
   ## @section Elasticsearch Parameters
