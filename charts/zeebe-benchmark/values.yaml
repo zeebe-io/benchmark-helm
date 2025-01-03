@@ -525,7 +525,7 @@ camunda-platform:
         # Persistent Volume Storage Class
         storageClass: "ssd"
         # Persistent Volume Size
-        size: 32Gi
+        size: 64Gi
         # Persistent Volume Access Modes
         accessModes: [ "ReadWriteOnce" ]
 
